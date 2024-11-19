@@ -42,4 +42,73 @@
       transform: scale(1);
     }
   }
+  .home {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #282c34;
+    color: #61dafb;
+    font-family: "Roboto", sans-serif;
+    flex-direction: column;
+  }
   
+  .title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0;
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 2px solid #61dafb; /* Typing cursor */
+    animation: blink-cursor 0.7s step-end infinite;
+  }
+  
+  @keyframes blink-cursor {
+    from {
+      border-right-color: #61dafb;
+    }
+    to {
+      border-right-color: transparent;
+    }
+  }
+  .home {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Vertically center the content */
+    height: 100vh; /* Full viewport height */
+    padding: 0 20px; /* Optional padding for better spacing */
+  }
+  
+  .left {
+    flex: 1; /* Takes up remaining space on the left */
+    display: flex;
+    justify-content: flex-start; /* Align text to the left */
+    align-items: center; /* Center vertically */
+    padding-left: 20px; /* Add padding to the left side */
+  }
+  
+  .right {
+    flex: 1; /* Takes up remaining space on the right */
+    display: flex;
+    justify-content: flex-end; /* Align SVG to the right */
+    align-items: center; /* Center vertically */
+    padding-right: 20px; /* Add padding to the right side */
+  }
+  
+  .svg {
+    width: 45%; /* Adjust the width as needed */
+    height: auto; 
+    margin-right: -10%;/* Maintain aspect ratio */
+  }
+  
+  .title {
+    font-size: 2.5rem; /* Adjust font size as needed */
+    font-weight: bold;
+    color: #333;
+    text-align: left;
+    padding-right: 10px;
+    margin-top:-50%; 
+    margin-left: -10%;/* To give some spacing between text and the SVG */
+  }
+    
