@@ -1,0 +1,45 @@
+.home {
+    background: linear-gradient(to top, #0d3b66, #2c76b1); /* Sky blue gradient */
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    border-radius: 50%;
+    animation: blink 2s infinite;
+    opacity: 0;
+    transform: scale(0);
+    animation: blink 2s ease-out forwards, grow 2s ease-out forwards;
+  }
+  
+  @keyframes blink {
+    0% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes grow {
+    0% {
+      transform: scale(0);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
