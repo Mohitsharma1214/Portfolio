@@ -1,114 +1,230 @@
-.home {
-    background: linear-gradient(to top, #0d3b66, #2c76b1); /* Sky blue gradient */
-    min-height: 100vh;
-    position: relative;
-    overflow: hidden;
-    padding: 20px;
-    color: white;
-    text-align: center;
-    font-family: 'Arial', sans-serif;
+/* Home Section */
+.home-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 100vh;
+  background-color: #1e1e2f; /* Adjust background color */
+}
+
+.heading {
+  font-size: 2.5em;
+  color: #fff;
+}
+
+.main-name {
+  color: #6c63ff; /* Purple color */
+}
+
+.wave {
+  animation: wave-animation 2s infinite;
+}
+
+@keyframes wave-animation {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  .dot {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: white;
-    border-radius: 50%;
-    animation: blink 2s infinite;
-    opacity: 0;
-    transform: scale(0);
-    animation: blink 2s ease-out forwards, grow 2s ease-out forwards;
+  50% {
+    transform: rotate(20deg);
   }
-  
-  @keyframes blink {
-    0% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
+  100% {
+    transform: rotate(0deg);
   }
-  
-  @keyframes grow {
-    0% {
-      transform: scale(0);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-  .home {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #282c34;
-    color: #61dafb;
-    font-family: "Roboto", sans-serif;
+}
+
+/* About Section */
+.home-about-section {
+  background-color: #121212;
+  padding: 50px 0;
+}
+
+.home-about-description {
+  text-align: left;
+  color: #ddd;
+  font-size: 1.2em;
+}
+
+.home-about-body {
+  color: #b8b8b8;
+  line-height: 1.8;
+}
+
+.purple {
+  color: #6c63ff;
+}
+
+/* Avatar Styling */
+.myAvtar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.myAvtar img {
+  max-width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Social Icons */
+.home-about-social {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.home-about-social h1 {
+  font-size: 2em;
+  color: #fff;
+}
+
+.home-about-social p {
+  color: #ccc;
+  margin-bottom: 20px;
+}
+
+.home-about-social-links {
+  list-style-type: none;
+  padding: 0;
+}
+
+.home-about-social-links .social-icons {
+  display: inline-block;
+  margin: 0 15px;
+}
+
+.home-about-social-links .icon-colour {
+  font-size: 2em;
+  color: #6c63ff;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.home-about-social-links .icon-colour:hover {
+  color: #fff;
+  transform: scale(1.2);
+}
+
+/* Typewriter Section */
+.home-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.heading-name {
+  margin-top: 10px;
+}
+
+.home-header div {
+  margin-top: 20px;
+}
+
+.home-content img {
+  margin: auto;
+  display: block;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .home-section {
     flex-direction: column;
+    text-align: center;
   }
-  
-  .title {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin: 0;
-    position: relative;
-    white-space: nowrap;
-    overflow: hidden;
-    border-right: 2px solid #61dafb; /* Typing cursor */
-    animation: blink-cursor 0.7s step-end infinite;
+
+  .home-header,
+  .home-about-description {
+    text-align: center;
   }
-  
-  @keyframes blink-cursor {
-    from {
-      border-right-color: #61dafb;
-    }
-    to {
-      border-right-color: transparent;
-    }
+
+  .home-about-description {
+    margin-bottom: 20px;
   }
-  .home {
-    display: flex;
-    justify-content: space-between;
-    align-items: center; /* Vertically center the content */
-    height: 100vh; /* Full viewport height */
-    padding: 0 20px; /* Optional padding for better spacing */
+
+  .home-about-social-links .social-icons {
+    margin: 10px;
   }
-  
-  .left {
-    flex: 1; /* Takes up remaining space on the left */
-    display: flex;
-    justify-content: flex-start; /* Align text to the left */
-    align-items: center; /* Center vertically */
-    padding-left: 20px; /* Add padding to the left side */
+}
+/* Home Section */
+.home-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #1e1e2f;
+  padding: 50px 20px;
+}
+
+.home-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Text Section */
+.home-header {
+  flex: 1;
+  padding: 20px;
+  color: white;
+}
+
+.heading {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.main-name {
+  color: #6c63ff;
+}
+
+.wave {
+  animation: wave-animation 2s infinite;
+}
+
+@keyframes wave-animation {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  .right {
-    flex: 1; /* Takes up remaining space on the right */
-    display: flex;
-    justify-content: flex-end; /* Align SVG to the right */
-    align-items: center; /* Center vertically */
-    padding-right: 20px; /* Add padding to the right side */
+  50% {
+    transform: rotate(20deg);
   }
-  
-  .svg {
-    width: 45%; /* Adjust the width as needed */
-    height: auto; 
-    margin-right: -10%;/* Maintain aspect ratio */
+  100% {
+    transform: rotate(0deg);
   }
-  
-  .title {
-    font-size: 2.5rem; /* Adjust font size as needed */
-    font-weight: bold;
-    color: #333;
-    text-align: left;
-    padding-right: 10px;
-    margin-top:-50%; 
-    margin-left: -10%;/* To give some spacing between text and the SVG */
+}
+
+/* Typewriting Text Section */
+.typewriter-container {
+  margin-top: 20px;
+  font-size: 1.5rem;
+  color: #ccc;
+}
+
+/* Illustration Section */
+.img-fluid {
+  flex: 1;
+  max-width: 100%;
+  max-height: 450px;
+  object-fit: contain;
+  padding: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .home-content {
+    flex-direction: column;
+    text-align: center;
   }
-    
+
+  .home-header {
+    text-align: center;
+  }
+
+  .img-fluid {
+    max-width: 80%;
+  }
+}

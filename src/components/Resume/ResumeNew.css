@@ -1,0 +1,20 @@
+/* ResumeNew.css */
+body {
+    position: relative !important;
+    background-image: var(--section-background-color) !important;
+    
+  }
+  /* ResumeNew.css */
+.resume-container {
+    position: relative !important;
+    padding-top: 110px !important;
+    padding-bottom: 30px !important;
+    background-image: var(--section-background-color) !important;
+    color: white !important;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
