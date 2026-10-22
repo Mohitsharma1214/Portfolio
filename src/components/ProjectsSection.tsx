@@ -18,32 +18,32 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onSelectProjec
     : PROJECTS.filter((p) => p.category === activeCategory);
 
   return (
-    <section id="projects" className="py-16 sm:py-24 border-t border-slate-200/90 bg-[#fafafb]">
+    <section id="projects" className="py-16 sm:py-24 border-t border-slate-800/80 relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
-            <div className="text-xs font-mono font-semibold uppercase tracking-wider text-brand-700">
+            <div className="text-xs font-mono font-semibold uppercase tracking-wider text-cyan-400">
               Verified Case Studies
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight mt-1">
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1 text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-slate-300">
               Engineering Projects &amp; Systems
             </h2>
-            <p className="text-sm sm:text-base text-slate-600 mt-2 max-w-2xl">
+            <p className="text-sm sm:text-base text-slate-400 mt-2 max-w-2xl">
               Production systems, edge-native computer vision, and grounded LLM architectures built and evaluated with strict performance benchmarks.
             </p>
           </div>
 
           {/* Category Tabs */}
-          <div className="flex flex-wrap gap-1.5 p-1 bg-slate-200/70 rounded-xl self-start md:self-auto">
+          <div className="flex flex-wrap gap-1.5 p-1.5 bg-slate-900/90 border border-slate-800 rounded-xl backdrop-blur-md self-start md:self-auto">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                   activeCategory === cat
-                    ? 'bg-white text-slate-900 shadow-subtle'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-semibold shadow-[0_0_12px_rgba(6,182,212,0.25)]'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
                 }`}
               >
                 {cat}
@@ -57,22 +57,22 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onSelectProjec
           {filteredProjects.map((project) => (
             <div
               key={project.id}
-              className="group bg-white rounded-2xl border border-slate-200/90 hover:border-slate-300 shadow-card hover:shadow-card-hover transition-all duration-200 flex flex-col justify-between overflow-hidden"
+              className="group bg-slate-900/70 hover:bg-slate-900/90 rounded-2xl border border-slate-800 hover:border-cyan-500/40 backdrop-blur-md shadow-card hover:shadow-[0_0_35px_rgba(6,182,212,0.18)] transition-all duration-300 flex flex-col justify-between overflow-hidden"
             >
               <div className="p-6 sm:p-7 space-y-4">
                 {/* Header Badge */}
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200">
+                  <span className="text-[11px] font-mono font-medium px-2.5 py-0.5 rounded-md bg-slate-800/80 text-cyan-300 border border-cyan-500/20">
                     {project.category}
                   </span>
                   {project.id === 'driver-drowsiness-detection' && (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-mono text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                      <ShieldCheck className="w-3 h-3 text-amber-600" />
+                    <span className="inline-flex items-center gap-1 text-[11px] font-mono text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.15)]">
+                      <ShieldCheck className="w-3 h-3 text-amber-400" />
                       <span>Govt. Copyright</span>
                     </span>
                   )}
                   {project.isProprietary && (
-                    <span className="text-[11px] font-mono text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
+                    <span className="text-[11px] font-mono text-indigo-300 bg-indigo-950/60 px-2 py-0.5 rounded border border-indigo-500/30">
                       Production System
                     </span>
                   )}
@@ -80,10 +80,10 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onSelectProjec
 
                 {/* Title & Subtitle */}
                 <div>
-                  <h3 className="text-xl font-bold text-slate-900 tracking-tight group-hover:text-brand-600 transition-colors">
+                  <h3 className="text-xl font-bold text-white tracking-tight group-hover:text-cyan-300 transition-colors">
                     {project.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-500 mt-1 leading-normal">
+                  <p className="text-xs sm:text-sm text-slate-400 mt-1 leading-normal">
                     {project.subtitle}
                   </p>
                 </div>
@@ -91,21 +91,21 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onSelectProjec
                 {/* Problem & Solution */}
                 <div className="space-y-2 text-xs sm:text-sm pt-1">
                   <div>
-                    <span className="font-semibold text-slate-900">Problem: </span>
-                    <span className="text-slate-600 leading-relaxed">{project.problemStatement}</span>
+                    <span className="font-semibold text-slate-200">Problem: </span>
+                    <span className="text-slate-300 leading-relaxed">{project.problemStatement}</span>
                   </div>
                   <div>
-                    <span className="font-semibold text-slate-900">Solution: </span>
-                    <span className="text-slate-600 leading-relaxed">{project.solution}</span>
+                    <span className="font-semibold text-slate-200">Solution: </span>
+                    <span className="text-slate-300 leading-relaxed">{project.solution}</span>
                   </div>
                 </div>
 
                 {/* Key Metrics */}
-                <div className="bg-slate-50 border border-slate-200/70 rounded-xl p-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <div className="bg-[#080d18] border border-slate-800/90 rounded-xl p-3 grid grid-cols-2 sm:grid-cols-3 gap-2 shadow-inner">
                   {project.metrics.map((metric, idx) => (
                     <div key={idx} className="text-center sm:text-left">
-                      <div className="text-[10px] text-slate-500 font-mono">Result</div>
-                      <div className="text-xs font-bold text-slate-800 mt-0.5 truncate">{metric}</div>
+                      <div className="text-[10px] text-slate-400 font-mono">Result</div>
+                      <div className="text-xs font-bold text-cyan-300 font-mono mt-0.5 truncate">{metric}</div>
                     </div>
                   ))}
                 </div>
@@ -115,7 +115,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onSelectProjec
                   {project.technologies.map((tech) => (
                     <span
                       key={tech}
-                      className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-700"
+                      className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800/80 text-slate-300 border border-slate-700/60"
                     >
                       {tech}
                     </span>
@@ -124,12 +124,12 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onSelectProjec
               </div>
 
               {/* Card Footer Actions */}
-              <div className="bg-slate-50/70 border-t border-slate-100 px-6 py-4 flex items-center justify-between gap-3">
+              <div className="bg-[#080d18]/90 border-t border-slate-800/90 px-6 py-4 flex items-center justify-between gap-3">
                 <button
                   onClick={() => onSelectProject(project)}
-                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-brand-700 hover:text-brand-800 group/btn transition-colors focus:outline-none"
+                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-cyan-400 hover:text-cyan-300 group/btn transition-colors focus:outline-none"
                 >
-                  <Layers className="w-4 h-4 text-brand-600" />
+                  <Layers className="w-4 h-4 text-cyan-400" />
                   <span>Read 10-Part Case Study</span>
                   <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
                 </button>
@@ -140,7 +140,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onSelectProjec
                       href={project.repoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-200 transition-colors"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
                       title="View GitHub Repository"
                       aria-label={`View GitHub Repository for ${project.title}`}
                     >
@@ -152,7 +152,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onSelectProjec
                       href={project.demoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-1.5 rounded-lg text-brand-600 hover:text-brand-800 hover:bg-brand-50 transition-colors"
+                      className="p-1.5 rounded-lg text-cyan-400 hover:text-cyan-300 hover:bg-cyan-950/60 transition-colors"
                       title="View Live Demo"
                       aria-label={`View Live Demo for ${project.title}`}
                     >

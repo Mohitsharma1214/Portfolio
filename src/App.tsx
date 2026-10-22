@@ -1,84 +1,78 @@
 import { useState, useEffect } from 'react';
+import { HashRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+
 import { Navbar } from './components/Navbar';
-import { Hero } from './components/Hero';
-import { AboutSection } from './components/AboutSection';
-import { ProjectsSection } from './components/ProjectsSection';
-import { ExperienceSection } from './components/ExperienceSection';
-import { SkillsSection } from './components/SkillsSection';
-import { TechnicalWritingSection } from './components/TechnicalWritingSection';
-import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
+import { HomePage } from './pages/HomePage';
+import { AboutPage } from './pages/AboutPage';
+import { ProjectsPage } from './pages/ProjectsPage';
+import { ExperiencePage } from './pages/ExperiencePage';
+import { SkillsPage } from './pages/SkillsPage';
+import { WritingPage } from './pages/WritingPage';
+import { ContactPage } from './pages/ContactPage';
+
 import { CaseStudyModal } from './components/CaseStudyModal';
 import { ArticleModal } from './components/ArticleModal';
-import { PROJECTS, TECHNICAL_ARTICLES } from './data/portfolioData';
 import type { ProjectCaseStudy, TechnicalArticle } from './data/portfolioData';
 
-export function App() {
+// Helper component to scroll window to top on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+  }, [pathname]);
+
+  return null;
+}
+
+function AppContent() {
   const [selectedProject, setSelectedProject] = useState<ProjectCaseStudy | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<TechnicalArticle | null>(null);
-
-  // Handle URL Hash Deep Linking for direct case study sharing
-  useEffect(() => {
-    const checkHash = () => {
-      const hash = window.location.hash;
-      if (hash.startsWith('#project-')) {
-        const projectId = hash.replace('#project-', '');
-        const found = PROJECTS.find((p) => p.id === projectId);
-        if (found) {
-          setSelectedProject(found);
-          setSelectedArticle(null);
-        }
-      } else if (hash.startsWith('#article-')) {
-        const articleId = hash.replace('#article-', '');
-        const found = TECHNICAL_ARTICLES.find((a) => a.id === articleId);
-        if (found) {
-          setSelectedArticle(found);
-          setSelectedProject(null);
-        }
-      }
-    };
-
-    checkHash();
-    window.addEventListener('hashchange', checkHash);
-    return () => window.removeEventListener('hashchange', checkHash);
-  }, []);
+  const location = useLocation();
 
   const handleOpenProject = (project: ProjectCaseStudy) => {
     setSelectedProject(project);
-    window.location.hash = `project-${project.id}`;
   };
 
   const handleCloseProject = () => {
     setSelectedProject(null);
-    if (window.location.hash.startsWith('#project-')) {
-      window.history.pushState(null, '', window.location.pathname + '#projects');
-    }
   };
 
   const handleOpenArticle = (article: TechnicalArticle) => {
     setSelectedArticle(article);
-    window.location.hash = `article-${article.id}`;
   };
 
   const handleCloseArticle = () => {
     setSelectedArticle(null);
-    if (window.location.hash.startsWith('#article-')) {
-      window.history.pushState(null, '', window.location.pathname + '#writing');
-    }
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fafafb] text-slate-900 selection:bg-brand-100 selection:text-brand-900 font-sans">
+    <div className="min-h-screen flex flex-col bg-[#f8fafc] text-slate-900 selection:bg-blue-100 selection:text-blue-900 font-sans relative overflow-x-hidden modern-grid">
+      {/* Subtle modern light-theme watercolor ambient glows */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+        <div className="absolute top-[-10%] left-[15%] w-[600px] h-[450px] rounded-full bg-blue-400/[0.07] blur-[140px]" />
+        <div className="absolute top-[35%] right-[-5%] w-[550px] h-[550px] rounded-full bg-indigo-300/[0.08] blur-[150px]" />
+        <div className="absolute bottom-[-10%] left-[10%] w-[600px] h-[500px] rounded-full bg-sky-300/[0.06] blur-[140px]" />
+      </div>
+
+      <ScrollToTop />
       <Navbar />
 
-      <main className="flex-grow">
-        <Hero />
-        <AboutSection />
-        <ProjectsSection onSelectProject={handleOpenProject} />
-        <ExperienceSection />
-        <SkillsSection />
-        <TechnicalWritingSection onSelectArticle={handleOpenArticle} />
-        <ContactSection />
+      <main className="flex-grow relative z-10">
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<HomePage onSelectProject={handleOpenProject} />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/projects" element={<ProjectsPage onSelectProject={handleOpenProject} />} />
+            <Route path="/experience" element={<ExperiencePage />} />
+            <Route path="/skills" element={<SkillsPage />} />
+            <Route path="/writing" element={<WritingPage onSelectArticle={handleOpenArticle} />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </AnimatePresence>
       </main>
 
       <Footer />
@@ -89,6 +83,14 @@ export function App() {
       {/* Interactive Technical Writing Reader Modal */}
       <ArticleModal article={selectedArticle} onClose={handleCloseArticle} />
     </div>
+  );
+}
+
+export function App() {
+  return (
+    <HashRouter>
+      <AppContent />
+    </HashRouter>
   );
 }
 
