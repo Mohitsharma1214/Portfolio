@@ -15,6 +15,7 @@ import {
 import { BlogService } from '../services/blogService';
 import type { BlogFull, BlogMetadata } from '../services/blogService';
 import { PERSONAL_INFO } from '../data/portfolioData';
+import { MarkdownRenderer } from '../components/MarkdownRenderer';
 
 export const BlogPostPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -48,91 +49,6 @@ export const BlogPostPage: React.FC = () => {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
-  };
-
-  // Helper to format basic markdown (code blocks, headers, paragraphs, lists)
-  const renderFormattedMarkdown = (markdown: string) => {
-    const lines = markdown.split('\n');
-    const elements: React.ReactNode[] = [];
-    let inCodeBlock = false;
-    let codeLanguage = '';
-    let codeLines: string[] = [];
-
-    lines.forEach((line, index) => {
-      if (line.startsWith('```')) {
-        if (inCodeBlock) {
-          // Close block
-          elements.push(
-            <div key={`code-${index}`} className="my-6 rounded-2xl overflow-hidden border border-slate-800 bg-[#0b1329] shadow-md font-mono text-xs">
-              <div className="flex items-center justify-between px-4 py-2 bg-slate-900/80 border-b border-slate-800 text-[11px] text-slate-400">
-                <span className="font-semibold text-blue-400">{codeLanguage || 'code'}</span>
-                <span>Production Snippet</span>
-              </div>
-              <pre className="p-4 overflow-x-auto text-slate-200 leading-relaxed">
-                <code>{codeLines.join('\n')}</code>
-              </pre>
-            </div>
-          );
-          codeLines = [];
-          inCodeBlock = false;
-        } else {
-          inCodeBlock = true;
-          codeLanguage = line.replace('```', '').trim();
-        }
-        return;
-      }
-
-      if (inCodeBlock) {
-        codeLines.push(line);
-        return;
-      }
-
-      if (line.startsWith('### ')) {
-        elements.push(
-          <h2 key={`h3-${index}`} className="text-xl sm:text-2xl font-bold text-slate-950 mt-10 mb-4 tracking-tight">
-            {line.replace('### ', '')}
-          </h2>
-        );
-        return;
-      }
-
-      if (line.startsWith('#### ')) {
-        elements.push(
-          <h3 key={`h4-${index}`} className="text-lg font-bold text-slate-900 mt-6 mb-3 tracking-tight">
-            {line.replace('#### ', '')}
-          </h3>
-        );
-        return;
-      }
-
-      if (line.startsWith('| ') && line.endsWith(' |')) {
-        elements.push(
-          <div key={`table-row-${index}`} className="overflow-x-auto my-1 font-mono text-xs">
-            <span className="text-slate-700">{line}</span>
-          </div>
-        );
-        return;
-      }
-
-      if (line.startsWith('- ')) {
-        elements.push(
-          <li key={`li-${index}`} className="ml-5 list-disc text-sm sm:text-base text-slate-700 my-1 leading-relaxed">
-            {line.replace('- ', '')}
-          </li>
-        );
-        return;
-      }
-
-      if (line.trim().length > 0) {
-        elements.push(
-          <p key={`p-${index}`} className="text-sm sm:text-base text-slate-700 my-4 leading-relaxed">
-            {line}
-          </p>
-        );
-      }
-    });
-
-    return elements;
   };
 
   if (loading) {
@@ -266,8 +182,8 @@ export const BlogPostPage: React.FC = () => {
       </header>
 
       {/* Main Formatted Markdown Content */}
-      <div className="prose prose-slate max-w-none">
-        {renderFormattedMarkdown(blog.contentMarkdown)}
+      <div className="max-w-none">
+        <MarkdownRenderer content={blog.contentMarkdown} />
       </div>
 
       {/* Quality Verification Footer */}

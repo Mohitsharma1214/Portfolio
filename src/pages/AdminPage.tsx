@@ -28,6 +28,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { BlogService } from '../services/blogService';
 import type { BlogFull, BlogMetadata } from '../services/blogService';
+import { MarkdownRenderer } from '../components/MarkdownRenderer';
 
 // STRICT SECURITY PROTOCOLS
 const AUTHORIZED_ADMIN_EMAIL = 'mohitxsharma09@gmail.com';
@@ -419,81 +420,6 @@ export const AdminPage: React.FC = () => {
     const set = new Set(articles.map((a) => a.category).filter(Boolean));
     return Array.from(set);
   }, [articles]);
-
-  // Helper to format preview markdown
-  const renderPreviewMarkdown = (markdown: string) => {
-    const lines = markdown.split('\n');
-    const elements: React.ReactNode[] = [];
-    let inCodeBlock = false;
-    let codeLanguage = '';
-    let codeLines: string[] = [];
-
-    lines.forEach((line, index) => {
-      if (line.startsWith('```')) {
-        if (inCodeBlock) {
-          elements.push(
-            <div key={`code-${index}`} className="my-4 rounded-xl overflow-hidden border border-slate-800 bg-[#0b1329] font-mono text-xs">
-              <div className="flex items-center justify-between px-3 py-1.5 bg-slate-900 border-b border-slate-800 text-[10px] text-slate-400">
-                <span className="font-semibold text-blue-400">{codeLanguage || 'code'}</span>
-                <span>Snippet</span>
-              </div>
-              <pre className="p-3 overflow-x-auto text-slate-200">
-                <code>{codeLines.join('\n')}</code>
-              </pre>
-            </div>
-          );
-          codeLines = [];
-          inCodeBlock = false;
-        } else {
-          inCodeBlock = true;
-          codeLanguage = line.replace('```', '').trim();
-        }
-        return;
-      }
-
-      if (inCodeBlock) {
-        codeLines.push(line);
-        return;
-      }
-
-      if (line.startsWith('### ')) {
-        elements.push(
-          <h2 key={`h3-${index}`} className="text-lg font-bold text-slate-950 mt-6 mb-2 tracking-tight">
-            {line.replace('### ', '')}
-          </h2>
-        );
-        return;
-      }
-
-      if (line.startsWith('#### ')) {
-        elements.push(
-          <h3 key={`h4-${index}`} className="text-base font-bold text-slate-900 mt-4 mb-2 tracking-tight">
-            {line.replace('#### ', '')}
-          </h3>
-        );
-        return;
-      }
-
-      if (line.startsWith('- ')) {
-        elements.push(
-          <li key={`li-${index}`} className="ml-5 list-disc text-xs sm:text-sm text-slate-700 my-1 leading-relaxed">
-            {line.replace('- ', '')}
-          </li>
-        );
-        return;
-      }
-
-      if (line.trim().length > 0) {
-        elements.push(
-          <p key={`p-${index}`} className="text-xs sm:text-sm text-slate-700 my-2 leading-relaxed">
-            {line}
-          </p>
-        );
-      }
-    });
-
-    return elements;
-  };
 
   // 1. Loading State
   if (authLoading) {
@@ -1344,7 +1270,7 @@ export const AdminPage: React.FC = () => {
               {editorPreviewMode !== 'write' && (
                 <div className="space-y-1">
                   <div className="text-[11px] font-mono text-slate-400 px-1">Live Reader Preview</div>
-                  <div className="p-5 border border-slate-200 rounded-xl bg-white min-h-[350px] max-h-[500px] overflow-y-auto prose prose-slate">
+                  <div className="p-5 border border-slate-200 rounded-xl bg-white min-h-[350px] max-h-[500px] overflow-y-auto">
                     {title ? (
                       <h1 className="text-xl font-bold text-slate-950 mb-2">{title}</h1>
                     ) : (
@@ -1355,7 +1281,7 @@ export const AdminPage: React.FC = () => {
                     )}
                     <hr className="my-3 border-slate-100" />
                     {contentMarkdown.trim() ? (
-                      renderPreviewMarkdown(contentMarkdown)
+                      <MarkdownRenderer content={contentMarkdown} />
                     ) : (
                       <div className="text-xs text-slate-400 italic py-8 text-center">
                         Start typing markdown on the left to see the live formatted preview here.
