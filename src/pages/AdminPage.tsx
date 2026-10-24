@@ -31,10 +31,9 @@ const AUTHORIZED_ADMIN_EMAIL = 'mohitxsharma09@gmail.com';
 const MASTER_PIN = import.meta.env.VITE_ADMIN_MASTER_PIN || '984124';
 
 export const AdminPage: React.FC = () => {
-  const { user, loading: authLoading, signIn, signUp, signOut } = useAuth();
+  const { user, loading: authLoading, signIn, signOut } = useAuth();
 
-  // Auth Form State
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  // Auth Form State (Sign-In Only - Public Registration Disabled)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [masterPin, setMasterPin] = useState('');
@@ -42,7 +41,6 @@ export const AdminPage: React.FC = () => {
   const [showPin, setShowPin] = useState(false);
   const [authSubmitting, setAuthSubmitting] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
-  const [authMessage, setAuthMessage] = useState<string | null>(null);
   const [failedAttempts, setFailedAttempts] = useState(0);
   const [lockedUntil, setLockedUntil] = useState<number | null>(null);
 
@@ -127,7 +125,6 @@ export const AdminPage: React.FC = () => {
   const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
-    setAuthMessage(null);
 
     // 1. Brute-force check
     if (isLocked) {
@@ -153,22 +150,12 @@ export const AdminPage: React.FC = () => {
     setAuthSubmitting(true);
 
     try {
-      if (authMode === 'signin') {
-        const res = await signIn(email, password);
-        if (res.error) {
-          recordFailedAttempt();
-          setAuthError(res.error);
-        } else {
-          setFailedAttempts(0);
-        }
+      const res = await signIn(email, password);
+      if (res.error) {
+        recordFailedAttempt();
+        setAuthError(res.error);
       } else {
-        const res = await signUp(email, password);
-        if (res.error) {
-          recordFailedAttempt();
-          setAuthError(res.error);
-        } else if (res.message) {
-          setAuthMessage(res.message);
-        }
+        setFailedAttempts(0);
       }
     } finally {
       setAuthSubmitting(false);
@@ -455,39 +442,11 @@ export const AdminPage: React.FC = () => {
             </p>
           </div>
 
-          {/* Mode Switch Tabs */}
-          <div className="flex bg-slate-100 p-1 rounded-xl text-xs font-semibold">
-            <button
-              type="button"
-              onClick={() => { setAuthMode('signin'); setAuthError(null); }}
-              className={`flex-1 py-2 rounded-lg transition-all ${
-                authMode === 'signin' ? 'bg-white text-slate-950 shadow-xs' : 'text-slate-500 hover:text-slate-900'
-              }`}
-            >
-              Owner Sign In
-            </button>
-            <button
-              type="button"
-              onClick={() => { setAuthMode('signup'); setAuthError(null); }}
-              className={`flex-1 py-2 rounded-lg transition-all ${
-                authMode === 'signup' ? 'bg-white text-slate-950 shadow-xs' : 'text-slate-500 hover:text-slate-900'
-              }`}
-            >
-              First-Time Admin Setup
-            </button>
-          </div>
-
-          {/* Error / Success Alerts */}
+          {/* Error Alert */}
           {authError && (
             <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 flex items-start gap-2">
               <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{authError}</span>
-            </div>
-          )}
-          {authMessage && (
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-start gap-2">
-              <Check className="w-4 h-4 shrink-0 mt-0.5" />
-              <span>{authMessage}</span>
             </div>
           )}
 
@@ -579,7 +538,7 @@ export const AdminPage: React.FC = () => {
                   <span>Verifying 2FA Credentials...</span>
                 </>
               ) : (
-                <span>{authMode === 'signin' ? 'Verify & Access Studio' : 'Create Admin Account'}</span>
+                <span>Verify &amp; Access Studio</span>
               )}
             </button>
           </form>

@@ -7,7 +7,6 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error?: string }>;
-  signUp: (email: string, password: string) => Promise<{ error?: string; message?: string }>;
   signOut: () => Promise<void>;
 }
 
@@ -16,7 +15,6 @@ const AuthContext = createContext<AuthContextType>({
   session: null,
   loading: true,
   signIn: async () => ({}),
-  signUp: async () => ({}),
   signOut: async () => {},
 });
 
@@ -68,30 +66,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return {};
   };
 
-  const signUp = async (email: string, password: string) => {
-    if (!isSupabaseConfigured || !supabase) {
-      return { error: 'Supabase client is not configured.' };
-    }
-
-    const { data, error } = await supabase.auth.signUp({
-      email: email.trim(),
-      password,
-    });
-
-    if (error) {
-      return { error: error.message };
-    }
-
-    if (data.session) {
-      return { message: 'Account created and signed in successfully!' };
-    }
-
-    return {
-      message:
-        'Account created! Please check your email inbox to confirm your account (or disable email confirmation in Supabase dashboard to log in immediately).',
-    };
-  };
-
   const signOut = async () => {
     if (isSupabaseConfigured && supabase) {
       await supabase.auth.signOut();
@@ -101,7 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
