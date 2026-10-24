@@ -85,6 +85,8 @@ function AppContent() {
     setSelectedArticle(null);
   };
 
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
   return (
     <div className="min-h-screen flex flex-col bg-[#f8fafc] text-slate-900 selection:bg-blue-100 selection:text-blue-900 font-sans relative overflow-x-hidden modern-grid">
       {/* Subtle modern light-theme watercolor ambient glows */}
@@ -96,7 +98,7 @@ function AppContent() {
 
       <ScrollToTop />
       <PageMetadataUpdater />
-      <Navbar />
+      {!isAdminRoute && <Navbar />}
 
       <main className="flex-grow relative z-10">
         <AnimatePresence mode="wait">
@@ -117,7 +119,7 @@ function AppContent() {
         </AnimatePresence>
       </main>
 
-      <Footer />
+      {!isAdminRoute && <Footer />}
 
       {/* Interactive Case Study Modal */}
       <CaseStudyModal project={selectedProject} onClose={handleCloseProject} />

@@ -572,9 +572,13 @@ export const AdminPage: React.FC = () => {
       {/* Studio Header Bar */}
       <header className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 to-blue-900 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+          <Link
+            to="/"
+            title="Return to Portfolio Homepage"
+            className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-900 to-blue-900 text-white flex items-center justify-center font-bold text-xs shadow-xs hover:scale-105 transition-transform"
+          >
             MS
-          </div>
+          </Link>
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-base font-extrabold text-slate-950 tracking-tight">
