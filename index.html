@@ -45,7 +45,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
-    <!-- Validated JSON-LD Structured Data: WebSite, ProfilePage, Person -->
+    <!-- Validated JSON-LD Structured Data: WebSite & ProfilePage with mainEntity Person -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -66,56 +66,54 @@
             "isPartOf": {
               "@id": "https://mohitsharma1214.github.io/Portfolio/#website"
             },
-            "about": {
-              "@id": "https://mohitsharma1214.github.io/Portfolio/#person"
-            },
             "primaryImageOfPage": {
               "@type": "ImageObject",
               "url": "https://mohitsharma1214.github.io/Portfolio/og-image.png",
               "width": 1200,
               "height": 630
-            }
-          },
-          {
-            "@type": "Person",
-            "@id": "https://mohitsharma1214.github.io/Portfolio/#person",
-            "name": "Mohit Sharma",
-            "jobTitle": "AI Engineer",
-            "url": "https://mohitsharma1214.github.io/Portfolio/",
-            "image": "https://mohitsharma1214.github.io/Portfolio/og-image.png",
-            "email": "mailto:mohitxsharma09@gmail.com",
-            "sameAs": [
-              "https://www.linkedin.com/in/mohitsharmas-",
-              "https://github.com/mohitsharma1214"
-            ],
-            "worksFor": {
-              "@type": "Organization",
-              "name": "Sodio Technologies"
             },
-            "alumniOf": {
-              "@type": "CollegeOrUniversity",
-              "name": "Rajiv Gandhi Proudyogiki Vishwavidyalaya (RGPV)"
-            },
-            "knowsAbout": [
-              "Artificial Intelligence",
-              "Computer Vision",
-              "Machine Learning",
-              "Edge AI",
-              "Deep Learning",
-              "Large Language Models",
-              "PyTorch",
-              "TensorRT",
-              "FastAPI",
-              "OpenCV",
-              "CUDA",
-              "ChromaDB",
-              "Docker",
-              "MLOps"
-            ],
-            "hasCredential": {
-              "@type": "EducationalOccupationalCredential",
-              "name": "Registered Software Copyright SW-19841/2024 (Govt. of India)",
-              "credentialCategory": "Copyright"
+            "mainEntity": {
+              "@type": "Person",
+              "@id": "https://mohitsharma1214.github.io/Portfolio/#person",
+              "name": "Mohit Sharma",
+              "jobTitle": "AI Engineer",
+              "description": "AI Engineer specializing in real-time computer vision, low-latency edge deployment, and production LLM pipelines.",
+              "url": "https://mohitsharma1214.github.io/Portfolio/",
+              "image": "https://mohitsharma1214.github.io/Portfolio/og-image.png",
+              "email": "mailto:mohitxsharma09@gmail.com",
+              "sameAs": [
+                "https://www.linkedin.com/in/mohitsharmas-",
+                "https://github.com/mohitsharma1214"
+              ],
+              "worksFor": {
+                "@type": "Organization",
+                "name": "Sodio Technologies"
+              },
+              "alumniOf": {
+                "@type": "CollegeOrUniversity",
+                "name": "Rajiv Gandhi Proudyogiki Vishwavidyalaya (RGPV)"
+              },
+              "knowsAbout": [
+                "Artificial Intelligence",
+                "Computer Vision",
+                "Machine Learning",
+                "Edge AI",
+                "Deep Learning",
+                "Large Language Models",
+                "PyTorch",
+                "TensorRT",
+                "FastAPI",
+                "OpenCV",
+                "CUDA",
+                "ChromaDB",
+                "Docker",
+                "MLOps"
+              ],
+              "hasCredential": {
+                "@type": "EducationalOccupationalCredential",
+                "name": "Registered Software Copyright SW-19841/2024 (Govt. of India)",
+                "credentialCategory": "Copyright"
+              }
             }
           }
         ]
