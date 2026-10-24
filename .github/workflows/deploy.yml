@@ -35,6 +35,7 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://zxovekhtcajtefedkkee.supabase.co' }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'sb_publishable_JxI18d2ketnFvFZ6Yn0Beg_yXpmd7uJ' }}
+          VITE_ADMIN_MASTER_PIN: ${{ secrets.VITE_ADMIN_MASTER_PIN || '984124' }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

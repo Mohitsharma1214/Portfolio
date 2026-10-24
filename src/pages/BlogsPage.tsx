@@ -14,8 +14,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Database,
-  Loader2,
-  Edit3
+  Loader2
 } from 'lucide-react';
 import { BlogService } from '../services/blogService';
 import type { BlogMetadata } from '../services/blogService';
@@ -133,14 +132,6 @@ export const BlogsPage: React.FC = () => {
                 <Database className="w-3.5 h-3.5" />
                 <span>{isFromDb ? 'Supabase PostgreSQL (Live)' : 'Database Scalable (On-Demand)'}</span>
               </span>
-              <Link
-                to="/admin"
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-colors shadow-xs"
-                title="Open Blog Admin Studio to write/edit articles"
-              >
-                <Edit3 className="w-3.5 h-3.5 text-blue-600" />
-                <span>Admin Studio</span>
-              </Link>
             </div>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-950 tracking-tight">
