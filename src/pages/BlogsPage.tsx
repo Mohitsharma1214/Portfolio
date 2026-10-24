@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { Variants } from 'framer-motion';
 import { 
   Clock, 
@@ -10,17 +10,23 @@ import {
   Search,
   Sparkles,
   Calendar,
-  Layers
+  Layers,
+  ChevronLeft,
+  ChevronRight,
+  Database,
+  Loader2
 } from 'lucide-react';
-import { TECHNICAL_ARTICLES } from '../data/portfolioData';
+import { BlogService } from '../services/blogService';
+import type { BlogMetadata } from '../services/blogService';
+import { isSupabaseConfigured } from '../lib/supabase';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.05,
+      staggerChildren: 0.06,
+      delayChildren: 0.04,
     },
   },
 };
@@ -35,25 +41,71 @@ const itemVariants: Variants = {
 };
 
 export const BlogsPage: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [blogs, setBlogs] = useState<BlogMetadata[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [isFromDb, setIsFromDb] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [categories, setCategories] = useState<string[]>(['All']);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
 
-  const categories = useMemo(() => {
-    const cats = Array.from(new Set(TECHNICAL_ARTICLES.map((a) => a.category)));
-    return ['All', ...cats];
+  const pageSize = 6;
+
+  // Debounce search input to avoid spamming database queries
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setCurrentPage(1); // Reset to first page on search change
+    }, 280);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Load categories
+  useEffect(() => {
+    BlogService.getCategories().then((cats) => {
+      setCategories(cats);
+    });
   }, []);
 
-  const filteredBlogs = useMemo(() => {
-    return TECHNICAL_ARTICLES.filter((blog) => {
-      const matchesCategory = selectedCategory === 'All' || blog.category === selectedCategory;
-      const matchesQuery = 
-        blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        blog.subtitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        blog.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        blog.category.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesCategory && matchesQuery;
-    });
-  }, [searchQuery, selectedCategory]);
+  // Fetch blogs from database whenever page, category, or search changes
+  const fetchBlogs = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await BlogService.getPaginatedBlogs({
+        page: currentPage,
+        pageSize,
+        category: selectedCategory,
+        searchQuery: debouncedSearch,
+      });
+      setBlogs(res.blogs);
+      setTotalPages(res.totalPages);
+      setTotalCount(res.totalCount);
+      setIsFromDb(res.isFromDatabase);
+    } catch (err) {
+      console.error('Failed to fetch blogs:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [currentPage, selectedCategory, debouncedSearch]);
+
+  useEffect(() => {
+    fetchBlogs();
+  }, [fetchBlogs]);
+
+  const handleCategoryChange = (cat: string) => {
+    setSelectedCategory(cat);
+    setCurrentPage(1); // Reset to first page
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages && newPage !== currentPage) {
+      setCurrentPage(newPage);
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+    }
+  };
 
   return (
     <motion.div
@@ -67,15 +119,26 @@ export const BlogsPage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
           <div className="space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-mono font-semibold text-blue-700">
-              <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-              <span>Engineering Blogs &bull; Latency Benchmarks &bull; Production Systems</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-mono font-semibold text-blue-700">
+                <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                <span>Dynamic Cloud Blog Architecture</span>
+              </span>
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-medium border ${
+                isSupabaseConfigured || isFromDb
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                  : 'bg-indigo-50 text-indigo-700 border-indigo-200'
+              }`}>
+                <Database className="w-3.5 h-3.5" />
+                <span>{isFromDb ? 'Supabase PostgreSQL (Live)' : 'Database Scalable (On-Demand)'}</span>
+              </span>
             </div>
+
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-950 tracking-tight">
-              Technical Blogs &amp; Case Studies
+              Technical Blogs &amp; Systems Notes
             </h1>
             <p className="text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed">
-              In-depth systems breakdowns, latency tradeoffs, and failure mode analyses derived directly from production and edge AI implementations.
+              In-depth systems breakdowns, latency tradeoffs, and failure mode analyses queried dynamically on demand with pagination.
             </p>
           </div>
 
@@ -84,8 +147,12 @@ export const BlogsPage: React.FC = () => {
               <FileText className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-sm font-bold text-slate-950">{TECHNICAL_ARTICLES.length} Published Blogs</div>
-              <div className="text-xs text-slate-500 font-mono font-medium">Architecture Notes</div>
+              <div className="text-sm font-bold text-slate-950">
+                {totalCount} Total Articles
+              </div>
+              <div className="text-xs text-slate-500 font-mono font-medium">
+                Page {currentPage} of {totalPages}
+              </div>
             </div>
           </div>
         </div>
@@ -98,7 +165,7 @@ export const BlogsPage: React.FC = () => {
               <button
                 key={cat}
                 type="button"
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => handleCategoryChange(cat)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
                   selectedCategory === cat
                     ? 'bg-blue-600 text-white font-semibold shadow-xs'
@@ -117,19 +184,39 @@ export const BlogsPage: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search blogs or topics..."
-              className="w-full pl-9 pr-4 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-900 placeholder:text-slate-400 shadow-xs"
+              placeholder="Search blogs dynamically..."
+              className="w-full pl-9 pr-8 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-900 placeholder:text-slate-400 shadow-xs"
             />
+            {loading && (
+              <Loader2 className="w-3.5 h-3.5 text-blue-600 animate-spin absolute right-3 top-1/2 -translate-y-1/2" />
+            )}
           </div>
         </div>
       </div>
 
-      {/* Blogs Grid */}
-      {filteredBlogs.length === 0 ? (
+      {/* Loading Skeleton */}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div
+              key={`skeleton-${i}`}
+              className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-xs animate-pulse p-0 space-y-4"
+            >
+              <div className="aspect-[16/9] bg-slate-200/80 w-full" />
+              <div className="p-6 space-y-3">
+                <div className="h-3 bg-slate-200 rounded w-1/3" />
+                <div className="h-5 bg-slate-200 rounded w-4/5" />
+                <div className="h-3 bg-slate-100 rounded w-full" />
+                <div className="h-3 bg-slate-100 rounded w-2/3" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : blogs.length === 0 ? (
         <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center space-y-3 shadow-xs">
           <Layers className="w-8 h-8 text-slate-400 mx-auto" />
           <h2 className="text-base font-bold text-slate-900">No blogs match your search query</h2>
-          <p className="text-xs text-slate-500">Try clearing your search query or selecting "All" categories.</p>
+          <p className="text-xs text-slate-500">Try clearing your search query or selecting a different category.</p>
           <button
             type="button"
             onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}
@@ -139,102 +226,159 @@ export const BlogsPage: React.FC = () => {
           </button>
         </div>
       ) : (
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {filteredBlogs.map((blog) => (
-            <motion.article
-              key={blog.id}
-              variants={itemVariants}
-              whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              className="modern-card bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between group shadow-xs hover:border-blue-300 hover:shadow-card transition-all"
-            >
-              {/* Card Header with Graphic Image */}
-              <div className="space-y-4">
-                <Link
-                  to={`/blogs/${blog.id}`}
-                  className="block relative overflow-hidden aspect-[16/9] bg-slate-100 border-b border-slate-100"
-                  aria-label={`Read article: ${blog.title}`}
-                >
-                  <img
-                    src={blog.coverImage || `/Portfolio/assets/blogs/${blog.id}.png`}
-                    alt={blog.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                  <div className="absolute top-3 left-3">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-800 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-md shadow-xs border border-slate-200/60">
-                      {blog.category.split('•')[0].trim()}
-                    </span>
-                  </div>
-                </Link>
-
-                {/* Card Content */}
-                <div className="px-6 sm:px-7 space-y-3">
-                  {/* Meta strip: Read time & Date */}
-                  <div className="flex items-center justify-between text-[11px] font-mono text-slate-500">
-                    <span className="flex items-center gap-1.5">
-                      <Clock className="w-3.5 h-3.5 text-blue-600" />
-                      <span>{blog.readTime}</span>
-                    </span>
-                    {blog.publishDate && (
-                      <span className="flex items-center gap-1 text-slate-400">
-                        <Calendar className="w-3 h-3" />
-                        <span>{blog.publishDate}</span>
+        /* Blog Cards Grid */
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`page-${currentPage}-${selectedCategory}-${debouncedSearch}`}
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {blogs.map((blog) => (
+              <motion.article
+                key={blog.id}
+                variants={itemVariants}
+                whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                className="modern-card bg-white rounded-3xl border border-slate-200 overflow-hidden flex flex-col justify-between group shadow-xs hover:border-blue-300 hover:shadow-card transition-all"
+              >
+                {/* Card Header with Graphic Image */}
+                <div className="space-y-4">
+                  <Link
+                    to={`/blogs/${blog.id}`}
+                    className="block relative overflow-hidden aspect-[16/9] bg-slate-100 border-b border-slate-100"
+                    aria-label={`Read article: ${blog.title}`}
+                  >
+                    <img
+                      src={blog.coverImage || `/Portfolio/assets/blogs/${blog.id}.png`}
+                      alt={blog.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                    <div className="absolute top-3 left-3">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-800 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-md shadow-xs border border-slate-200/60">
+                        {blog.category.split('•')[0].trim()}
                       </span>
-                    )}
+                    </div>
+                  </Link>
+
+                  {/* Card Content */}
+                  <div className="px-6 sm:px-7 space-y-3">
+                    {/* Meta strip: Read time & Date */}
+                    <div className="flex items-center justify-between text-[11px] font-mono text-slate-500">
+                      <span className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-blue-600" />
+                        <span>{blog.readTime}</span>
+                      </span>
+                      {blog.publishDate && (
+                        <span className="flex items-center gap-1 text-slate-400">
+                          <Calendar className="w-3 h-3" />
+                          <span>{blog.publishDate}</span>
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Blog Heading with Dedicated Unique Link */}
+                    <h2>
+                      <Link
+                        to={`/blogs/${blog.id}`}
+                        className="text-base sm:text-lg font-bold text-slate-950 group-hover:text-blue-600 transition-colors leading-snug line-clamp-2 block tracking-tight"
+                      >
+                        {blog.title}
+                      </Link>
+                    </h2>
+
+                    {/* Excerpt */}
+                    <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
+                      {blog.summary}
+                    </p>
                   </div>
-
-                  {/* Blog Heading with Dedicated Unique Link */}
-                  <h2>
-                    <Link
-                      to={`/blogs/${blog.id}`}
-                      className="text-base sm:text-lg font-bold text-slate-950 group-hover:text-blue-600 transition-colors leading-snug line-clamp-2 block tracking-tight"
-                    >
-                      {blog.title}
-                    </Link>
-                  </h2>
-
-                  {/* Excerpt */}
-                  <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
-                    {blog.summary}
-                  </p>
                 </div>
-              </div>
 
-              {/* Card Action Footer */}
-              <div className="px-6 sm:px-7 pb-6 pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-[10px] font-mono font-medium text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
-                  {blog.status}
-                </span>
+                {/* Card Action Footer */}
+                <div className="px-6 sm:px-7 pb-6 pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+                  <span className="text-[10px] font-mono font-medium text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
+                    {blog.status}
+                  </span>
 
-                <Link
-                  to={`/blogs/${blog.id}`}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 group-hover:text-blue-700 transition-colors"
+                  <Link
+                    to={`/blogs/${blog.id}`}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 group-hover:text-blue-700 transition-colors"
+                  >
+                    <span>Read Article</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+              </motion.article>
+            ))}
+          </motion.div>
+        </AnimatePresence>
+      )}
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-200">
+          <div className="text-xs font-mono text-slate-500">
+            Showing <span className="font-semibold text-slate-900">{(currentPage - 1) * pageSize + 1}</span> to{' '}
+            <span className="font-semibold text-slate-900">{Math.min(currentPage * pageSize, totalCount)}</span> of{' '}
+            <span className="font-semibold text-slate-900">{totalCount}</span> articles
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={currentPage <= 1 || loading}
+              onClick={() => handlePageChange(currentPage - 1)}
+              className="inline-flex items-center gap-1 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-xs"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>Previous</span>
+            </button>
+
+            <div className="flex items-center gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <button
+                  key={`page-btn-${p}`}
+                  type="button"
+                  onClick={() => handlePageChange(p)}
+                  className={`w-9 h-9 rounded-xl text-xs font-mono font-semibold transition-all ${
+                    currentPage === p
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                  }`}
                 >
-                  <span>Read Article</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </div>
-            </motion.article>
-          ))}
-        </motion.div>
+                  {p}
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              disabled={currentPage >= totalPages || loading}
+              onClick={() => handlePageChange(currentPage + 1)}
+              className="inline-flex items-center gap-1 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-xs"
+            >
+              <span>Next</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
       )}
 
       {/* Primary Source Quality Verification Banner */}
       <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
         <div className="space-y-1 text-center sm:text-left">
-          <div className="text-base font-bold text-slate-950">Primary Source Systems Engineering</div>
+          <div className="text-base font-bold text-slate-950 flex items-center gap-2 justify-center sm:justify-start">
+            <Database className="w-4 h-4 text-blue-600" />
+            <span>Scalable PostgreSQL Database Architecture</span>
+          </div>
           <div className="text-xs sm:text-sm text-slate-600">
-            All code snippets, mathematical formulations, and latency benchmarks represent verified production workloads.
+            Articles are paginated on-demand. Heavy content markdown is loaded only when viewing individual articles, keeping the initial bundle fast and lightweight even with 1,000+ blogs.
           </div>
         </div>
         <div className="flex items-center gap-2 text-xs font-mono text-emerald-800 bg-emerald-50 px-3.5 py-2 rounded-xl border border-emerald-200 shrink-0 font-bold">
           <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-          <span>Verified Production Telemetry</span>
+          <span>Zero Bundle Bloat</span>
         </div>
       </div>
     </motion.div>

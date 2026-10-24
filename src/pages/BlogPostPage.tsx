@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, 
@@ -9,22 +9,40 @@ import {
   Check, 
   BookOpen, 
   ArrowRight,
-  ShieldCheck
+  ShieldCheck,
+  AlertCircle
 } from 'lucide-react';
-import { TECHNICAL_ARTICLES, PERSONAL_INFO } from '../data/portfolioData';
+import { BlogService } from '../services/blogService';
+import type { BlogFull, BlogMetadata } from '../services/blogService';
+import { PERSONAL_INFO } from '../data/portfolioData';
 
 export const BlogPostPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const [blog, setBlog] = useState<BlogFull | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [nextBlog, setNextBlog] = useState<BlogMetadata | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const blog = TECHNICAL_ARTICLES.find((a) => a.id === id);
+  useEffect(() => {
+    if (!id) return;
+    setLoading(true);
 
-  if (!blog) {
-    return <Navigate to="/blogs" replace />;
-  }
+    BlogService.getBlogById(id).then((result) => {
+      setBlog(result);
+      setLoading(false);
+      if (result) {
+        document.title = `${result.title} | Mohit Sharma`;
+      }
+    });
 
-  const currentIndex = TECHNICAL_ARTICLES.findIndex((a) => a.id === id);
-  const nextBlog = TECHNICAL_ARTICLES[(currentIndex + 1) % TECHNICAL_ARTICLES.length];
+    // Fetch next article recommendation
+    BlogService.getPaginatedBlogs({ page: 1, pageSize: 6 }).then((res) => {
+      const remaining = res.blogs.filter((b) => b.id !== id);
+      if (remaining.length > 0) {
+        setNextBlog(remaining[0]);
+      }
+    });
+  }, [id]);
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -88,7 +106,6 @@ export const BlogPostPage: React.FC = () => {
       }
 
       if (line.startsWith('| ') && line.endsWith(' |')) {
-        // Simple markdown table rendering
         elements.push(
           <div key={`table-row-${index}`} className="overflow-x-auto my-1 font-mono text-xs">
             <span className="text-slate-700">{line}</span>
@@ -117,6 +134,41 @@ export const BlogPostPage: React.FC = () => {
 
     return elements;
   };
+
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-8 animate-pulse">
+        <div className="h-8 bg-slate-200 rounded w-1/4" />
+        <div className="aspect-[16/9] bg-slate-200 rounded-3xl w-full" />
+        <div className="space-y-4">
+          <div className="h-6 bg-slate-200 rounded w-3/4" />
+          <div className="h-4 bg-slate-100 rounded w-1/2" />
+          <div className="h-32 bg-slate-100 rounded-2xl w-full" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!blog) {
+    return (
+      <div className="max-w-xl mx-auto px-4 py-20 text-center space-y-4">
+        <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center mx-auto">
+          <AlertCircle className="w-6 h-6" />
+        </div>
+        <h1 className="text-2xl font-bold text-slate-950">Blog Post Not Found</h1>
+        <p className="text-sm text-slate-600">
+          The requested article could not be located in the database. It may have been unpublished or moved.
+        </p>
+        <Link
+          to="/blogs"
+          className="inline-flex items-center gap-2 text-xs font-semibold bg-blue-600 text-white px-4 py-2.5 rounded-xl hover:bg-blue-700 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Return to All Blogs</span>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <motion.article
