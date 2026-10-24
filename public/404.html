@@ -7,29 +7,18 @@
     <meta name="robots" content="noindex, follow" />
     <script>
       // Single Page Application routing redirect for GitHub Pages project repositories
-      // Repository path: /Portfolio/ -> pathSegmentsToKeep = 1
-      (function() {
-        var pathSegmentsToKeep = 1;
-        var l = window.location;
-        var pathname = l.pathname;
-        var segments = pathname.replace(/^\/+|\/+$/g, '').split('/');
-        
-        // Extract the sub-path after /Portfolio/
-        var routePath = segments.slice(pathSegmentsToKeep).join('/');
-        var basePath = '/' + segments.slice(0, pathSegmentsToKeep).join('/');
-        
-        var destination = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + basePath + '/';
-        if (routePath.length > 0) {
-          destination += '#/' + routePath;
-        }
-        if (l.search) {
-          destination += l.search;
-        }
-        if (l.hash) {
-          destination += l.hash;
-        }
-        l.replace(destination);
-      })();
+      // MIT License: https://github.com/rafgraph/spa-github-pages
+      var pathSegmentsToKeep = 1;
+      var l = window.location;
+      var basePath = l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/');
+      var subPath = l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~');
+      
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        basePath + '/?/' + subPath +
+        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash
+      );
     </script>
   </head>
   <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px; text-align: center; color: #1e293b; background-color: #f8fafc;">

@@ -8,6 +8,20 @@
     <!-- Google Search Console Verification -->
     <meta name="google-site-verification" content="mQJutOYlO1nWLXEEJJfaN-gqtZsKM3WfZP27Hqq4JMg" />
 
+    <!-- Single Page Application redirect script for GitHub Pages (clean /about, /projects URLs) -->
+    <script>
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
+
     <!-- Primary Meta Tags -->
     <title>Mohit Sharma | AI Engineer • Computer Vision &amp; LLM Systems</title>
     <meta name="title" content="Mohit Sharma | AI Engineer • Computer Vision &amp; LLM Systems" />
@@ -131,13 +145,13 @@
           </div>
           <nav aria-label="Main Navigation">
             <ul style="display: flex; gap: 16px; list-style: none; margin: 0; padding: 0; font-size: 0.875rem;">
-              <li><a href="#/" style="color: #2563eb; text-decoration: none;">Home</a></li>
-              <li><a href="#/about" style="color: #475569; text-decoration: none;">About</a></li>
-              <li><a href="#/projects" style="color: #475569; text-decoration: none;">Projects</a></li>
-              <li><a href="#/experience" style="color: #475569; text-decoration: none;">Experience</a></li>
-              <li><a href="#/skills" style="color: #475569; text-decoration: none;">Skills</a></li>
-              <li><a href="#/writing" style="color: #475569; text-decoration: none;">Writing</a></li>
-              <li><a href="#/contact" style="color: #475569; text-decoration: none;">Contact</a></li>
+              <li><a href="/Portfolio/" style="color: #2563eb; text-decoration: none;">Home</a></li>
+              <li><a href="/Portfolio/about" style="color: #475569; text-decoration: none;">About</a></li>
+              <li><a href="/Portfolio/projects" style="color: #475569; text-decoration: none;">Projects</a></li>
+              <li><a href="/Portfolio/experience" style="color: #475569; text-decoration: none;">Experience</a></li>
+              <li><a href="/Portfolio/skills" style="color: #475569; text-decoration: none;">Skills</a></li>
+              <li><a href="/Portfolio/writing" style="color: #475569; text-decoration: none;">Writing</a></li>
+              <li><a href="/Portfolio/contact" style="color: #475569; text-decoration: none;">Contact</a></li>
             </ul>
           </nav>
         </div>
@@ -181,12 +195,12 @@
             <article style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px;">
               <h3 style="font-size: 1.125rem; font-weight: 700; color: #0f172a; margin: 0 0 8px 0;">Hairscope — Scaled Clinical Trichology Diagnostic Inference</h3>
               <p style="font-size: 0.875rem; color: #475569; line-height: 1.5;">Automated trichoscopy analytics pipeline serving 5,000+ clinical images/day with sub-120ms P95 latency using PyTorch, FastAPI, and TensorRT.</p>
-              <a href="#/projects" style="font-size: 0.875rem; color: #2563eb; font-weight: 600; text-decoration: none;">View Case Study &rarr;</a>
+              <a href="/Portfolio/projects" style="font-size: 0.875rem; color: #2563eb; font-weight: 600; text-decoration: none;">View Case Study &rarr;</a>
             </article>
             <article style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px;">
               <h3 style="font-size: 1.125rem; font-weight: 700; color: #0f172a; margin: 0 0 8px 0;">Driver Drowsiness Edge Detection System</h3>
               <p style="font-size: 0.875rem; color: #475569; line-height: 1.5;">Real-time offline facial landmark telemetry on Raspberry Pi 4 (28+ FPS) registered under Government of India Software Copyright SW-19841/2024.</p>
-              <a href="#/projects" style="font-size: 0.875rem; color: #2563eb; font-weight: 600; text-decoration: none;">View Case Study &rarr;</a>
+              <a href="/Portfolio/projects" style="font-size: 0.875rem; color: #2563eb; font-weight: 600; text-decoration: none;">View Case Study &rarr;</a>
             </article>
           </div>
         </section>

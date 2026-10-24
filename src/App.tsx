@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { HashRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 
 import { Navbar } from './components/Navbar';
@@ -111,9 +111,9 @@ function AppContent() {
 
 export function App() {
   return (
-    <HashRouter>
+    <BrowserRouter basename="/Portfolio">
       <AppContent />
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 
