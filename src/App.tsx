@@ -27,6 +27,28 @@ function ScrollToTop() {
   return null;
 }
 
+// Dynamic Document Title updater for client-side routing
+function PageMetadataUpdater() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const titles: Record<string, string> = {
+      '/': 'Mohit Sharma | AI Engineer • Computer Vision & LLM Systems',
+      '/about': 'About Mohit Sharma | AI Engineer & Systems Specialist',
+      '/projects': 'Projects & Case Studies | Mohit Sharma • AI Engineer',
+      '/experience': 'Work Experience | Mohit Sharma • AI Developer at Sodio Technologies',
+      '/skills': 'Skills & Technology Stack | Mohit Sharma • AI Engineer',
+      '/writing': 'Technical Writing & Architecture Notes | Mohit Sharma',
+      '/contact': "Contact Mohit Sharma | AI Engineer • Computer Vision & LLM Systems",
+    };
+
+    const title = titles[pathname] || 'Mohit Sharma | AI Engineer • Computer Vision & LLM Systems';
+    document.title = title;
+  }, [pathname]);
+
+  return null;
+}
+
 function AppContent() {
   const [selectedProject, setSelectedProject] = useState<ProjectCaseStudy | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<TechnicalArticle | null>(null);
@@ -58,6 +80,7 @@ function AppContent() {
       </div>
 
       <ScrollToTop />
+      <PageMetadataUpdater />
       <Navbar />
 
       <main className="flex-grow relative z-10">

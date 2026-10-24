@@ -20,11 +20,92 @@ Positioned for technical decision-makers (startup founders, CTOs, engineering ma
 ## 🛠️ Technology Stack
 
 - **Framework**: [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
-- **Bundler & Dev Server**: [Vite 6](https://vitejs.dev/) with relative path resolution (`base: './'`) for seamless GitHub Pages hosting
-- **Styling**: [Tailwind CSS v3](https://tailwindcss.com/) with custom design tokens (light-theme aesthetic, off-white background `#fafafb`, dark charcoal typography `#0f172a`, and electric blue accents `#026bc9`)
+- **Bundler & Dev Server**: [Vite 6](https://vitejs.dev/) with project base path resolution (`base: '/Portfolio/'`) tailored for GitHub Pages
+- **Styling**: [Tailwind CSS v3](https://tailwindcss.com/) with modern light design tokens (off-white `#f8fafc`, slate `#0f172a`, and clean electric blue accents `#2563eb`)
 - **Icons**: [Lucide React](https://lucide.dev/) + custom vector SVGs
-- **Deployment Target**: 100% Free on **GitHub Pages** (via GitHub Actions) or **Vercel** / **Cloudflare Pages**
-- **Zero Paid Dependencies**: No backend server required, no external paid APIs, no databases, no paid fonts.
+- **Animations**: [Framer Motion](https://www.framer.com/motion/) with reduced motion support
+- **Deployment Target**: 100% Free on **GitHub Pages** (via automated GitHub Actions) at `https://mohitsharma1214.github.io/Portfolio/`
+
+---
+
+## 🔍 SEO, Metadata & Discoverability Architecture
+
+The repository incorporates modern SEO standards, structured data, and search crawler fallbacks:
+
+### 1. Canonical URLs & Meta Configuration
+- **Deployed Site Root**: `https://mohitsharma1214.github.io/Portfolio/`
+- **Canonical Tag**: `<link rel="canonical" href="https://mohitsharma1214.github.io/Portfolio/" />`
+- **Primary Keywords**: Naturally integrated without keyword stuffing for queries such as:
+  - *Mohit Sharma AI Engineer*
+  - *Machine Learning Engineer*
+  - *Computer Vision Engineer*
+  - *PyTorch, TensorRT, FastAPI, OpenCV, Edge AI, ChromaDB, RAG*
+- **Page Titles**: Dynamic document title updater (`PageMetadataUpdater` in `src/App.tsx`) updates `<title>` on route navigation.
+
+### 2. Social Media Preview Cards (Open Graph & Twitter Cards)
+- **Image URL**: `https://mohitsharma1214.github.io/Portfolio/og-image.png`
+- **Resolution**: 1200 × 630 pixels (standard high-contrast PNG format compatible with LinkedIn, Twitter/X, Discord, Slack, and Facebook).
+- **Twitter Card**: `summary_large_image`.
+
+### 3. Search Engine Crawlers & Sitemaps
+- **Robots.txt** (`public/robots.txt`):
+  ```
+  User-agent: *
+  Allow: /
+  Sitemap: https://mohitsharma1214.github.io/Portfolio/sitemap.xml
+  ```
+- **Sitemap XML** (`public/sitemap.xml`):
+  - Compliant with `sitemaps.org` schema.
+  - Points to the canonical URL `https://mohitsharma1214.github.io/Portfolio/`.
+  - Excludes `#` hash fragments (as per Google Search Central specifications, URL fragments are client-side only and not permitted in XML sitemaps).
+
+### 4. Structured Data (Schema.org JSON-LD)
+Structured semantic `@graph` is embedded in `index.html` featuring:
+- **`WebSite`**: Canonical URL, site name, and description.
+- **`ProfilePage`**: Linked to person entity and primary image object.
+- **`Person`**: Verified credentials:
+  - Name: Mohit Sharma
+  - Job Title: AI Engineer
+  - Organization: Sodio Technologies
+  - Alma Mater: Rajiv Gandhi Proudyogiki Vishwavidyalaya (RGPV)
+  - Credential: Government of India Registered Software Copyright SW-19841/2024
+  - SameAs: LinkedIn (`https://www.linkedin.com/in/mohitsharmas-`) and GitHub (`https://github.com/mohitsharma1214`).
+
+### 5. Crawlable Initial HTML (SSR-Equivalent Fallback)
+For search engine bots, Lynx, or assistive technologies that parse raw HTML before executing client-side JavaScript, `index.html` includes a structured semantic HTML hierarchy inside `<div id="root">` containing:
+- Single primary `<h1>` heading.
+- Verified telemetry overview and professional summary.
+- Links to major projects and navigation landmarks.
+- `<noscript>` banner explaining that JavaScript provides the interactive application.
+When React boots, `createRoot` seamlessly replaces this initial DOM tree.
+
+### 6. GitHub Pages Client-Side Routing Architecture & Fallback
+- **Router**: `HashRouter` is used to guarantee that internal navigation (`/#/projects`, `/#/experience`, `/#/about`) never produces 404 errors on GitHub Pages static file servers.
+- **Direct Link Redirector** (`public/404.html`): If an external user enters a clean path URL without a hash (e.g. `https://mohitsharma1214.github.io/Portfolio/projects`), `404.html` detects the route and immediately redirects to `https://mohitsharma1214.github.io/Portfolio/#/projects` while preventing the 404 page itself from being indexed via `<meta name="robots" content="noindex, follow" />`.
+
+---
+
+## 📈 Google Search Console & Indexing Verification Steps
+
+> [!NOTE]
+> Search engine indexing cannot be automatically completed by build tools. As the website owner, you must complete domain ownership verification and submit your sitemap manually through Google Search Console.
+
+Follow these steps once your GitHub Pages site is live:
+
+1. **Open Google Search Console**:
+   - Visit [search.google.com/search-console](https://search.google.com/search-console).
+2. **Add Property**:
+   - Choose **URL prefix** and enter `https://mohitsharma1214.github.io/Portfolio/`.
+3. **Verify Ownership**:
+   - **Method A (HTML Tag)**: Copy the verification meta tag provided by Google (e.g. `<meta name="google-site-verification" content="..." />`) and add it to the `<head>` of `index.html`, commit, and push.
+   - **Method B (GitHub Pages / Google Account)**: If using Google Analytics or domain DNS, select that option.
+4. **Submit Sitemap**:
+   - In the left sidebar of Google Search Console, click **Sitemaps**.
+   - Under **Add a new sitemap**, type `sitemap.xml` (or full URL `https://mohitsharma1214.github.io/Portfolio/sitemap.xml`) and click **Submit**.
+5. **Request Indexing**:
+   - Use the **URL Inspection** bar at the top and paste `https://mohitsharma1214.github.io/Portfolio/`.
+   - Click **Test Live URL**.
+   - Once the live test passes, click **Request Indexing**.
 
 ---
 
@@ -36,35 +117,38 @@ Positioned for technical decision-makers (startup founders, CTOs, engineering ma
 │       └── deploy.yml            # Automated GitHub Actions workflow for free GitHub Pages deployment
 ├── public/
 │   ├── favicon.svg               # Custom monogram "MS" SVG favicon
-│   ├── robots.txt                # Search engine crawlers index config
-│   ├── sitemap.xml               # Standard XML sitemap
-│   └── 404.html                  # Single Page App routing fallback for GitHub Pages
+│   ├── og-image.png              # 1200x630 Open Graph & Twitter preview card
+│   ├── robots.txt                # Search engine crawlers index directive pointing to /Portfolio/sitemap.xml
+│   ├── sitemap.xml               # Standard sitemap.xml pointing to canonical /Portfolio/
+│   └── 404.html                  # Single Page App routing fallback preserving subpaths for /Portfolio/
 ├── src/
 │   ├── assets/                   # Static assets
 │   ├── components/
-│   │   ├── Navbar.tsx            # Sticky header with responsive drawer & "Explore My Work" CTA
-│   │   ├── Hero.tsx              # High-impact value proposition & verified metrics strip
-│   │   ├── AboutSection.tsx      # Verified biography, core engineering pillars & education
-│   │   ├── ProjectsSection.tsx   # Filterable technical project cards with verified results
-│   │   ├── CaseStudyModal.tsx    # 10-part deep-dive case study modal with hash deep-linking
-│   │   ├── ArchitectureDiagram.tsx # Pixel-perfect SVG architecture diagrams for edge/model pipelines
-│   │   ├── ExperienceSection.tsx # Chronological employment timeline (Sodio, Hairscope, Centilytics)
-│   │   ├── SkillsSection.tsx     # Categorized skills matrix (zero meaningless percentage bars)
-│   │   ├── TechnicalWritingSection.tsx # Engineering breakdowns & system architecture notes
+│   │   ├── Navbar.tsx            # Sticky header with responsive drawer & navigation
+│   │   ├── Footer.tsx            # Minimalist technical footer with aria-labels & dynamic year
+│   │   ├── CaseStudyModal.tsx    # 10-part deep-dive case study modal
 │   │   ├── ArticleModal.tsx      # In-depth technical reader modal with code snippets
-│   │   ├── ContactSection.tsx    # Direct mailto and 1-click clipboard copy with feedback
-│   │   ├── SocialIcons.tsx       # Pixel-perfect GitHub & LinkedIn SVG icons
-│   │   └── Footer.tsx            # Minimalist technical footer with dynamic year
+│   │   ├── ArchitectureDiagram.tsx # SVG architecture diagrams for edge/model pipelines
+│   │   ├── InteractivePipelineExplorer.tsx # Interactive visual model pipeline
+│   │   └── SocialIcons.tsx       # Accessible GitHub & LinkedIn SVG icons
+│   ├── pages/
+│   │   ├── HomePage.tsx          # Hero, telemetry ticker, featured projects, and CTA
+│   │   ├── AboutPage.tsx         # Verified biography, credentials & engineering philosophy
+│   │   ├── ProjectsPage.tsx      # Filterable technical project case studies
+│   │   ├── ExperiencePage.tsx    # Chronological employment timeline (Sodio, Hairscope, Centilytics)
+│   │   ├── SkillsPage.tsx        # Categorized skills matrix (zero progress-bar gimmicks)
+│   │   ├── WritingPage.tsx       # Engineering breakdowns & system architecture notes
+│   │   └── ContactPage.tsx       # Direct mailto and 1-click clipboard copy
 │   ├── data/
-│   │   └── portfolioData.ts      # Primary source of truth for resume data, projects, & writing
-│   ├── App.tsx                   # Main application orchestrator & hash router
-│   ├── index.css                 # Base Tailwind styles & technical dot grid
+│   │   └── portfolioData.ts      # Primary source of truth for resume data, projects, & articles
+│   ├── App.tsx                   # HashRouter orchestrator & PageMetadataUpdater
+│   ├── index.css                 # Base Tailwind styles & dot grid pattern
 │   └── main.tsx                  # React entry point
 ├── Mohit-Sharma-Resume-S-Links.pdf # Primary resume document source
-├── index.html                    # SEO meta tags, OpenGraph, JSON-LD schema, and font preconnects
+├── index.html                    # SEO meta tags, OpenGraph, JSON-LD schema, fallback HTML
 ├── tailwind.config.js            # Custom design tokens & typography
 ├── tsconfig.json                 # Strict TypeScript configuration
-└── vite.config.ts                # Build configuration with base: './'
+└── vite.config.ts                # Build configuration with base: '/Portfolio/'
 ```
 
 ---
@@ -84,7 +168,7 @@ npm install --legacy-peer-deps
 ```bash
 npm run dev
 ```
-Open [http://localhost:5173/](http://localhost:5173/) in your browser.
+Open [http://localhost:5173/Portfolio/](http://localhost:5173/Portfolio/) in your browser.
 
 ### 4. Build Production Bundle
 ```bash
@@ -99,40 +183,16 @@ npm run preview
 
 ---
 
-## 🚀 Free Deployment Guide
+## 🚀 Deployment to GitHub Pages
 
-### Option 1: Automated GitHub Pages Deployment (Recommended & 100% Free)
+This repository is preconfigured to deploy automatically via GitHub Actions:
 
-This repository includes a preconfigured GitHub Actions workflow in [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) that automatically builds and deploys your website every time you push to the `main` branch.
-
-1. **Create a GitHub Repository**:
-   - Go to [GitHub](https://github.com/new) and create a new repository (e.g. `Portfolio` or `mohitsharma1214.github.io`).
-
-2. **Push your code to GitHub**:
-   ```bash
-   git init
-   git add .
-   git commit -m "feat: complete AI Engineer portfolio website"
-   git branch -M main
-   git remote add origin https://github.com/mohitsharma1214/Portfolio.git
-   git push -u origin main
+1. Push your changes to the `main` branch of `https://github.com/Mohitsharma1214/Portfolio`.
+2. In your GitHub repository, ensure **Settings** → **Pages** → **Source** is set to **GitHub Actions**.
+3. The workflow in `.github/workflows/deploy.yml` builds the site and publishes it to:
    ```
-
-3. **Enable GitHub Pages via Actions**:
-   - In your GitHub repository, go to **Settings** → **Pages** (under the "Code and automation" section).
-   - Under **Build and deployment** → **Source**, select **GitHub Actions**.
-   - That's it! GitHub will automatically trigger the workflow and publish your site at:
-     ```
-     https://mohitsharma1214.github.io/Portfolio/
-     ```
-     *(If the repo is named `mohitsharma1214.github.io`, it will be live directly at `https://mohitsharma1214.github.io/`).*
-
-### Option 2: Deploy to Vercel (Free)
-
-1. Install Vercel CLI: `npm i -g vercel`
-2. Run `vercel` in the project root.
-3. Select defaults (Vite framework preset).
-4. Deploys in ~20 seconds to a free `*.vercel.app` domain.
+   https://mohitsharma1214.github.io/Portfolio/
+   ```
 
 ---
 
@@ -145,12 +205,3 @@ All data displayed across the portfolio is strictly drawn from:
    - `Hair-Strand-Detection`
    - `Ultra-Doc-Intelligence`
 3. Verified Live Deployment: `https://ultra-doc-intelligence-orpin.vercel.app/`
-
----
-
-## 📝 Information You Can Supply to Further Enhance the Portfolio
-
-If you would like to expand the portfolio further in the future:
-1. **Public Demo for Driver Drowsiness**: Upload a short 10-second GIF or video recording of the Raspberry Pi test loop in action.
-2. **Client Case Studies**: If any proprietary work at Sodio Technologies or Hairscope becomes public or open-source, add direct repository links in `src/data/portfolioData.ts`.
-3. **Blog / Substack / Medium Links**: If you publish the technical breakdowns externally, you can add direct canonical publication URLs to `TECHNICAL_ARTICLES`.
