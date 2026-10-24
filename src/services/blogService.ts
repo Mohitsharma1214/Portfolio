@@ -361,4 +361,54 @@ export const BlogService = {
       };
     }
   },
+
+  /**
+   * Admin: Uploads an image to Supabase Storage bucket 'blog-images'
+   * and returns the public CDN URL.
+   */
+  async uploadImage(
+    file: File,
+    folder: string = 'covers'
+  ): Promise<{ success: boolean; url?: string; error?: string }> {
+    if (!isSupabaseConfigured || !supabase) {
+      return { success: false, error: 'Supabase client is not configured.' };
+    }
+
+    try {
+      // Clean and sanitize file name
+      const ext = file.name.split('.').pop()?.toLowerCase() || 'png';
+      const cleanName = file.name
+        .substring(0, file.name.lastIndexOf('.'))
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]/g, '-');
+      const timestamp = Date.now();
+      const filePath = `${folder}/${timestamp}-${cleanName}.${ext}`;
+
+      const { data, error } = await supabase.storage
+        .from('blog-images')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: true,
+        });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from('blog-images')
+        .getPublicUrl(data.path);
+
+      return {
+        success: true,
+        url: publicUrlData.publicUrl,
+      };
+    } catch (err: unknown) {
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown storage error',
+      };
+    }
+  },
 };
+

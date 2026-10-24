@@ -20,7 +20,10 @@ import {
   LogOut,
   Save,
   Image as ImageIcon,
-  Fingerprint
+  Fingerprint,
+  Upload,
+  UploadCloud,
+  Link as LinkIcon
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { BlogService } from '../services/blogService';
@@ -72,6 +75,13 @@ export const AdminPage: React.FC = () => {
   const [summary, setSummary] = useState('');
   const [contentMarkdown, setContentMarkdown] = useState('');
   const [published, setPublished] = useState(true);
+
+  // Image Upload State
+  const [coverInputMode, setCoverInputMode] = useState<'upload' | 'url'>('upload');
+  const [coverUploading, setCoverUploading] = useState(false);
+  const [coverUploadError, setCoverUploadError] = useState<string | null>(null);
+  const [coverUploadSuccess, setCoverUploadSuccess] = useState<string | null>(null);
+  const [contentImageUploading, setContentImageUploading] = useState(false);
 
   // Check brute force lock
   const isLocked = lockedUntil !== null && Date.now() < lockedUntil;
@@ -190,6 +200,83 @@ export const AdminPage: React.FC = () => {
     setPublished(true);
     setEditorError(null);
     setSaveSuccess(false);
+    setCoverUploadError(null);
+    setCoverUploadSuccess(null);
+  };
+
+  // Upload Cover Image handler
+  const handleCoverFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setCoverUploadError('Please select a valid image file (PNG, JPG, WEBP, GIF, SVG).');
+      return;
+    }
+
+    if (file.size > 20 * 1024 * 1024) {
+      setCoverUploadError('Image size exceeds 20MB limit.');
+      return;
+    }
+
+    setCoverUploading(true);
+    setCoverUploadError(null);
+    setCoverUploadSuccess(null);
+
+    try {
+      const res = await BlogService.uploadImage(file, 'covers');
+      if (res.success && res.url) {
+        setCoverImage(res.url);
+        setCoverUploadSuccess('Image successfully stored in Supabase Storage CDN and set as cover!');
+      } else {
+        const errMsg = res.error || 'Failed to upload image.';
+        if (errMsg.toLowerCase().includes('bucket not found') || errMsg.toLowerCase().includes('not found')) {
+          setCoverUploadError("Storage bucket 'blog-images' not found in Supabase. Please run supabase/storage_setup.sql in your Supabase SQL Editor to initialize it.");
+        } else {
+          setCoverUploadError(errMsg);
+        }
+      }
+    } catch (err: unknown) {
+      setCoverUploadError(err instanceof Error ? err.message : 'Upload failed');
+    } finally {
+      setCoverUploading(false);
+      e.target.value = '';
+    }
+  };
+
+  // Upload Inline Markdown Content Image handler
+  const handleContentImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setEditorError('Please select a valid image file.');
+      return;
+    }
+
+    setContentImageUploading(true);
+    setEditorError(null);
+
+    try {
+      const res = await BlogService.uploadImage(file, 'content');
+      if (res.success && res.url) {
+        const cleanAlt = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+        const markdownSnippet = `\n\n![${cleanAlt}](${res.url})\n\n`;
+        setContentMarkdown((prev) => prev + markdownSnippet);
+      } else {
+        const errMsg = res.error || 'Failed to upload image.';
+        if (errMsg.toLowerCase().includes('bucket not found') || errMsg.toLowerCase().includes('not found')) {
+          setEditorError("Storage bucket 'blog-images' not found in Supabase. Please run supabase/storage_setup.sql in your Supabase SQL Editor.");
+        } else {
+          setEditorError(errMsg);
+        }
+      }
+    } catch (err: unknown) {
+      setEditorError(err instanceof Error ? err.message : 'Upload failed');
+    } finally {
+      setContentImageUploading(false);
+      e.target.value = '';
+    }
   };
 
   const handleStartCreate = () => {
@@ -987,34 +1074,141 @@ export const AdminPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Cover Image URL & Preview */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-              <div className="md:col-span-2 space-y-1.5">
+            {/* Cover Image & Upload to Supabase Storage */}
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
-                  <ImageIcon className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Cover Image URL / Path</span>
+                  <ImageIcon className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Cover Image</span>
+                  <span className="text-[10px] font-mono text-slate-400 font-normal">
+                    (Stored in Supabase Object Storage / CDN)
+                  </span>
                 </label>
-                <input
-                  type="text"
-                  value={coverImage}
-                  onChange={(e) => setCoverImage(e.target.value)}
-                  placeholder="/Portfolio/assets/blogs/edge-fatigue-tracking-sub-150ms.png"
-                  className="w-full px-3.5 py-2 text-xs font-mono bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-800"
-                />
-                <p className="text-[11px] text-slate-400">
-                  Tip: Use any local path (e.g. `/Portfolio/assets/blogs/...`) or external HTTPS image URL.
-                </p>
+
+                {/* Mode Selector */}
+                <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg text-xs">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCoverInputMode('upload');
+                      setCoverUploadError(null);
+                    }}
+                    className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-semibold ${
+                      coverInputMode === 'upload'
+                        ? 'bg-white text-slate-900 shadow-2xs'
+                        : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                  >
+                    <Upload className="w-3 h-3 text-blue-600" />
+                    <span>Upload Image</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCoverInputMode('url');
+                      setCoverUploadError(null);
+                    }}
+                    className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-semibold ${
+                      coverInputMode === 'url'
+                        ? 'bg-white text-slate-900 shadow-2xs'
+                        : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                  >
+                    <LinkIcon className="w-3 h-3 text-slate-500" />
+                    <span>Direct URL / Path</span>
+                  </button>
+                </div>
               </div>
 
-              <div className="w-full aspect-video rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
-                <img
-                  src={coverImage || '/Portfolio/assets/blogs/edge-fatigue-tracking-sub-150ms.png'}
-                  alt="Preview"
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/Portfolio/assets/blogs/edge-fatigue-tracking-sub-150ms.png';
-                  }}
-                />
+              {coverUploadError && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <div className="space-y-1">
+                    <p className="font-semibold">{coverUploadError}</p>
+                    {coverUploadError.includes('blog-images') && (
+                      <p className="text-[11px] text-red-600">
+                        Run the SQL script <code className="bg-red-100 px-1 rounded font-mono">supabase/storage_setup.sql</code> in your Supabase SQL editor to create the bucket with 1 click.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {coverUploadSuccess && (
+                <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>{coverUploadSuccess}</span>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+                <div className="md:col-span-2 flex flex-col justify-center">
+                  {coverInputMode === 'upload' ? (
+                    <label className="border-2 border-dashed border-slate-200 hover:border-blue-400 bg-slate-50/70 hover:bg-blue-50/20 rounded-2xl p-5 flex flex-col items-center justify-center cursor-pointer transition-all text-center group min-h-[140px]">
+                      <input
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp,image/svg+xml,image/gif"
+                        onChange={handleCoverFileUpload}
+                        className="hidden"
+                        disabled={coverUploading}
+                      />
+                      {coverUploading ? (
+                        <div className="flex flex-col items-center gap-2 py-2">
+                          <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                          <span className="text-xs font-semibold text-slate-700">Uploading to Supabase Storage CDN...</span>
+                          <span className="text-[11px] font-mono text-slate-400">Saving to bucket: blog-images/covers/</span>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <UploadCloud className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <span className="text-xs font-bold text-slate-800 group-hover:text-blue-600 transition-colors">
+                              Click to browse or drag &amp; drop image
+                            </span>
+                            <p className="text-[11px] text-slate-400 mt-0.5">
+                              PNG, JPG, WEBP, GIF, SVG up to 20MB &bull; Stored in Supabase Storage CDN
+                            </p>
+                          </div>
+                          {coverImage && (
+                            <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full mt-1 line-clamp-1 max-w-xs">
+                              Active: {coverImage.split('/').pop()}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </label>
+                  ) : (
+                    <div className="space-y-2 py-2">
+                      <input
+                        type="text"
+                        value={coverImage}
+                        onChange={(e) => setCoverImage(e.target.value)}
+                        placeholder="https://... or /Portfolio/assets/blogs/..."
+                        className="w-full px-3.5 py-2.5 text-xs font-mono bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-800"
+                      />
+                      <p className="text-[11px] text-slate-400">
+                        Enter an external CDN image URL, or reference existing static assets in <code className="font-mono bg-slate-100 px-1 py-0.5 rounded">/Portfolio/assets/blogs/</code>.
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Preview Box */}
+                <div className="w-full aspect-video rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 relative group flex items-center justify-center">
+                  <img
+                    src={coverImage || '/Portfolio/assets/blogs/edge-fatigue-tracking-sub-150ms.png'}
+                    alt="Cover preview"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/Portfolio/assets/blogs/edge-fatigue-tracking-sub-150ms.png';
+                    }}
+                  />
+                  <div className="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-mono text-white">
+                    Preview
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -1102,6 +1296,24 @@ export const AdminPage: React.FC = () => {
                 >
                   Σ Math
                 </button>
+                <label
+                  className="px-2 py-1 hover:bg-white rounded text-blue-600 font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                  title="Upload image to Supabase Storage and insert markdown tag"
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleContentImageUpload}
+                    className="hidden"
+                    disabled={contentImageUploading}
+                  />
+                  {contentImageUploading ? (
+                    <div className="w-3 h-3 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <UploadCloud className="w-3 h-3 text-blue-600" />
+                  )}
+                  <span>+ Image</span>
+                </label>
               </div>
             </div>
 
