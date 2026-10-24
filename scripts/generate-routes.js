@@ -49,6 +49,12 @@ const routes = [
     description: 'Direct contact information for AI Engineer Mohit Sharma. Available for engineering discussions, full-time AI roles, and consulting.',
     canonical: 'https://mohitsharma1214.github.io/Portfolio/contact/',
   },
+  {
+    path: 'admin',
+    title: 'Blog Studio Admin | Mohit Sharma',
+    description: 'Administrative portal for creating, editing, and publishing technical blog posts.',
+    canonical: 'https://mohitsharma1214.github.io/Portfolio/admin/',
+  },
   // Individual Blog Post Routes
   {
     path: 'blogs/edge-fatigue-tracking-sub-150ms',

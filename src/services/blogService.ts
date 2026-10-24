@@ -223,4 +223,142 @@ export const BlogService = {
     const uniqueCats = Array.from(new Set(TECHNICAL_ARTICLES.map((a) => a.category)));
     return ['All', ...uniqueCats];
   },
+
+  /**
+   * Admin: Fetches all blogs (including unpublished drafts)
+   */
+  async getAllBlogsForAdmin(): Promise<BlogMetadata[]> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('blogs')
+          .select('id, title, subtitle, category, read_time, status, cover_image, publish_date, summary, created_at, published')
+          .order('created_at', { ascending: false });
+
+        if (!error && data) {
+          return data.map((r) => ({
+            ...mapDbRowToMetadata(r),
+            published: r.published ?? true,
+          }));
+        }
+      } catch (err) {
+        console.warn('Error fetching admin blogs:', err);
+      }
+    }
+
+    return TECHNICAL_ARTICLES.map((a) => ({
+      id: a.id,
+      title: a.title,
+      subtitle: a.subtitle,
+      category: a.category,
+      readTime: a.readTime,
+      status: a.status,
+      coverImage: a.coverImage || `/Portfolio/assets/blogs/${a.id}.png`,
+      publishDate: a.publishDate || 'Oct 2026',
+      summary: a.summary,
+    }));
+  },
+
+  /**
+   * Admin: Inserts a new blog post into Supabase
+   */
+  async createBlog(
+    blog: BlogFull & { published?: boolean }
+  ): Promise<{ success: boolean; error?: string }> {
+    if (!isSupabaseConfigured || !supabase) {
+      return { success: false, error: 'Supabase client is not configured.' };
+    }
+
+    try {
+      const dbRow = {
+        id: blog.id,
+        title: blog.title,
+        subtitle: blog.subtitle || '',
+        category: blog.category || 'Engineering',
+        read_time: blog.readTime || '5 min read',
+        status: blog.status || 'Published Breakdown',
+        cover_image: blog.coverImage || null,
+        publish_date: blog.publishDate || 'Oct 2026',
+        summary: blog.summary || '',
+        content_markdown: blog.contentMarkdown || '',
+        published: blog.published ?? true,
+      };
+
+      const { error } = await supabase.from('blogs').insert(dbRow);
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      return { success: true };
+    } catch (err: unknown) {
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown database error',
+      };
+    }
+  },
+
+  /**
+   * Admin: Updates an existing blog post in Supabase
+   */
+  async updateBlog(
+    id: string,
+    updates: Partial<BlogFull> & { published?: boolean }
+  ): Promise<{ success: boolean; error?: string }> {
+    if (!isSupabaseConfigured || !supabase) {
+      return { success: false, error: 'Supabase client is not configured.' };
+    }
+
+    try {
+      const dbRow: Record<string, unknown> = {};
+      if (updates.title !== undefined) dbRow.title = updates.title;
+      if (updates.subtitle !== undefined) dbRow.subtitle = updates.subtitle;
+      if (updates.category !== undefined) dbRow.category = updates.category;
+      if (updates.readTime !== undefined) dbRow.read_time = updates.readTime;
+      if (updates.status !== undefined) dbRow.status = updates.status;
+      if (updates.coverImage !== undefined) dbRow.cover_image = updates.coverImage;
+      if (updates.publishDate !== undefined) dbRow.publish_date = updates.publishDate;
+      if (updates.summary !== undefined) dbRow.summary = updates.summary;
+      if (updates.contentMarkdown !== undefined) dbRow.content_markdown = updates.contentMarkdown;
+      if (updates.published !== undefined) dbRow.published = updates.published;
+
+      const { error } = await supabase.from('blogs').update(dbRow).eq('id', id);
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      return { success: true };
+    } catch (err: unknown) {
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown database error',
+      };
+    }
+  },
+
+  /**
+   * Admin: Deletes a blog post from Supabase
+   */
+  async deleteBlog(id: string): Promise<{ success: boolean; error?: string }> {
+    if (!isSupabaseConfigured || !supabase) {
+      return { success: false, error: 'Supabase client is not configured.' };
+    }
+
+    try {
+      const { error } = await supabase.from('blogs').delete().eq('id', id);
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      return { success: true };
+    } catch (err: unknown) {
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown database error',
+      };
+    }
+  },
 };

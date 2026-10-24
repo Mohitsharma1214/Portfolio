@@ -12,6 +12,8 @@ import { SkillsPage } from './pages/SkillsPage';
 import { BlogsPage } from './pages/BlogsPage';
 import { BlogPostPage } from './pages/BlogPostPage';
 import { ContactPage } from './pages/ContactPage';
+import { AdminPage } from './pages/AdminPage';
+import { AuthProvider } from './context/AuthContext';
 
 import { CaseStudyModal } from './components/CaseStudyModal';
 import { ArticleModal } from './components/ArticleModal';
@@ -43,6 +45,7 @@ function PageMetadataUpdater() {
       '/blogs': 'Technical Blogs & Case Studies | Mohit Sharma • AI Engineer',
       '/writing': 'Technical Blogs & Case Studies | Mohit Sharma • AI Engineer',
       '/contact': "Contact Mohit Sharma | AI Engineer • Computer Vision & LLM Systems",
+      '/admin': 'Blog Studio Admin | Mohit Sharma • AI Engineer',
     };
 
     let title = titles[pathname];
@@ -108,6 +111,7 @@ function AppContent() {
             <Route path="/writing" element={<Navigate to="/blogs" replace />} />
             <Route path="/writing/:id" element={<WritingIdRedirect />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/admin" element={<AdminPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AnimatePresence>
@@ -127,7 +131,9 @@ function AppContent() {
 export function App() {
   return (
     <BrowserRouter basename="/Portfolio">
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </BrowserRouter>
   );
 }

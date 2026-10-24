@@ -1,0 +1,1113 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import {
+  Lock,
+  Mail,
+  KeyRound,
+  Eye,
+  EyeOff,
+  Plus,
+  Edit3,
+  Trash2,
+  ExternalLink,
+  Check,
+  AlertCircle,
+  ArrowLeft,
+  FileText,
+  Search,
+  LogOut,
+  Save,
+  Image as ImageIcon
+} from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { BlogService } from '../services/blogService';
+import type { BlogFull, BlogMetadata } from '../services/blogService';
+
+export const AdminPage: React.FC = () => {
+  const { user, loading: authLoading, signIn, signUp, signOut } = useAuth();
+
+  // Auth Form State
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [authSubmitting, setAuthSubmitting] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [authMessage, setAuthMessage] = useState<string | null>(null);
+
+  // Admin Dashboard State
+  const [articles, setArticles] = useState<BlogMetadata[]>([]);
+  const [loadingArticles, setLoadingArticles] = useState(false);
+  const [activeTab, setActiveTab] = useState<'list' | 'editor'>('list');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+
+  // Editor State
+  const [editorMode, setEditorMode] = useState<'create' | 'edit'>('create');
+  const [editorPreviewMode, setEditorPreviewMode] = useState<'write' | 'split' | 'preview'>('split');
+  const [saveLoading, setSaveLoading] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [editorError, setEditorError] = useState<string | null>(null);
+
+  // Form Fields
+  const [title, setTitle] = useState('');
+  const [slug, setSlug] = useState('');
+  const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false);
+  const [subtitle, setSubtitle] = useState('');
+  const [category, setCategory] = useState('Computer Vision & Edge AI');
+  const [customCategory, setCustomCategory] = useState('');
+  const [readTime, setReadTime] = useState('5 min read');
+  const [status, setStatus] = useState('Published Technical Breakdown');
+  const [coverImage, setCoverImage] = useState('/Portfolio/assets/blogs/edge-fatigue-tracking-sub-150ms.png');
+  const [publishDate, setPublishDate] = useState('Oct 2026');
+  const [summary, setSummary] = useState('');
+  const [contentMarkdown, setContentMarkdown] = useState('');
+  const [published, setPublished] = useState(true);
+
+  // Load articles when user is authenticated
+  const loadAdminArticles = async () => {
+    setLoadingArticles(true);
+    try {
+      const data = await BlogService.getAllBlogsForAdmin();
+      setArticles(data);
+    } catch (err) {
+      console.error('Failed to load admin articles:', err);
+    } finally {
+      setLoadingArticles(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      loadAdminArticles();
+    }
+  }, [user]);
+
+  // Auto-generate slug from title
+  useEffect(() => {
+    if (editorMode === 'create' && !isSlugManuallyEdited && title.trim()) {
+      const auto = title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      setSlug(auto);
+    }
+  }, [title, editorMode, isSlugManuallyEdited]);
+
+  // Auto-calculate read time from content markdown
+  useEffect(() => {
+    if (contentMarkdown.trim()) {
+      const wordCount = contentMarkdown.trim().split(/\s+/).length;
+      const minutes = Math.max(1, Math.ceil(wordCount / 200));
+      setReadTime(`${minutes} min read`);
+    }
+  }, [contentMarkdown]);
+
+  // Auth Handler
+  const handleAuthSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError(null);
+    setAuthMessage(null);
+    setAuthSubmitting(true);
+
+    try {
+      if (authMode === 'signin') {
+        const res = await signIn(email, password);
+        if (res.error) {
+          setAuthError(res.error);
+        }
+      } else {
+        const res = await signUp(email, password);
+        if (res.error) {
+          setAuthError(res.error);
+        } else if (res.message) {
+          setAuthMessage(res.message);
+        }
+      }
+    } finally {
+      setAuthSubmitting(false);
+    }
+  };
+
+  // Reset Editor Form
+  const resetEditor = () => {
+    setEditorMode('create');
+    setTitle('');
+    setSlug('');
+    setIsSlugManuallyEdited(false);
+    setSubtitle('');
+    setCategory('Computer Vision & Edge AI');
+    setCustomCategory('');
+    setReadTime('5 min read');
+    setStatus('Published Technical Breakdown');
+    setCoverImage('/Portfolio/assets/blogs/edge-fatigue-tracking-sub-150ms.png');
+    setPublishDate('Oct 2026');
+    setSummary('');
+    setContentMarkdown('');
+    setPublished(true);
+    setEditorError(null);
+    setSaveSuccess(false);
+  };
+
+  const handleStartCreate = () => {
+    resetEditor();
+    setActiveTab('editor');
+  };
+
+  const handleStartEdit = async (blogMeta: BlogMetadata) => {
+    resetEditor();
+    setEditorMode('edit');
+    setTitle(blogMeta.title);
+    setSlug(blogMeta.id);
+    setIsSlugManuallyEdited(true);
+    setSubtitle(blogMeta.subtitle);
+    setCategory(blogMeta.category);
+    setReadTime(blogMeta.readTime);
+    setStatus(blogMeta.status);
+    setCoverImage(blogMeta.coverImage);
+    setPublishDate(blogMeta.publishDate);
+    setSummary(blogMeta.summary);
+    setPublished(true);
+
+    setActiveTab('editor');
+
+    // Fetch full markdown for this article
+    const full = await BlogService.getBlogById(blogMeta.id);
+    if (full) {
+      setContentMarkdown(full.contentMarkdown);
+    }
+  };
+
+  const handleDeleteArticle = async (id: string, articleTitle: string) => {
+    if (!window.confirm(`Are you sure you want to permanently delete "${articleTitle}"?`)) {
+      return;
+    }
+
+    const res = await BlogService.deleteBlog(id);
+    if (res.success) {
+      setArticles((prev) => prev.filter((a) => a.id !== id));
+    } else {
+      alert(`Delete failed: ${res.error}`);
+    }
+  };
+
+  // Save Blog (Insert or Update)
+  const handleSaveBlog = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setEditorError(null);
+    setSaveSuccess(false);
+
+    if (!title.trim()) {
+      setEditorError('Title is required');
+      return;
+    }
+    if (!slug.trim()) {
+      setEditorError('Slug / ID is required');
+      return;
+    }
+
+    const finalCategory = category === '__custom__' ? customCategory.trim() : category;
+    if (!finalCategory) {
+      setEditorError('Please provide a category');
+      return;
+    }
+
+    setSaveLoading(true);
+
+    const blogPayload: BlogFull & { published: boolean } = {
+      id: slug.trim(),
+      title: title.trim(),
+      subtitle: subtitle.trim(),
+      category: finalCategory,
+      readTime: readTime.trim(),
+      status: status.trim(),
+      coverImage: coverImage.trim(),
+      publishDate: publishDate.trim(),
+      summary: summary.trim(),
+      contentMarkdown: contentMarkdown.trim(),
+      published,
+    };
+
+    try {
+      if (editorMode === 'create') {
+        const res = await BlogService.createBlog(blogPayload);
+        if (!res.success) {
+          setEditorError(res.error || 'Failed to create blog');
+          return;
+        }
+      } else {
+        const res = await BlogService.updateBlog(slug, blogPayload);
+        if (!res.success) {
+          setEditorError(res.error || 'Failed to update blog');
+          return;
+        }
+      }
+
+      setSaveSuccess(true);
+      await loadAdminArticles();
+      setTimeout(() => {
+        setSaveSuccess(false);
+      }, 3000);
+    } finally {
+      setSaveLoading(false);
+    }
+  };
+
+  // Insert markdown tag helper
+  const insertMarkdown = (prefix: string, suffix: string = '') => {
+    const textarea = document.getElementById('blogContentTextarea') as HTMLTextAreaElement;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = contentMarkdown.substring(start, end);
+    const replacement = `${prefix}${selectedText || 'text'}${suffix}`;
+
+    const newContent =
+      contentMarkdown.substring(0, start) + replacement + contentMarkdown.substring(end);
+    setContentMarkdown(newContent);
+
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + prefix.length, start + prefix.length + (selectedText.length || 4));
+    }, 10);
+  };
+
+  // Filtered Articles for Admin List
+  const filteredArticles = useMemo(() => {
+    return articles.filter((a) => {
+      const matchesCat = selectedCategory === 'All' || a.category === selectedCategory;
+      const q = searchQuery.toLowerCase();
+      const matchesSearch =
+        a.title.toLowerCase().includes(q) ||
+        a.id.toLowerCase().includes(q) ||
+        a.category.toLowerCase().includes(q);
+      return matchesCat && matchesSearch;
+    });
+  }, [articles, selectedCategory, searchQuery]);
+
+  const existingCategories = useMemo(() => {
+    const set = new Set(articles.map((a) => a.category).filter(Boolean));
+    return Array.from(set);
+  }, [articles]);
+
+  // Helper to format preview markdown
+  const renderPreviewMarkdown = (markdown: string) => {
+    const lines = markdown.split('\n');
+    const elements: React.ReactNode[] = [];
+    let inCodeBlock = false;
+    let codeLanguage = '';
+    let codeLines: string[] = [];
+
+    lines.forEach((line, index) => {
+      if (line.startsWith('```')) {
+        if (inCodeBlock) {
+          elements.push(
+            <div key={`code-${index}`} className="my-4 rounded-xl overflow-hidden border border-slate-800 bg-[#0b1329] font-mono text-xs">
+              <div className="flex items-center justify-between px-3 py-1.5 bg-slate-900 border-b border-slate-800 text-[10px] text-slate-400">
+                <span className="font-semibold text-blue-400">{codeLanguage || 'code'}</span>
+                <span>Snippet</span>
+              </div>
+              <pre className="p-3 overflow-x-auto text-slate-200">
+                <code>{codeLines.join('\n')}</code>
+              </pre>
+            </div>
+          );
+          codeLines = [];
+          inCodeBlock = false;
+        } else {
+          inCodeBlock = true;
+          codeLanguage = line.replace('```', '').trim();
+        }
+        return;
+      }
+
+      if (inCodeBlock) {
+        codeLines.push(line);
+        return;
+      }
+
+      if (line.startsWith('### ')) {
+        elements.push(
+          <h2 key={`h3-${index}`} className="text-lg font-bold text-slate-950 mt-6 mb-2 tracking-tight">
+            {line.replace('### ', '')}
+          </h2>
+        );
+        return;
+      }
+
+      if (line.startsWith('#### ')) {
+        elements.push(
+          <h3 key={`h4-${index}`} className="text-base font-bold text-slate-900 mt-4 mb-2 tracking-tight">
+            {line.replace('#### ', '')}
+          </h3>
+        );
+        return;
+      }
+
+      if (line.startsWith('- ')) {
+        elements.push(
+          <li key={`li-${index}`} className="ml-5 list-disc text-xs sm:text-sm text-slate-700 my-1 leading-relaxed">
+            {line.replace('- ', '')}
+          </li>
+        );
+        return;
+      }
+
+      if (line.trim().length > 0) {
+        elements.push(
+          <p key={`p-${index}`} className="text-xs sm:text-sm text-slate-700 my-2 leading-relaxed">
+            {line}
+          </p>
+        );
+      }
+    });
+
+    return elements;
+  };
+
+  // 1. Loading State
+  if (authLoading) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <span className="text-xs font-mono text-slate-500">Checking admin session...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. Authentication Screen (If not logged in)
+  if (!user) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-16 sm:py-24">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-3xl border border-slate-200 p-8 shadow-xs space-y-6"
+        >
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center mx-auto shadow-xs">
+              <Lock className="w-5 h-5" />
+            </div>
+            <h1 className="text-2xl font-extrabold text-slate-950 tracking-tight">
+              Blog Studio Admin
+            </h1>
+            <p className="text-xs text-slate-500">
+              Sign in with your Supabase account to write, edit, and publish blogs live to your portfolio.
+            </p>
+          </div>
+
+          {/* Mode Switch Tabs */}
+          <div className="flex bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+            <button
+              type="button"
+              onClick={() => { setAuthMode('signin'); setAuthError(null); }}
+              className={`flex-1 py-2 rounded-lg transition-all ${
+                authMode === 'signin' ? 'bg-white text-slate-950 shadow-xs' : 'text-slate-500 hover:text-slate-900'
+              }`}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => { setAuthMode('signup'); setAuthError(null); }}
+              className={`flex-1 py-2 rounded-lg transition-all ${
+                authMode === 'signup' ? 'bg-white text-slate-950 shadow-xs' : 'text-slate-500 hover:text-slate-950'
+              }`}
+            >
+              First-Time Admin Setup
+            </button>
+          </div>
+
+          {/* Error / Success Alerts */}
+          {authError && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{authError}</span>
+            </div>
+          )}
+          {authMessage && (
+            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-start gap-2">
+              <Check className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{authMessage}</span>
+            </div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleAuthSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                <Mail className="w-3.5 h-3.5 text-slate-400" />
+                <span>Admin Email</span>
+              </label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="mohitxsharma09@gmail.com"
+                className="w-full px-3.5 py-2.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-900 shadow-xs"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                <KeyRound className="w-3.5 h-3.5 text-slate-400" />
+                <span>Password</span>
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••••••"
+                  className="w-full pl-3.5 pr-10 py-2.5 text-xs bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-900 shadow-xs"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                >
+                  {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={authSubmitting}
+              className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {authSubmitting ? (
+                <>
+                  <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Authenticating...</span>
+                </>
+              ) : (
+                <span>{authMode === 'signin' ? 'Sign In to Studio' : 'Create Admin Account'}</span>
+              )}
+            </button>
+          </form>
+
+          {/* Footer Back Link */}
+          <div className="pt-2 border-t border-slate-100 text-center">
+            <Link to="/blogs" className="text-xs text-slate-500 hover:text-blue-600 inline-flex items-center gap-1">
+              <ArrowLeft className="w-3 h-3" />
+              <span>Back to Public Blogs</span>
+            </Link>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // 3. Authenticated Admin Studio
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      {/* Studio Header Bar */}
+      <header className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+            MS
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-base font-extrabold text-slate-950 tracking-tight">
+                Blog Studio Admin
+              </h1>
+              <span className="text-[10px] font-mono text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded font-bold border border-emerald-200">
+                Connected
+              </span>
+            </div>
+            <div className="text-xs text-slate-500 font-mono">
+              Signed in as <span className="font-semibold text-slate-700">{user.email}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Controls */}
+        <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
+          {activeTab === 'editor' ? (
+            <button
+              type="button"
+              onClick={() => setActiveTab('list')}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>All Articles</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleStartCreate}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Write New Blog</span>
+            </button>
+          )}
+
+          <Link
+            to="/blogs"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors shadow-xs"
+          >
+            <span>View Live Site</span>
+            <ExternalLink className="w-3 h-3 text-slate-400" />
+          </Link>
+
+          <button
+            type="button"
+            onClick={signOut}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-red-600 hover:bg-red-50 border border-red-200 transition-colors"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Sign Out</span>
+          </button>
+        </div>
+      </header>
+
+      {/* Main Body: Either List View or Editor View */}
+      {activeTab === 'list' ? (
+        <div className="space-y-6">
+          {/* Quick Stats Bar */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+              <div className="text-xs font-mono text-slate-500 uppercase">Total Articles</div>
+              <div className="text-2xl font-extrabold text-slate-950 mt-1">{articles.length}</div>
+            </div>
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+              <div className="text-xs font-mono text-slate-500 uppercase">Published</div>
+              <div className="text-2xl font-extrabold text-emerald-600 mt-1">
+                {articles.filter((a) => (a as BlogMetadata & { published?: boolean }).published !== false).length}
+              </div>
+            </div>
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+              <div className="text-xs font-mono text-slate-500 uppercase">Categories</div>
+              <div className="text-2xl font-extrabold text-indigo-600 mt-1">{existingCategories.length}</div>
+            </div>
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+              <div className="text-xs font-mono text-slate-500 uppercase">Storage</div>
+              <div className="text-2xl font-extrabold text-blue-600 mt-1">Supabase DB</div>
+            </div>
+          </div>
+
+          {/* Search & Filter Bar */}
+          <div className="bg-white p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between shadow-xs">
+            <div className="relative flex-1 sm:max-w-xs">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search articles by title or slug..."
+                className="w-full pl-9 pr-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-900"
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono text-slate-500">Category:</span>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 focus:outline-none"
+              >
+                <option value="All">All Categories</option>
+                {existingCategories.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Articles Table */}
+          {loadingArticles ? (
+            <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
+              <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+              <span className="text-xs font-mono text-slate-500">Fetching articles from Supabase...</span>
+            </div>
+          ) : filteredArticles.length === 0 ? (
+            <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-3">
+              <FileText className="w-8 h-8 text-slate-400 mx-auto" />
+              <h3 className="text-sm font-bold text-slate-900">No articles match your search</h3>
+              <p className="text-xs text-slate-500">Try clearing filters or click "+ Write New Blog" to create one.</p>
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-mono text-[11px] uppercase tracking-wider">
+                    <tr>
+                      <th className="px-6 py-3.5">Article</th>
+                      <th className="px-6 py-3.5">Category</th>
+                      <th className="px-6 py-3.5">Read Time</th>
+                      <th className="px-6 py-3.5">Date</th>
+                      <th className="px-6 py-3.5 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {filteredArticles.map((article) => (
+                      <tr key={article.id} className="hover:bg-slate-50/70 transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-8 rounded-lg overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
+                              <img
+                                src={article.coverImage || `/Portfolio/assets/blogs/${article.id}.png`}
+                                alt=""
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="space-y-0.5 max-w-md">
+                              <div className="font-bold text-slate-950 line-clamp-1">{article.title}</div>
+                              <div className="font-mono text-[11px] text-slate-400 line-clamp-1">/{article.id}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-[10px] font-mono font-medium text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                            {article.category}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 font-mono text-slate-500">{article.readTime}</td>
+                        <td className="px-6 py-4 font-mono text-slate-500">{article.publishDate}</td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <Link
+                              to={`/blogs/${article.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-1.5 text-slate-400 hover:text-blue-600 rounded-lg hover:bg-slate-100"
+                              title="View live post"
+                            >
+                              <ExternalLink className="w-4 h-4" />
+                            </Link>
+                            <button
+                              type="button"
+                              onClick={() => handleStartEdit(article)}
+                              className="p-1.5 text-slate-500 hover:text-blue-600 rounded-lg hover:bg-slate-100 font-semibold"
+                              title="Edit post"
+                            >
+                              <Edit3 className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteArticle(article.id, article.title)}
+                              className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50"
+                              title="Delete post"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        /* Blog Writing Studio Editor */
+        <form onSubmit={handleSaveBlog} className="space-y-6">
+          {/* Editor Header Bar */}
+          <div className="bg-white rounded-2xl border border-slate-200 p-4 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-600">
+                {editorMode === 'create' ? 'Creating New Blog' : `Editing: ${slug}`}
+              </span>
+            </div>
+
+            {/* View Mode & Save Actions */}
+            <div className="flex items-center gap-2">
+              <div className="hidden sm:flex bg-slate-100 p-1 rounded-xl text-xs">
+                <button
+                  type="button"
+                  onClick={() => setEditorPreviewMode('write')}
+                  className={`px-3 py-1 rounded-lg transition-all ${
+                    editorPreviewMode === 'write' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500'
+                  }`}
+                >
+                  Write Only
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditorPreviewMode('split')}
+                  className={`px-3 py-1 rounded-lg transition-all ${
+                    editorPreviewMode === 'split' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500'
+                  }`}
+                >
+                  Split View
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditorPreviewMode('preview')}
+                  className={`px-3 py-1 rounded-lg transition-all ${
+                    editorPreviewMode === 'preview' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500'
+                  }`}
+                >
+                  Preview Only
+                </button>
+              </div>
+
+              <button
+                type="submit"
+                disabled={saveLoading}
+                className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-xs transition-all disabled:opacity-50"
+              >
+                {saveLoading ? (
+                  <>
+                    <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Saving to DB...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-3.5 h-3.5" />
+                    <span>{published ? 'Save & Publish' : 'Save Draft'}</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Feedback Banners */}
+          {saveSuccess && (
+            <motion.div
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center justify-between"
+            >
+              <div className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-emerald-600" />
+                <span>Blog saved successfully to Supabase PostgreSQL database!</span>
+              </div>
+              <Link
+                to={`/blogs/${slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold underline text-emerald-700"
+              >
+                View Live &rarr;
+              </Link>
+            </motion.div>
+          )}
+
+          {editorError && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{editorError}</span>
+            </div>
+          )}
+
+          {/* Meta Fields Card */}
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-5 shadow-xs">
+            <h2 className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
+              1. Article Metadata &amp; SEO
+            </h2>
+
+            {/* Title */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-800">Blog Title</label>
+              <input
+                type="text"
+                required
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. Distributed LLM Quantization on Low-Power ARM Clusters"
+                className="w-full px-4 py-2.5 text-base font-bold text-slate-950 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
+              />
+            </div>
+
+            {/* Slug / ID and Subtitle */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-slate-700 flex items-center justify-between">
+                  <span>URL Slug (Unique ID)</span>
+                  <span className="text-[11px] font-mono text-slate-400">/blogs/{slug || 'your-slug'}</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={slug}
+                  onChange={(e) => {
+                    setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, '-'));
+                    setIsSlugManuallyEdited(true);
+                  }}
+                  placeholder="auto-generated-slug"
+                  className="w-full px-3.5 py-2 font-mono text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-800"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-slate-700">Subtitle / Tagline</label>
+                <input
+                  type="text"
+                  value={subtitle}
+                  onChange={(e) => setSubtitle(e.target.value)}
+                  placeholder="e.g. Profiling latency tradeoffs between FP16 and INT8 across embedded GPUs."
+                  className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-800"
+                />
+              </div>
+            </div>
+
+            {/* Category & Status */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-slate-700">Category</label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-800"
+                >
+                  <option value="Computer Vision & Edge AI">Computer Vision & Edge AI</option>
+                  <option value="MLOps & High-Throughput Inference">MLOps & High-Throughput Inference</option>
+                  <option value="LLM Systems & Information Retrieval">LLM Systems & Information Retrieval</option>
+                  <option value="Deep Learning & Instance Segmentation">Deep Learning & Instance Segmentation</option>
+                  <option value="Agentic AI & Test Automation">Agentic AI & Test Automation</option>
+                  <option value="Production Platforms & RecSys">Production Platforms & RecSys</option>
+                  <option value="ML Hardware & Optimization">ML Hardware & Optimization</option>
+                  <option value="Data Engineering & Clinical AI">Data Engineering & Clinical AI</option>
+                  <option value="__custom__">+ Enter Custom Category...</option>
+                </select>
+                {category === '__custom__' && (
+                  <input
+                    type="text"
+                    required
+                    value={customCategory}
+                    onChange={(e) => setCustomCategory(e.target.value)}
+                    placeholder="Type custom category name..."
+                    className="w-full mt-2 px-3.5 py-1.5 text-xs bg-white border border-blue-300 rounded-lg text-slate-900"
+                  />
+                )}
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-slate-700">Status Badge</label>
+                <input
+                  type="text"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                  placeholder="Published Technical Breakdown"
+                  className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-800"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-slate-700">Read Time &amp; Date</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    type="text"
+                    value={readTime}
+                    onChange={(e) => setReadTime(e.target.value)}
+                    placeholder="5 min read"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-mono"
+                  />
+                  <input
+                    type="text"
+                    value={publishDate}
+                    onChange={(e) => setPublishDate(e.target.value)}
+                    placeholder="Oct 2026"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-800 font-mono"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Cover Image URL & Preview */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+              <div className="md:col-span-2 space-y-1.5">
+                <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                  <ImageIcon className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Cover Image URL / Path</span>
+                </label>
+                <input
+                  type="text"
+                  value={coverImage}
+                  onChange={(e) => setCoverImage(e.target.value)}
+                  placeholder="/Portfolio/assets/blogs/edge-fatigue-tracking-sub-150ms.png"
+                  className="w-full px-3.5 py-2 text-xs font-mono bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-800"
+                />
+                <p className="text-[11px] text-slate-400">
+                  Tip: Use any local path (e.g. `/Portfolio/assets/blogs/...`) or external HTTPS image URL.
+                </p>
+              </div>
+
+              <div className="w-full aspect-video rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+                <img
+                  src={coverImage || '/Portfolio/assets/blogs/edge-fatigue-tracking-sub-150ms.png'}
+                  alt="Preview"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    // Fallback to placeholder on error
+                    (e.target as HTMLImageElement).src = '/Portfolio/assets/blogs/edge-fatigue-tracking-sub-150ms.png';
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Summary / Excerpt */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-700">Summary / Excerpt (Card Preview &amp; SEO)</label>
+              <textarea
+                rows={2}
+                value={summary}
+                onChange={(e) => setSummary(e.target.value)}
+                placeholder="A concise 2-sentence summary that appears on the card preview and search results."
+                className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-800"
+              />
+            </div>
+
+            {/* Published Status Checkbox */}
+            <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+              <input
+                type="checkbox"
+                id="publishedToggle"
+                checked={published}
+                onChange={(e) => setPublished(e.target.checked)}
+                className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300"
+              />
+              <label htmlFor="publishedToggle" className="text-xs font-semibold text-slate-800 cursor-pointer">
+                Publish Immediately (visible on public site)
+              </label>
+            </div>
+          </div>
+
+          {/* Markdown Content & Live Preview Card */}
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4 shadow-xs">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
+                2. Article Content (Markdown)
+              </h2>
+
+              {/* Formatting Toolbar */}
+              <div className="flex flex-wrap items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-mono">
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('### ')}
+                  className="px-2 py-1 hover:bg-white rounded font-bold text-slate-700"
+                  title="Heading 2"
+                >
+                  H2
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('#### ')}
+                  className="px-2 py-1 hover:bg-white rounded font-bold text-slate-700"
+                  title="Heading 3"
+                >
+                  H3
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('**', '**')}
+                  className="px-2 py-1 hover:bg-white rounded font-bold text-slate-700"
+                  title="Bold"
+                >
+                  B
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('```python\n', '\n```')}
+                  className="px-2 py-1 hover:bg-white rounded text-slate-700 font-semibold"
+                  title="Code Block"
+                >
+                  &lt;/&gt;
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('- ')}
+                  className="px-2 py-1 hover:bg-white rounded text-slate-700"
+                  title="Bullet List"
+                >
+                  • List
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('$$', '$$')}
+                  className="px-2 py-1 hover:bg-white rounded text-slate-700 font-bold"
+                  title="Math Formula"
+                >
+                  Σ Math
+                </button>
+              </div>
+            </div>
+
+            {/* Split Editor / Preview Canvas */}
+            <div className={`grid gap-4 ${
+              editorPreviewMode === 'split' ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'
+            }`}>
+              {/* Write Textarea */}
+              {editorPreviewMode !== 'preview' && (
+                <div className="space-y-1">
+                  <div className="text-[11px] font-mono text-slate-400 flex items-center justify-between px-1">
+                    <span>Markdown Input</span>
+                    <span>{contentMarkdown.trim().split(/\s+/).filter(Boolean).length} words</span>
+                  </div>
+                  <textarea
+                    id="blogContentTextarea"
+                    rows={20}
+                    required
+                    value={contentMarkdown}
+                    onChange={(e) => setContentMarkdown(e.target.value)}
+                    placeholder="Write your article in Markdown here...&#10;&#10;### Introduction&#10;Your breakdown text...&#10;&#10;```python&#10;def infer():&#10;    pass&#10;```"
+                    className="w-full p-4 font-mono text-xs leading-relaxed bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-900"
+                  />
+                </div>
+              )}
+
+              {/* Rendered Live Preview */}
+              {editorPreviewMode !== 'write' && (
+                <div className="space-y-1">
+                  <div className="text-[11px] font-mono text-slate-400 px-1">Live Reader Preview</div>
+                  <div className="p-5 border border-slate-200 rounded-xl bg-white min-h-[350px] max-h-[500px] overflow-y-auto prose prose-slate">
+                    {title ? (
+                      <h1 className="text-xl font-bold text-slate-950 mb-2">{title}</h1>
+                    ) : (
+                      <span className="text-xs text-slate-400 italic">Title will appear here...</span>
+                    )}
+                    {subtitle && (
+                      <p className="text-xs text-slate-500 font-medium mb-4">{subtitle}</p>
+                    )}
+                    <hr className="my-3 border-slate-100" />
+                    {contentMarkdown.trim() ? (
+                      renderPreviewMarkdown(contentMarkdown)
+                    ) : (
+                      <div className="text-xs text-slate-400 italic py-8 text-center">
+                        Start typing markdown on the left to see the live formatted preview here.
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Bottom Actions */}
+            <div className="pt-4 flex items-center justify-between border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setActiveTab('list')}
+                className="text-xs text-slate-500 hover:text-slate-800 font-semibold"
+              >
+                Cancel &amp; Return to List
+              </button>
+
+              <button
+                type="submit"
+                disabled={saveLoading}
+                className="inline-flex items-center gap-1.5 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-xs transition-all disabled:opacity-50"
+              >
+                {saveLoading ? 'Saving...' : published ? 'Save & Publish to Live Site' : 'Save as Draft'}
+              </button>
+            </div>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+};
