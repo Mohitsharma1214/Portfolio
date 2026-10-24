@@ -11,37 +11,37 @@ const routes = [
     path: 'about',
     title: 'About Mohit Sharma | AI Engineer & Systems Specialist',
     description: 'Verified background, engineering philosophy, and track record of AI Engineer Mohit Sharma specializing in low-latency computer vision and edge AI.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/about',
+    canonical: 'https://mohitsharma1214.github.io/Portfolio/about/',
   },
   {
     path: 'projects',
     title: 'Projects & Case Studies | Mohit Sharma • AI Engineer',
     description: 'Production computer vision pipelines, edge ARM deployments on Raspberry Pi, and grounded LLM architectures evaluated with strict SLAs.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/projects',
+    canonical: 'https://mohitsharma1214.github.io/Portfolio/projects/',
   },
   {
     path: 'experience',
     title: 'Work Experience | Mohit Sharma • AI Developer at Sodio Technologies',
     description: 'Verified engineering experience delivering production computer vision backends at Hairscope, Sodio Technologies, and Centilytics.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/experience',
+    canonical: 'https://mohitsharma1214.github.io/Portfolio/experience/',
   },
   {
     path: 'skills',
     title: 'Skills & Technology Stack | Mohit Sharma • AI Engineer',
     description: 'Production skills in PyTorch, TensorRT, CUDA, OpenCV, FastAPI, ChromaDB, Edge AI on Raspberry Pi, and MLOps deployment.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/skills',
+    canonical: 'https://mohitsharma1214.github.io/Portfolio/skills/',
   },
   {
     path: 'writing',
     title: 'Technical Writing & Architecture Notes | Mohit Sharma',
     description: 'Technical breakdowns, latency tradeoffs, and failure mode analyses derived directly from production and edge AI implementations.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/writing',
+    canonical: 'https://mohitsharma1214.github.io/Portfolio/writing/',
   },
   {
     path: 'contact',
     title: 'Contact Mohit Sharma | AI Engineer • Computer Vision & LLM Systems',
     description: 'Direct contact information for AI Engineer Mohit Sharma. Available for engineering discussions, full-time AI roles, and consulting.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/contact',
+    canonical: 'https://mohitsharma1214.github.io/Portfolio/contact/',
   },
 ];
 
