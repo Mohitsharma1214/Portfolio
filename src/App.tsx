@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate, useParams } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 
 import { Navbar } from './components/Navbar';
@@ -9,11 +9,13 @@ import { AboutPage } from './pages/AboutPage';
 import { ProjectsPage } from './pages/ProjectsPage';
 import { ExperiencePage } from './pages/ExperiencePage';
 import { SkillsPage } from './pages/SkillsPage';
-import { WritingPage } from './pages/WritingPage';
+import { BlogsPage } from './pages/BlogsPage';
+import { BlogPostPage } from './pages/BlogPostPage';
 import { ContactPage } from './pages/ContactPage';
 
 import { CaseStudyModal } from './components/CaseStudyModal';
 import { ArticleModal } from './components/ArticleModal';
+import { TECHNICAL_ARTICLES } from './data/portfolioData';
 import type { ProjectCaseStudy, TechnicalArticle } from './data/portfolioData';
 
 // Helper component to scroll window to top on route change
@@ -38,15 +40,29 @@ function PageMetadataUpdater() {
       '/projects': 'Projects & Case Studies | Mohit Sharma • AI Engineer',
       '/experience': 'Work Experience | Mohit Sharma • AI Developer at Sodio Technologies',
       '/skills': 'Skills & Technology Stack | Mohit Sharma • AI Engineer',
-      '/writing': 'Technical Writing & Architecture Notes | Mohit Sharma',
+      '/blogs': 'Technical Blogs & Case Studies | Mohit Sharma • AI Engineer',
+      '/writing': 'Technical Blogs & Case Studies | Mohit Sharma • AI Engineer',
       '/contact': "Contact Mohit Sharma | AI Engineer • Computer Vision & LLM Systems",
     };
 
-    const title = titles[pathname] || 'Mohit Sharma | AI Engineer • Computer Vision & LLM Systems';
-    document.title = title;
+    let title = titles[pathname];
+    if (!title && pathname.startsWith('/blogs/')) {
+      const blogId = pathname.replace('/blogs/', '').replace(/\/$/, '');
+      const matched = TECHNICAL_ARTICLES.find((b) => b.id === blogId);
+      if (matched) {
+        title = `${matched.title} | Mohit Sharma`;
+      }
+    }
+
+    document.title = title || 'Mohit Sharma | AI Engineer • Computer Vision & LLM Systems';
   }, [pathname]);
 
   return null;
+}
+
+function WritingIdRedirect() {
+  const { id } = useParams<{ id: string }>();
+  return <Navigate to={id ? `/blogs/${id}` : '/blogs'} replace />;
 }
 
 function AppContent() {
@@ -60,10 +76,6 @@ function AppContent() {
 
   const handleCloseProject = () => {
     setSelectedProject(null);
-  };
-
-  const handleOpenArticle = (article: TechnicalArticle) => {
-    setSelectedArticle(article);
   };
 
   const handleCloseArticle = () => {
@@ -91,7 +103,10 @@ function AppContent() {
             <Route path="/projects" element={<ProjectsPage onSelectProject={handleOpenProject} />} />
             <Route path="/experience" element={<ExperiencePage />} />
             <Route path="/skills" element={<SkillsPage />} />
-            <Route path="/writing" element={<WritingPage onSelectArticle={handleOpenArticle} />} />
+            <Route path="/blogs" element={<BlogsPage />} />
+            <Route path="/blogs/:id" element={<BlogPostPage />} />
+            <Route path="/writing" element={<Navigate to="/blogs" replace />} />
+            <Route path="/writing/:id" element={<WritingIdRedirect />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

@@ -43,8 +43,12 @@ export interface TechnicalArticle {
   readTime: string;
   status: 'Published Technical Breakdown' | 'Architecture Deep Dive' | 'Engineering Note';
   summary: string;
+  coverImage?: string;
+  publishDate?: string;
   contentMarkdown: string;
 }
+
+export type BlogPost = TechnicalArticle;
 
 export interface SkillCategory {
   title: string;
@@ -402,6 +406,8 @@ export const TECHNICAL_ARTICLES: TechnicalArticle[] = [
     category: "Computer Vision & Edge AI",
     readTime: "6 min read",
     status: "Published Technical Breakdown",
+    coverImage: "/Portfolio/assets/blogs/edge-fatigue-tracking-sub-150ms.png",
+    publishDate: "Oct 2026",
     summary: "A technical breakdown of engineering the Driver Drowsiness Detection System (Govt. of India Copyright SW-19841/2024). Explores the trade-offs between heavy end-to-end vision neural nets versus localized eye-aspect-ratio (EAR) geometry on low-power ARM architectures.",
     contentMarkdown: `### The Edge Latency Conundrum
 When building driver monitoring systems for commercial transport, the primary design constraint is **zero-cloud dependency**. In rural transit corridors, network disconnects are inevitable. If a driver experiences micro-sleep inside a mountain pass, a cloud-dependent model with a 2-second p95 latency is useless.
@@ -415,9 +421,9 @@ Instead, we decoupled the problem into:
 1. **Facial Landmark Estimation**: Localizing 68 anatomical coordinates.
 2. **Geometric Metric Formulation**: Deriving instantaneous ocular state through the **Eye Aspect Ratio (EAR)** formula:
 
-$$\\text{EAR} = \\frac{\\|p_2 - p_6\\| + \\|p_3 - p_5\\|}{2 \\|p_1 - p_4\\|}$$
+$$\text{EAR} = \frac{\|p_2 - p_6\| + \|p_3 - p_5\|}{2 \|p_1 - p_4\|}$$
 
-Where $p_1 \\dots p_6$ correspond to the 2D pixel coordinates of the eye boundaries.
+Where $p_1 \dots p_6$ correspond to the 2D pixel coordinates of the eye boundaries.
 
 During open-eye status, the EAR fluctuates around 0.30 - 0.35. During a micro-sleep event, the vertical Euclidean distances contract, plummeting EAR below 0.20.
 
@@ -446,57 +452,14 @@ Separating audio alerting into an isolated worker thread reading from a thread-s
 This system was formally registered with the Government of India Copyright Office (SW-19841/2024), validating that principled mathematical geometry combined with systems-level edge profiling routinely outperforms raw compute scaling.`
   },
   {
-    id: "strictly-grounded-rag-logistics",
-    title: "Strictly Grounded RAG: Eliminating Hallucinations in Logistics Document Extraction",
-    subtitle: "A deep dive into metadata isolation, 40/60 hybrid confidence scoring, and runtime 0.35 cutoff gates.",
-    category: "LLM Systems & Information Retrieval",
-    readTime: "8 min read",
-    status: "Architecture Deep Dive",
-    summary: "Examining the system design choices behind Ultra-Doc-Intelligence. Why vector similarity alone is insufficient for multi-page logistics contracts, and how hybrid confidence scoring creates provable negative-answer guarantees.",
-    contentMarkdown: `### The Problem with Naive RAG in Enterprise Workflows
-In consumer Q&A, an LLM generating a plausible-sounding answer is often tolerated. In logistics and freight auditing, however, fabricating a bill of lading number or inventing an insurance deductible creates direct contractual liability.
-
-When building **Ultra-Doc-Intelligence**, standard RAG pipelines failed on two critical dimensions:
-1. **Cross-Document Context Bleed**: In multi-document collections, top-k semantic search routinely retrieved freight rates from Document B to answer queries regarding Document A because shipping contracts share high semantic density.
-2. **Unwarranted Confidence on Absent Fields**: When asked for a 'Hazardous Materials Declaration' on a clean cargo manifest, LLMs routinely hallucinated standard clauses.
-
-### Strategy 1: Strict Document-Level Vector Filtering
-Rather than relying on global vector similarity, every document ingested into ChromaDB is assigned an immutable \`document_id\`. All retrieval operations enforce strict metadata filtering:
-
-\`\`\`python
-# Strict document isolation in ChromaDB
-results = collection.query(
-    query_texts=[query_text],
-    n_results=8,
-    where={"document_id": active_doc_id}  # Prevents cross-tenant/cross-doc leakage
-)
-\`\`\`
-
-This simple architectural boundary eliminated cross-document contamination completely.
-
-### Strategy 2: Hybrid Confidence Scoring (40% Distance + 60% LLM Certainty)
-Vector distance measures semantic proximity, but semantic proximity does not guarantee factual answerability. For example, a chunk reading *"We do not carry hazardous cargo"* has high semantic similarity to the query *"What hazardous cargo is listed?"*, yet contains no affirmative data.
-
-To resolve this, we formulated a **weighted hybrid confidence score**:
-- **Normalized Vector Distance (40%)**: Derived from cosine distance of the retrieved chunks.
-- **LLM Self-Assessment (60%)**: The LLM is instructed to output an internal certainty integer based strictly on direct textual evidence.
-
-$$\\text{Confidence} = 0.40 \\times (1.0 - \\text{norm\\_distance}) + 0.60 \\times \\text{llm\\_certainty}$$
-
-If any 'not found' or refusal signatures are triggered, confidence is forcefully clamped to 0.0.
-
-### Strategy 3: The 0.35 Runtime Cutoff Gate
-If the calculated hybrid confidence falls below **0.35**, the system bypasses raw LLM generation entirely. The UI displays an explicit badge: **'Information not verified in source document'**.
-
-This single guardrail decreased false positive extractions by over 70% during benchmark evaluations on noisy logistics manifests.`
-  },
-  {
     id: "scaling-medical-cv-tensorrt-5000-images",
     title: "Scaling Medical Computer Vision to 5,000 Images/Day with TensorRT & FastAPI",
     subtitle: "Overcoming CUDA OOMs, async micro-batching, and FP16 graph fusions in clinical dermatology inference.",
     category: "MLOps & High-Throughput Inference",
     readTime: "7 min read",
     status: "Engineering Note",
+    coverImage: "/Portfolio/assets/blogs/scaling-medical-cv-tensorrt-5000-images.png",
+    publishDate: "Oct 2026",
     summary: "Production lessons learned at Hairscope while serving deep learning dermatology models at 5,000+ daily images with sub-120ms latency on limited GPU infrastructure.",
     contentMarkdown: `### The Challenge: Scale vs GPU Costs
 Serving deep learning models in medical diagnostics presents strict requirements:
@@ -549,8 +512,275 @@ Excess requests smoothly queue in memory for a few milliseconds rather than cras
 
 ### Takeaway
 High-performance AI engineering is 20% model selection and 80% systems engineering: tensor scheduling, memory bounding, graph compilation, and asynchronous pipeline plumbing.`
+  },
+  {
+    id: "strictly-grounded-rag-logistics",
+    title: "Strictly Grounded RAG: Eliminating Hallucinations in Logistics Document Extraction",
+    subtitle: "A deep dive into metadata isolation, 40/60 hybrid confidence scoring, and runtime 0.35 cutoff gates.",
+    category: "LLM Systems & Information Retrieval",
+    readTime: "8 min read",
+    status: "Architecture Deep Dive",
+    coverImage: "/Portfolio/assets/blogs/strictly-grounded-rag-logistics.png",
+    publishDate: "Oct 2026",
+    summary: "Examining the system design choices behind Ultra-Doc-Intelligence. Why vector similarity alone is insufficient for multi-page logistics contracts, and how hybrid confidence scoring creates provable negative-answer guarantees.",
+    contentMarkdown: `### The Problem with Naive RAG in Enterprise Workflows
+In consumer Q&A, an LLM generating a plausible-sounding answer is often tolerated. In logistics and freight auditing, however, fabricating a bill of lading number or inventing an insurance deductible creates direct contractual liability.
+
+When building **Ultra-Doc-Intelligence**, standard RAG pipelines failed on two critical dimensions:
+1. **Cross-Document Context Bleed**: In multi-document collections, top-k semantic search routinely retrieved freight rates from Document B to answer queries regarding Document A because shipping contracts share high semantic density.
+2. **Unwarranted Confidence on Absent Fields**: When asked for a 'Hazardous Materials Declaration' on a clean cargo manifest, LLMs routinely hallucinated standard clauses.
+
+### Strategy 1: Strict Document-Level Vector Filtering
+Rather than relying on global vector similarity, every document ingested into ChromaDB is assigned an immutable \`document_id\`. All retrieval operations enforce strict metadata filtering:
+
+\`\`\`python
+# Strict document isolation in ChromaDB
+results = collection.query(
+    query_texts=[query_text],
+    n_results=8,
+    where={"document_id": active_doc_id}  # Prevents cross-tenant/cross-doc leakage
+)
+\`\`\`
+
+This simple architectural boundary eliminated cross-document contamination completely.
+
+### Strategy 2: Hybrid Confidence Scoring (40% Distance + 60% LLM Certainty)
+Vector distance measures semantic proximity, but semantic proximity does not guarantee factual answerability. For example, a chunk reading *"We do not carry hazardous cargo"* has high semantic similarity to the query *"What hazardous cargo is listed?"*, yet contains no affirmative data.
+
+To resolve this, we formulated a **weighted hybrid confidence score**:
+- **Normalized Vector Distance (40%)**: Derived from cosine distance of the retrieved chunks.
+- **LLM Self-Assessment (60%)**: The LLM is instructed to output an internal certainty integer based strictly on direct textual evidence.
+
+$$\text{Confidence} = 0.40 \times (1.0 - \text{norm\_distance}) + 0.60 \times \text{llm\_certainty}$$
+
+If any 'not found' or refusal signatures are triggered, confidence is forcefully clamped to 0.0.
+
+### Strategy 3: The 0.35 Runtime Cutoff Gate
+If the calculated hybrid confidence falls below **0.35**, the system bypasses raw LLM generation entirely. The UI displays an explicit badge: **'Information not verified in source document'**.
+
+This single guardrail decreased false positive extractions by over 70% during benchmark evaluations on noisy logistics manifests.`
+  },
+  {
+    id: "microscopic-hair-segmentation-yolov11-maskrcnn",
+    title: "Instance Segmentation at Scale: YOLOv11-seg vs Mask R-CNN in Microscopic Trichology",
+    subtitle: "Loss function engineering for boundary preservation, custom RoIAlign tuning, and sub-120ms TensorRT FP16 quantization.",
+    category: "Deep Learning & Instance Segmentation",
+    readTime: "9 min read",
+    status: "Published Technical Breakdown",
+    coverImage: "/Portfolio/assets/blogs/microscopic-hair-segmentation-yolov11-maskrcnn.png",
+    publishDate: "Sep 2026",
+    summary: "A detailed engineering breakdown on segmenting overlapping, microscopic hair strands under polarized dermatological imaging. Explores why standard segmentation heads bleed boundaries together, and how targeted IoU boundary loss plus TensorRT FP16 achieved 0.84 mAP.",
+    contentMarkdown: `### The Microscopic Challenge
+Trichological analysis requires sub-pixel delineation of individual hair fibers under high-magnification dermatological illumination. General-purpose object segmentation models fail in this domain due to:
+1. **Extreme Aspect Ratios**: Individual strands can measure 1200 pixels in length yet only 3–5 pixels in width.
+2. **Acute Crossing Angles**: Strands frequently intersect at sharp angles, causing standard mask prediction heads to bleed overlapping fibers into single connected polygons.
+3. **Variable Scalp Lighting**: Specular sebum reflections create high-frequency false positive edges.
+
+### Architecture Comparison: Mask R-CNN vs YOLOv11-seg
+We trained and evaluated two foundational instance segmentation architectures on our curated trichoscopy dataset of 10,000+ annotated follicles:
+
+| Architectural Metric | Mask R-CNN (ResNet-50-FPN) | YOLOv11l-seg (Backbone-C3k2) |
+| :--- | :--- | :--- |
+| **mAP@0.5** | 0.824 | **0.841** |
+| **Mask IoU** | 0.771 | **0.784** |
+| **PyTorch FP32 Latency** | 210ms | 134ms |
+| **TensorRT FP16 Latency** | 128ms | **98ms** |
+| **VRAM Footprint** | 4.8 GB | **2.6 GB** |
+
+While Mask R-CNN delivered solid edge fidelity through its two-stage Region of Interest (RoIAlign) mechanism, **YOLOv11l-seg** delivered superior intersection delineation while cutting latency by more than half.
+
+### Loss Function Customization
+Standard cross-entropy mask losses penalize all pixel misclassifications equally. For ultra-thin strands, 95% of pixels are interior, meaning the network can achieve high loss reduction while completely blurring the crucial boundary edge.
+
+We formulated a composite boundary-weighted loss:
+
+\`\`\`python
+# Boundary-aware loss penalizing junction bleeding
+class TrichologyMaskLoss(nn.Module):
+    def __init__(self, boundary_weight=3.5):
+        super().__init__()
+        self.bce = nn.BCEWithLogitsLoss()
+        self.dice = DiceLoss()
+        self.boundary_weight = boundary_weight
+
+    def forward(self, pred_masks, target_masks, boundary_maps):
+        base_loss = self.bce(pred_masks, target_masks) + self.dice(pred_masks, target_masks)
+        boundary_penalty = torch.mean(boundary_maps * torch.abs(torch.sigmoid(pred_masks) - target_masks))
+        return base_loss + (self.boundary_weight * boundary_penalty)
+\`\`\`
+
+### Production TensorRT FP16 Optimization
+To deploy inside clinical workstations without requiring high-end data center GPUs, we compiled the YOLOv11l-seg network using NVIDIA TensorRT:
+- Quantized weight matrices from FP32 to FP16 half precision.
+- Fused contiguous convolution and activation layers into single kernel invocations.
+- Achieved **98ms end-to-end latency** per 1024x1024 polarized frame on an entry-level NVIDIA T4 GPU.`
+  },
+  {
+    id: "autonomous-qa-agent-orchestration",
+    title: "Building Autonomous Testing Agents: Stateful Multi-Turn Planning with Function Calling",
+    subtitle: "Moving beyond brittle Cypress scripts with goal-directed LLM agents, task memory buffers, and Pydantic schema validation.",
+    category: "Agentic AI & Test Automation",
+    readTime: "7 min read",
+    status: "Architecture Deep Dive",
+    coverImage: "/Portfolio/assets/blogs/autonomous-qa-agent-orchestration.png",
+    publishDate: "Sep 2026",
+    summary: "How we architected autonomous QA test automation agents at Sodio Technologies. Details the state-machine transition model, DOM action tool-calling definitions, exponential backoff to prevent infinite reasoning loops, and structured reporting.",
+    contentMarkdown: `### The Fragility of Hard-Coded UI Scripts
+Modern single-page applications evolve rapidly. A single CSS class name refactor or DOM hierarchy adjustment breaks conventional Selenium, Cypress, or Playwright selector scripts, forcing engineering teams to spend hundreds of hours maintaining brittle locator files.
+
+At Sodio Technologies, we engineered an **autonomous QA agent framework** capable of reading high-level test scenarios in plain English (e.g., *"Complete the checkout flow with a promotional coupon and verify tax calculations"*) and dynamically navigating complex web interfaces.
+
+### Agent Architecture: The Stateful Observation Loop
+Rather than treating test execution as a single-prompt generation, the agent operates as a **finite state machine with memory**:
+
+1. **State Perception**: The browser viewport DOM is parsed into an accessible interactive tree (buttons, inputs, links, headings) stripped of irrelevant styling noise.
+2. **Goal Reasoning**: The LLM evaluates the active objective against prior executed steps in its history buffer.
+3. **Tool Invocation**: The agent issues a structured function call (\`click(selector)\`, \`type(input_id, text)\`, \`assert_text(expected)\`).
+4. **Verification Step**: Before declaring step success, the DOM is re-sampled to confirm the expected state change occurred.
+
+\`\`\`python
+class AgentAction(BaseModel):
+    action_type: Literal["click", "type", "select", "assert", "terminate"]
+    target_element_id: str
+    value: Optional[str] = None
+    reasoning: str = Field(description="Step-by-step logic justifying this action")
+\`\`\`
+
+### Preventing Reasoning Traps & Infinite Loops
+A critical failure mode in web agents is getting caught in repetitive action loops—for example, clicking a modal backdrop repeatedly when an unexpected confirmation pop-up appears.
+
+We implemented three safety guardrails:
+- **Max-Step Threshold**: Hard ceiling of 25 tool calls per scenario to bound API costs.
+- **Action Fingerprint Deduping**: If an identical action is proposed 3 times consecutively without DOM state delta, the agent triggers an emergency state unwind and attempts alternative navigation paths.
+- **Strict Pydantic Schema Contracts**: Function arguments are strictly validated before hitting the browser automation driver, preventing invalid selector syntax.
+
+### Business Impact
+Automated end-to-end regression passes reduced manual QA verification time from 4 hours to 18 minutes per release cycle.`
+  },
+  {
+    id: "realtime-recommendation-systems-two-stage",
+    title: "Low-Latency Recommendation Engines: Two-Stage Candidate Retrieval and Real-Time Ranking",
+    subtitle: "Balancing semantic affinity with sub-100ms P99 SLAs using PyTorch embeddings, ANN candidate pruning, and diversity penalties.",
+    category: "Production Platforms & RecSys",
+    readTime: "8 min read",
+    status: "Engineering Note",
+    coverImage: "/Portfolio/assets/blogs/realtime-recommendation-systems-two-stage.png",
+    publishDate: "Aug 2026",
+    summary: "Designing scalable content recommendation pipelines at Sodio Technologies. Why monolithic deep ranking models fail 100ms SLAs, and how splitting inference into Stage 1 candidate retrieval and Stage 2 weighted ranking solved latency bottlenecks.",
+    contentMarkdown: `### The Real-Time Recommendation Dilemma
+In high-engagement discovery feeds, recommendation quality directly dictates session dwell time. However, running a multi-layer neural ranking model across an entire catalog of 500,000 items on every user scroll is computationally impossible within a **sub-100ms P99 latency SLA**.
+
+At Sodio Technologies, we architected a **two-stage recommendation pipeline** that achieved personalized candidate discovery in **under 68ms P95**.
+
+### Two-Stage Architectural Blueprint
+
+\`\`\`
+[500,000 Catalog Items]
+          │
+          ▼  Stage 1: Candidate Generation (Vector ANN Cosine Search)
+    [Top 200 Candidates]
+          │
+          ▼  Stage 2: Weighted Ranking (Recency + Affinity - Diversity Penalty)
+    [Top 15 Ranked Stream]
+\`\`\`
+
+#### Stage 1: Fast Candidate Generation
+- Precomputed 384-dimensional content embeddings using lightweight sentence transformer models.
+- Indexed embeddings in memory using Approximate Nearest Neighbor (ANN) search.
+- Slashed the search space from 500,000 items to **top 200 candidates in ~14ms**.
+
+#### Stage 2: Real-Time Ranking & Affinity Scoring
+Candidate items are scored using a weighted multi-signal formulation:
+
+$$\text{Score} = w_1 \cdot \text{CosineSimilarity} + w_2 \cdot \log(1 + \text{UserDwellTime}) + w_3 \cdot \text{RecencyDecay} - \lambda \cdot \text{DiversityPenalty}$$
+
+Where:
+- **Recency Decay**: Exponential half-life decay ensuring trending, fresh posts surface regularly.
+- **Diversity Penalty ($\lambda$)**: Intra-list similarity penalty preventing feeds from being monopolized by a single viral topic.
+
+### Cold-Start Exploration vs Exploitation
+For newly registered users without historical interaction signals, the system seamlessly transitions to an **epsilon-greedy multi-armed bandit**: 80% of items are drawn from high-engagement global clusters across diverse categories, while 20% are exploratory items to map nascent user interests.`
+  },
+  {
+    id: "onnx-fp16-vs-int8-quantization-benchmarks",
+    title: "Model Quantization in Practice: FP16 vs INT8 Calibration for Real-Time Edge Vision",
+    subtitle: "A rigorous performance and accuracy comparison between FP16 half-precision and INT8 TensorRT entropy calibration.",
+    category: "ML Hardware & Optimization",
+    readTime: "6 min read",
+    status: "Architecture Deep Dive",
+    coverImage: "/Portfolio/assets/blogs/onnx-fp16-vs-int8-quantization-benchmarks.png",
+    publishDate: "Jul 2026",
+    summary: "Hands-on benchmarks comparing FP32, FP16, and INT8 execution on NVIDIA GPUs and ARM edge processors. Demonstrates how post-training quantization (PTQ) saves 48% VRAM without sacrificing boundary segmentation fidelity.",
+    contentMarkdown: `### The Quantization Trade-Off
+Deploying computer vision models to resource-constrained edge hardware requires minimizing both memory bandwidth and compute latency. Model quantization—converting floating-point weights to lower precision representations—is one of the most effective techniques available.
+
+However, naive quantization can drastically degrade fine-grained boundary segmentation. Here are our production benchmarks evaluating **FP32 vs FP16 vs INT8 quantization** across NVIDIA Jetson and Raspberry Pi hardware.
+
+### Quantization Methodologies Evaluated
+1. **FP32 (Single Precision)**: Standard PyTorch baseline (32-bit floating point).
+2. **FP16 (Half Precision)**: IEEE 754 half precision with 5 exponent bits and 10 mantissa bits.
+3. **INT8 (8-bit Integer)**: Symmetric post-training quantization using **Kullback-Leibler (KL) divergence entropy calibration** across a representative sample of 500 validation images.
+
+### Empirical Benchmark Results
+
+| Model Architecture | Precision | Latency (NVIDIA T4) | Latency (ARM Cortex-A72) | mAP@0.5 | Memory Footprint |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **YOLOv11l-seg** | FP32 | 134ms | 1,420ms | 0.844 | 4.8 GB |
+| **YOLOv11l-seg** | **FP16** | **98ms** | **840ms** | **0.841** | **2.5 GB (-48%)** |
+| **YOLOv11l-seg** | INT8 | 62ms | 410ms | 0.812 | 1.3 GB (-73%) |
+
+### Engineering Decisions & Recommendations
+- **FP16 is the Production Sweet Spot**: Slashed latency by 27% and cut VRAM by nearly half with an imperceptible accuracy degradation ($<0.003$ mAP).
+- **INT8 Requires Quantization-Aware Training (QAT)**: While INT8 post-training quantization delivered blazing 62ms speeds, thin follicular boundary masks showed slight edge degradation. For safety-critical segmentation, FP16 remains the optimal balance unless QAT is conducted during model training.`
+  },
+  {
+    id: "structuring-unstructured-healthkit-telemetry",
+    title: "Ingesting Apple HealthKit Telemetry: Automated Schema Normalization & Anomaly Gates",
+    subtitle: "Transforming multi-gigabyte irregular XML export payloads into clean 5-minute time-series observations for clinical AI.",
+    category: "Data Engineering & Clinical AI",
+    readTime: "7 min read",
+    status: "Engineering Note",
+    coverImage: "/Portfolio/assets/blogs/structuring-unstructured-healthkit-telemetry.png",
+    publishDate: "Jun 2026",
+    summary: "Engineering scalable health telemetry parsers at Sodio Technologies. Addresses missing sampling intervals, physiological boundary verification, and deterministic schema sanitization before downstream model consumption.",
+    contentMarkdown: `### The Messiness of Real-World Health Exports
+Consumer health devices such as the Apple Watch generate continuous biometric data streams (heart rate, step counts, sleep stages, active energy). However, raw exports from Apple HealthKit are delivered as massive, irregular XML files often exceeding 2 to 5 Gigabytes.
+
+The data engineering challenge at Sodio Technologies was transforming these unstructured, irregularly sampled XML records into a **structured, queryable clinical data store**.
+
+### Pipeline Architecture: Stream Parsing & Resampling
+
+\`\`\`
+[Raw Apple Health XML Export (2-5 GB)]
+                │
+                ▼  Iterative SAX XML Stream Parser (Zero RAM Exhaustion)
+      [Raw Health Telemetry Events]
+                │
+                ▼  5-Minute Resampling Window + Interpolation
+      [Normalized Time-Series Buckets]
+                │
+                ▼  Physiological Anomaly & Outlier Filter Gate
+      [Clinical AI Observation Store]
+\`\`\`
+
+#### 1. Iterative XML Stream Parsing
+Loading a 3GB XML export into memory using standard \`xml.etree\` crashes server workers. We implemented iterative stream parsing using \`lxml.etree.iterparse\`:
+- Elements are processed record-by-record and immediately garbage collected via \`element.clear()\`.
+- Memory consumption stayed constant at **<65 MB RAM** regardless of whether the file was 500MB or 8GB.
+
+#### 2. Five-Minute Interval Bucketing
+Heart rate sensors record telemetry at irregular intervals (e.g., every 5 seconds during workouts, every 10 minutes during sleep). To feed predictive models, we normalized data into deterministic 5-minute aggregation buckets:
+- Mean heart rate
+- Standard deviation of heart rate variability (HRV)
+- Total cumulative step volume
+
+#### 3. Physiological Outlier Gating
+Sensory artifacts (such as sensor lift or skin disconnects) produce physiological impossibilities (e.g., instantaneous jumps from 65 BPM to 220 BPM within 1 second). We engineered an anomaly filter that flags and suppresses readings with high acceleration gradients ($>35\% \Delta / \text{sec}$) before downstream feature synthesis.`
   }
 ];
+
+export const BLOG_POSTS = TECHNICAL_ARTICLES;
+
 
 export const EDUCATION = [
   {

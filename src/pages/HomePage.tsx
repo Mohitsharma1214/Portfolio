@@ -414,36 +414,66 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
         </div>
       </section>
 
-      {/* Latest Technical Writing Section */}
+      {/* Latest Technical Blog Section */}
       {latestArticle && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             whileHover={{ y: -2 }}
             className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xs hover:border-slate-300 transition-all"
           >
-            <div className="space-y-2 max-w-2xl">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-mono font-semibold uppercase tracking-wider text-blue-600">
-                  Featured Technical Analysis
-                </span>
-                <span className="text-slate-300">•</span>
-                <span className="text-xs font-mono text-slate-500">{latestArticle.readTime}</span>
+            <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center flex-1">
+              {latestArticle.coverImage && (
+                <NavLink
+                  to={`/blogs/${latestArticle.id}`}
+                  className="w-full sm:w-44 aspect-video rounded-xl overflow-hidden shrink-0 border border-slate-200 block group"
+                >
+                  <img
+                    src={latestArticle.coverImage}
+                    alt={latestArticle.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                </NavLink>
+              )}
+              <div className="space-y-2 max-w-2xl">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono font-semibold uppercase tracking-wider text-blue-600">
+                    Featured Technical Blog
+                  </span>
+                  <span className="text-slate-300">•</span>
+                  <span className="text-xs font-mono text-slate-500">{latestArticle.readTime}</span>
+                  <span className="text-slate-300">•</span>
+                  <span className="text-xs font-mono text-slate-500">{latestArticle.publishDate}</span>
+                </div>
+                <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug">
+                  <NavLink
+                    to={`/blogs/${latestArticle.id}`}
+                    className="hover:text-blue-600 transition-colors"
+                  >
+                    {latestArticle.title}
+                  </NavLink>
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-2">
+                  {latestArticle.summary}
+                </p>
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
-                {latestArticle.title}
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                {latestArticle.summary}
-              </p>
             </div>
-            <NavLink
-              to="/writing"
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold bg-slate-100 hover:bg-slate-200 text-slate-900 px-4 py-2.5 rounded-xl border border-slate-200 transition-all self-start md:self-auto shrink-0 shadow-xs"
-            >
-              <BookOpen className="w-4 h-4 text-blue-600" />
-              <span>Read Engineering Notes</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </NavLink>
+            <div className="flex items-center gap-3 self-start md:self-auto shrink-0">
+              <NavLink
+                to={`/blogs/${latestArticle.id}`}
+                className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl transition-all shadow-xs"
+              >
+                <span>Read Blog</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </NavLink>
+              <NavLink
+                to="/blogs"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 px-3.5 py-2.5 rounded-xl border border-slate-200 transition-all shadow-xs"
+              >
+                <BookOpen className="w-4 h-4 text-slate-600" />
+                <span>All Blogs (8)</span>
+              </NavLink>
+            </div>
           </motion.div>
         </section>
       )}
