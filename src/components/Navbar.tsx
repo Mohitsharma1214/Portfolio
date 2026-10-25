@@ -22,6 +22,22 @@ export const Navbar: React.FC = () => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
+  // Helper to determine active state including nested routes (e.g., /blogs/:id activates Blogs)
+  const isRouteActive = (linkPath: string) => {
+    if (linkPath === '/') {
+      return location.pathname === '/' || location.pathname === '';
+    }
+    if (linkPath === '/blogs') {
+      return (
+        location.pathname === '/blogs' ||
+        location.pathname.startsWith('/blogs/') ||
+        location.pathname === '/writing' ||
+        location.pathname.startsWith('/writing/')
+      );
+    }
+    return location.pathname === linkPath || location.pathname.startsWith(`${linkPath}/`);
+  };
+
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
@@ -67,7 +83,7 @@ export const Navbar: React.FC = () => {
           {/* Desktop Navigation Links with animated sliding pill */}
           <nav className="hidden md:flex items-center gap-1 bg-slate-100/90 p-1 rounded-full border border-slate-200/80 shadow-xs">
             {navLinks.map((link) => {
-              const isActive = location.pathname === link.path;
+              const isActive = isRouteActive(link.path);
               return (
                 <NavLink
                   key={link.path}
@@ -132,21 +148,22 @@ export const Navbar: React.FC = () => {
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden bg-white border-b border-slate-200 shadow-lg px-4 pt-3 pb-5 space-y-1 overflow-hidden"
           >
-            {navLinks.map((link) => (
-              <NavLink
-                key={link.path}
-                to={link.path}
-                className={({ isActive }) =>
-                  `block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+            {navLinks.map((link) => {
+              const isActive = isRouteActive(link.path);
+              return (
+                <NavLink
+                  key={link.path}
+                  to={link.path}
+                  className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     isActive
                       ? 'bg-blue-50 text-blue-700 font-semibold'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                  }`
-                }
-              >
-                {link.name}
-              </NavLink>
-            ))}
+                  }`}
+                >
+                  {link.name}
+                </NavLink>
+              );
+            })}
             <div className="pt-3 border-t border-slate-100 mt-2">
               <NavLink
                 to="/contact"

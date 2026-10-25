@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, ArrowUp } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from './SocialIcons';
@@ -7,9 +7,25 @@ import { PERSONAL_INFO } from '../data/portfolioData';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
+  const location = useLocation();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const isRouteActive = (linkPath: string) => {
+    if (linkPath === '/') {
+      return location.pathname === '/' || location.pathname === '';
+    }
+    if (linkPath === '/blogs') {
+      return (
+        location.pathname === '/blogs' ||
+        location.pathname.startsWith('/blogs/') ||
+        location.pathname === '/writing' ||
+        location.pathname.startsWith('/writing/')
+      );
+    }
+    return location.pathname === linkPath || location.pathname.startsWith(`${linkPath}/`);
   };
 
   const footerNavLinks = [
@@ -42,19 +58,20 @@ export const Footer: React.FC = () => {
 
           {/* Navigation Links */}
           <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-slate-600 font-medium">
-            {footerNavLinks.map((link) => (
-              <NavLink
-                key={link.path}
-                to={link.path}
-                className={({ isActive }) =>
-                  `transition-colors hover:text-blue-600 ${
+            {footerNavLinks.map((link) => {
+              const isActive = isRouteActive(link.path);
+              return (
+                <NavLink
+                  key={link.path}
+                  to={link.path}
+                  className={`transition-colors hover:text-blue-600 ${
                     isActive ? 'text-blue-600 font-semibold' : 'text-slate-600'
-                  }`
-                }
-              >
-                {link.name}
-              </NavLink>
-            ))}
+                  }`}
+                >
+                  {link.name}
+                </NavLink>
+              );
+            })}
           </div>
 
           {/* Right Social & Back-to-Top */}
