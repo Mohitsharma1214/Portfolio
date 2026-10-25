@@ -150,6 +150,9 @@ async function generateAllRoutes() {
 
   console.log(`Successfully generated all ${allRoutes.length} clean static route pages.`);
 
+  // Ensure .nojekyll exists in dist/ to disable Jekyll on GitHub Pages
+  fs.writeFileSync(path.join(distDir, '.nojekyll'), '', 'utf8');
+
   // Also synchronize sitemap and robots.txt in dist/ and public/
   await runSitemapRobot();
 }
