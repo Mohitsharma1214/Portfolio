@@ -1,0 +1,59 @@
+name: 🤖 Sitemap Robot (Auto-Sync & Search Engine Ping)
+
+on:
+  schedule:
+    # Run every 6 hours to check if new blogs were published in Supabase
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+  repository_dispatch:
+    types: [blog_published, sync_sitemap]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "sitemap-robot"
+  cancel-in-progress: false
+
+jobs:
+  sync-sitemap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run Sitemap Robot
+        run: node scripts/sitemap-robot.js --ping
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://zxovekhtcajtefedkkee.supabase.co' }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY || 'sb_publishable_JxI18d2ketnFvFZ6Yn0Beg_yXpmd7uJ' }}
+
+      - name: Check for Sitemap & Robots Changes
+        id: git_status
+        run: |
+          if [ -n "$(git status --porcelain public/sitemap.xml public/robots.txt)" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Changes detected in sitemap.xml or robots.txt."
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No new blogs or sitemap changes detected."
+          fi
+
+      - name: Commit & Push Updated Sitemap
+        if: steps.git_status.outputs.changed == 'true'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/sitemap.xml public/robots.txt
+          git commit -m "🤖 robot(sitemap): auto-sync sitemap.xml with newly published blogs [skip ci]"
+          git push origin main

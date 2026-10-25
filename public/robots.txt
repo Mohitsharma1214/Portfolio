@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin/
 
+# Search Engine Crawlers & Sitemaps
 Sitemap: https://mohitsharma1214.github.io/Portfolio/sitemap.xml

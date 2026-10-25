@@ -23,7 +23,13 @@ import {
   Fingerprint,
   Upload,
   UploadCloud,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Bot,
+  RefreshCw,
+  Copy,
+  Globe,
+  Radio,
+  X,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { BlogService } from '../services/blogService';
@@ -83,6 +89,18 @@ export const AdminPage: React.FC = () => {
   const [coverUploadError, setCoverUploadError] = useState<string | null>(null);
   const [coverUploadSuccess, setCoverUploadSuccess] = useState<string | null>(null);
   const [contentImageUploading, setContentImageUploading] = useState(false);
+
+  // Sitemap Robot State
+  const [sitemapRobotModalOpen, setSitemapRobotModalOpen] = useState(false);
+  const [sitemapRobotStatus, setSitemapRobotStatus] = useState<{
+    status: 'idle' | 'syncing' | 'synced';
+    lastPinged?: string[];
+    lastBlogSlug?: string;
+    timestamp?: string;
+  }>({ status: 'idle' });
+  const [isManualPinging, setIsManualPinging] = useState(false);
+  const [manualPingSuccess, setManualPingSuccess] = useState(false);
+  const [sitemapCopied, setSitemapCopied] = useState(false);
 
   // Check brute force lock
   const isLocked = lockedUntil !== null && Date.now() < lockedUntil;
@@ -377,6 +395,19 @@ export const AdminPage: React.FC = () => {
 
       setSaveSuccess(true);
       await loadAdminArticles();
+
+      // 🤖 Trigger Sitemap Robot for newly added or updated published blog
+      if (published) {
+        BlogService.pingSearchEnginesForBlog(slug.trim()).then((res) => {
+          setSitemapRobotStatus({
+            status: 'synced',
+            lastPinged: res.pinged,
+            lastBlogSlug: slug.trim(),
+            timestamp: new Date().toLocaleTimeString(),
+          });
+        });
+      }
+
       setTimeout(() => {
         setSaveSuccess(false);
       }, 3000);
@@ -384,6 +415,43 @@ export const AdminPage: React.FC = () => {
       setSaveLoading(false);
     }
   };
+
+  // Manual Search Engine Ping Handler
+  const handleManualPing = async () => {
+    setIsManualPinging(true);
+    setManualPingSuccess(false);
+    try {
+      await BlogService.pingSearchEnginesForBlog(slug || 'blogs');
+      setManualPingSuccess(true);
+      setTimeout(() => setManualPingSuccess(false), 3000);
+    } finally {
+      setIsManualPinging(false);
+    }
+  };
+
+  // Dynamically constructed full sitemap XML representation for the preview modal
+  const fullSitemapXml = useMemo(() => {
+    const today = new Date().toISOString().split('T')[0];
+    const coreRoutes = [
+      { loc: 'https://mohitsharma1214.github.io/Portfolio/', lastmod: today, changefreq: 'weekly', priority: '1.0' },
+      { loc: 'https://mohitsharma1214.github.io/Portfolio/about/', lastmod: today, changefreq: 'monthly', priority: '0.9' },
+      { loc: 'https://mohitsharma1214.github.io/Portfolio/projects/', lastmod: today, changefreq: 'weekly', priority: '0.9' },
+      { loc: 'https://mohitsharma1214.github.io/Portfolio/experience/', lastmod: today, changefreq: 'monthly', priority: '0.8' },
+      { loc: 'https://mohitsharma1214.github.io/Portfolio/skills/', lastmod: today, changefreq: 'monthly', priority: '0.8' },
+      { loc: 'https://mohitsharma1214.github.io/Portfolio/blogs/', lastmod: today, changefreq: 'weekly', priority: '0.9' },
+      { loc: 'https://mohitsharma1214.github.io/Portfolio/contact/', lastmod: today, changefreq: 'monthly', priority: '0.8' },
+    ];
+    const blogUrls = articles
+      .filter((a) => (a as BlogMetadata & { published?: boolean }).published !== false)
+      .map((a) => {
+        const lastmod = (a.createdAt || a.publishDate || today).split('T')[0];
+        return `  <url>\n    <loc>https://mohitsharma1214.github.io/Portfolio/blogs/${a.id}/</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.85</priority>\n  </url>`;
+      });
+    const coreUrls = coreRoutes.map(
+      (r) => `  <url>\n    <loc>${r.loc}</loc>\n    <lastmod>${r.lastmod}</lastmod>\n    <changefreq>${r.changefreq}</changefreq>\n    <priority>${r.priority}</priority>\n  </url>`
+    );
+    return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${coreUrls.join('\n')}\n${blogUrls.join('\n')}\n</urlset>`;
+  }, [articles]);
 
   // Insert markdown tag helper
   const insertMarkdown = (prefix: string, suffix: string = '') => {
@@ -637,6 +705,18 @@ export const AdminPage: React.FC = () => {
             </button>
           )}
 
+          {/* 🤖 Sitemap Robot Control Trigger */}
+          <button
+            type="button"
+            onClick={() => setSitemapRobotModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 transition-colors shadow-xs"
+            title="Inspect and manage automated Sitemap Robot"
+          >
+            <Bot className="w-3.5 h-3.5 text-blue-600" />
+            <span>Sitemap Robot</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block ml-0.5" />
+          </button>
+
           <Link
             to="/blogs"
             target="_blank"
@@ -677,14 +757,65 @@ export const AdminPage: React.FC = () => {
               <div className="text-xs font-mono text-slate-500 uppercase">Categories</div>
               <div className="text-2xl font-extrabold text-indigo-600 mt-1">{existingCategories.length}</div>
             </div>
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-              <div className="text-xs font-mono text-slate-500 uppercase">Security</div>
-              <div className="text-xs font-mono font-bold text-emerald-700 mt-2 flex items-center gap-1">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>RLS Email Lock</span>
+            <div
+              onClick={() => setSitemapRobotModalOpen(true)}
+              className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs hover:border-blue-300 hover:shadow-sm cursor-pointer transition-all group"
+              title="Click to view automated sitemap & crawler management"
+            >
+              <div className="flex items-center justify-between">
+                <div className="text-xs font-mono text-slate-500 uppercase">Sitemap Robot</div>
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Sitemap Robot Active" />
+              </div>
+              <div className="text-2xl font-extrabold text-blue-600 mt-1 flex items-baseline gap-1.5">
+                <span>{articles.filter((a) => (a as BlogMetadata & { published?: boolean }).published !== false).length + 7}</span>
+                <span className="text-xs font-normal text-slate-500">URLs indexed</span>
+              </div>
+              <div className="text-[11px] text-slate-500 mt-1 flex items-center gap-1 group-hover:text-blue-600 transition-colors font-medium">
+                <Bot className="w-3 h-3 text-blue-600" />
+                <span>Auto-sync &amp; crawlers →</span>
               </div>
             </div>
           </div>
+
+          {/* Sitemap Robot Notification Banner */}
+          {sitemapRobotStatus.status === 'synced' && sitemapRobotStatus.lastBlogSlug && (
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-blue-900 shadow-xs animate-in fade-in duration-300">
+              <div className="flex items-start sm:items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                  <Bot className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="font-bold flex items-center gap-1.5 text-blue-950">
+                    <span>Sitemap Robot: Synchronized</span>
+                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">
+                      Auto-Registered
+                    </span>
+                  </div>
+                  <p className="text-slate-600 text-[11px] mt-0.5">
+                    <code>/blogs/{sitemapRobotStatus.lastBlogSlug}/</code> registered into sitemap pool. Search engine crawlers (Google &amp; Bing) notified at {sitemapRobotStatus.timestamp}.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <a
+                  href={`https://search.google.com/search-console/inspect?resource_id=https%3A%2F%2Fmohitsharma1214.github.io%2FPortfolio%2F&page_url=https%3A%2F%2Fmohitsharma1214.github.io%2FPortfolio%2Fblogs%2F${sitemapRobotStatus.lastBlogSlug}%2F`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 bg-white hover:bg-slate-50 text-blue-700 font-semibold rounded-xl border border-blue-200 inline-flex items-center gap-1.5 transition-colors shadow-xs"
+                >
+                  <span>Inspect in Search Console</span>
+                  <ExternalLink className="w-3 h-3 text-slate-400" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setSitemapRobotModalOpen(true)}
+                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-xs transition-colors"
+                >
+                  View Sitemap XML
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Search & Filter Bar */}
           <div className="bg-white p-4 rounded-2xl border border-slate-200 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between shadow-xs">
@@ -883,6 +1014,40 @@ export const AdminPage: React.FC = () => {
               >
                 View Live &rarr;
               </Link>
+            </motion.div>
+          )}
+
+          {/* Sitemap Robot Notification inside Editor */}
+          {sitemapRobotStatus.status === 'synced' && sitemapRobotStatus.lastBlogSlug === slug && (
+            <motion.div
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl text-xs text-blue-900 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-xs"
+            >
+              <div className="flex items-center gap-2">
+                <Bot className="w-4 h-4 text-blue-600 shrink-0" />
+                <span>
+                  <strong>Sitemap Robot:</strong> <code>/blogs/{slug}/</code> added to sitemap pool. Googlebot &amp; Bingbot notified at {sitemapRobotStatus.timestamp}.
+                </span>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <a
+                  href={`https://search.google.com/search-console/inspect?resource_id=https%3A%2F%2Fmohitsharma1214.github.io%2FPortfolio%2F&page_url=https%3A%2F%2Fmohitsharma1214.github.io%2FPortfolio%2Fblogs%2F${slug}%2F`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2.5 py-1 bg-white hover:bg-slate-50 text-blue-700 font-semibold rounded-lg border border-blue-200 inline-flex items-center gap-1 transition-colors"
+                >
+                  <span>Search Console</span>
+                  <ExternalLink className="w-3 h-3 text-slate-400" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setSitemapRobotModalOpen(true)}
+                  className="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-xs transition-colors"
+                >
+                  View Sitemap
+                </button>
+              </div>
             </motion.div>
           )}
 
@@ -1333,6 +1498,201 @@ export const AdminPage: React.FC = () => {
             </div>
           </div>
         </form>
+      )}
+      {/* 🤖 Search Engine Sitemap Robot Inspection & Control Modal */}
+      {sitemapRobotModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200"
+          onClick={() => setSitemapRobotModalOpen(false)}
+        >
+          <div
+            className="bg-white text-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh] my-auto animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-xs">
+                  <Bot className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-base font-extrabold text-slate-950 flex items-center gap-2">
+                    <span>Search Engine Sitemap Robot</span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                      LIVE
+                    </span>
+                  </h2>
+                  <p className="text-xs text-slate-500">
+                    Automated indexing coordinator for Googlebot, Bingbot &amp; web crawlers
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSitemapRobotModalOpen(false)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 overflow-y-auto space-y-6">
+              {/* Quick Status Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 shadow-xs">
+                  <div className="text-[10px] font-mono text-slate-500 uppercase">Engine Status</div>
+                  <div className="text-sm font-bold text-emerald-700 mt-1 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>Auto-Sync Active</span>
+                  </div>
+                </div>
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 shadow-xs">
+                  <div className="text-[10px] font-mono text-slate-500 uppercase">Total URLs Mapped</div>
+                  <div className="text-sm font-bold text-blue-700 mt-1 flex items-baseline gap-1">
+                    <span>{articles.filter((a) => (a as BlogMetadata & { published?: boolean }).published !== false).length + 7}</span>
+                    <span className="text-[10px] font-normal text-slate-500">(7 core + {articles.filter((a) => (a as BlogMetadata & { published?: boolean }).published !== false).length} blogs)</span>
+                  </div>
+                </div>
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 shadow-xs">
+                  <div className="text-[10px] font-mono text-slate-500 uppercase">Robots Directive</div>
+                  <div className="text-sm font-bold text-slate-800 mt-1 font-mono text-xs truncate">
+                    Disallow: /admin/
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Controls */}
+              <div className="space-y-2">
+                <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                  <Radio className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Crawler Notification &amp; Webmaster Links</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={handleManualPing}
+                    disabled={isManualPinging}
+                    className="p-3 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl text-left text-blue-900 transition-colors flex items-center justify-between"
+                  >
+                    <div>
+                      <div className="font-semibold text-xs flex items-center gap-1.5">
+                        <RefreshCw className={`w-3.5 h-3.5 text-blue-600 ${isManualPinging ? 'animate-spin' : ''}`} />
+                        <span>Ping Google &amp; Bing Crawlers</span>
+                      </div>
+                      <div className="text-[10px] text-blue-700/80 mt-0.5">
+                        {manualPingSuccess ? '✓ Pings dispatched successfully!' : 'Dispatch re-crawl signal now'}
+                      </div>
+                    </div>
+                    {isManualPinging && (
+                      <div className="w-3.5 h-3.5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin shrink-0" />
+                    )}
+                  </button>
+
+                  <a
+                    href="https://search.google.com/search-console/sitemaps?resource_id=https%3A%2F%2Fmohitsharma1214.github.io%2FPortfolio%2F"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-left text-slate-800 transition-colors flex items-center justify-between"
+                  >
+                    <div>
+                      <div className="font-semibold text-xs flex items-center gap-1.5">
+                        <Globe className="w-3.5 h-3.5 text-slate-600" />
+                        <span>Google Search Console</span>
+                      </div>
+                      <div className="text-[10px] text-slate-500 mt-0.5">
+                        Manage &amp; verify submitted sitemaps
+                      </div>
+                    </div>
+                    <ExternalLink className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  </a>
+
+                  <a
+                    href="https://mohitsharma1214.github.io/Portfolio/sitemap.xml"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 flex items-center justify-between transition-colors"
+                  >
+                    <span>View Live sitemap.xml</span>
+                    <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                  </a>
+
+                  <a
+                    href="https://mohitsharma1214.github.io/Portfolio/robots.txt"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 flex items-center justify-between transition-colors"
+                  >
+                    <span>View Live robots.txt</span>
+                    <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                  </a>
+                </div>
+              </div>
+
+              {/* Live XML Output */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-900 font-mono">
+                    Live Generated sitemap.xml
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(fullSitemapXml);
+                      setSitemapCopied(true);
+                      setTimeout(() => setSitemapCopied(false), 2000);
+                    }}
+                    className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-lg border border-blue-200 transition-colors"
+                  >
+                    {sitemapCopied ? (
+                      <>
+                        <Check className="w-3 h-3 text-emerald-600" />
+                        <span className="text-emerald-700">Copied XML</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3 h-3" />
+                        <span>Copy XML</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+                <div className="bg-slate-950 text-slate-200 rounded-xl p-3.5 font-mono text-[11px] leading-relaxed max-h-48 overflow-y-auto border border-slate-800 shadow-inner">
+                  <pre className="whitespace-pre-wrap">{fullSitemapXml}</pre>
+                </div>
+              </div>
+
+              {/* Automation Architecture Note */}
+              <div className="p-3.5 bg-blue-50/70 border border-blue-200 rounded-xl text-xs text-blue-900 space-y-1">
+                <div className="font-bold flex items-center gap-1.5 text-blue-950">
+                  <Bot className="w-3.5 h-3.5 text-blue-600" />
+                  <span>How the Robot Automates New Blog Indexing</span>
+                </div>
+                <ul className="text-[11px] text-slate-600 space-y-1 list-disc list-inside">
+                  <li><strong>Instant Crawler Ping:</strong> Whenever you click &quot;Save &amp; Publish&quot;, Googlebot and Bingbot are immediately pinged with your new article slug.</li>
+                  <li><strong>Automated Cron Scanner:</strong> The GitHub Actions robot runs every 6 hours via <code>.github/workflows/sitemap-robot.yml</code> to sync any new articles added to Supabase.</li>
+                  <li><strong>Prerendered HTML:</strong> During site build, each blog gets an individual SEO-optimized HTML entry with OpenGraph tags and canonical URLs.</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="bg-slate-50 border-t border-slate-200 px-6 py-3 flex items-center justify-between">
+              <span className="text-xs text-slate-500 font-mono">
+                Mohit Sharma • AI Portfolio Systems
+              </span>
+              <button
+                type="button"
+                onClick={() => setSitemapRobotModalOpen(false)}
+                className="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs rounded-xl shadow-xs transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

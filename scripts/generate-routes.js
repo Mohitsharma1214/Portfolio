@@ -1,12 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { fetchPublishedBlogs, runSitemapRobot } from './sitemap-robot.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const distDir = path.resolve(__dirname, '../dist');
 
-const routes = [
+const staticRoutes = [
   {
     path: 'about',
     title: 'About Mohit Sharma | AI Engineer & Systems Specialist',
@@ -55,129 +56,105 @@ const routes = [
     description: 'Administrative portal for creating, editing, and publishing technical blog posts.',
     canonical: 'https://mohitsharma1214.github.io/Portfolio/admin/',
   },
-  // Individual Blog Post Routes
-  {
-    path: 'blogs/edge-fatigue-tracking-sub-150ms',
-    title: 'Designing Low-Latency Edge Vision: Real-Time Fatigue Tracking Under 150ms | Mohit Sharma',
-    description: 'Technical breakdown of the Driver Drowsiness Detection System on Raspberry Pi (Govt. of India SW-19841/2024). Eye Aspect Ratio geometry vs temporal 3D CNNs.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/blogs/edge-fatigue-tracking-sub-150ms/',
-    image: 'https://mohitsharma1214.github.io/Portfolio/assets/blogs/edge-fatigue-tracking-sub-150ms.png',
-  },
-  {
-    path: 'blogs/scaling-medical-cv-tensorrt-5000-images',
-    title: 'Scaling Medical Computer Vision to 5,000 Images/Day with TensorRT & FastAPI | Mohit Sharma',
-    description: 'Production lessons learned at Hairscope serving deep learning dermatology inference at 5,000+ daily images with <120ms P95 latency and async semaphores.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/blogs/scaling-medical-cv-tensorrt-5000-images/',
-    image: 'https://mohitsharma1214.github.io/Portfolio/assets/blogs/scaling-medical-cv-tensorrt-5000-images.png',
-  },
-  {
-    path: 'blogs/strictly-grounded-rag-logistics',
-    title: 'Strictly Grounded RAG: Eliminating Hallucinations in Logistics Document Extraction | Mohit Sharma',
-    description: 'System design choices behind Ultra-Doc-Intelligence: document UUID metadata isolation, 40/60 hybrid confidence scoring, and 0.35 runtime cutoff gates.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/blogs/strictly-grounded-rag-logistics/',
-    image: 'https://mohitsharma1214.github.io/Portfolio/assets/blogs/strictly-grounded-rag-logistics.png',
-  },
-  {
-    path: 'blogs/microscopic-hair-segmentation-yolov11-maskrcnn',
-    title: 'Instance Segmentation at Scale: YOLOv11-seg vs Mask R-CNN in Microscopic Trichology | Mohit Sharma',
-    description: 'Engineering breakdown on segmenting overlapping microscopic hair strands under polarized dermatological imaging with 0.84 mAP and sub-120ms TensorRT FP16.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/blogs/microscopic-hair-segmentation-yolov11-maskrcnn/',
-    image: 'https://mohitsharma1214.github.io/Portfolio/assets/blogs/microscopic-hair-segmentation-yolov11-maskrcnn.png',
-  },
-  {
-    path: 'blogs/autonomous-qa-agent-orchestration',
-    title: 'Building Autonomous Testing Agents: Stateful Multi-Turn Planning with Function Calling | Mohit Sharma',
-    description: 'State-machine transition loops, DOM action tool-calling definitions, and exponential backoff preventing reasoning loops in autonomous QA agents.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/blogs/autonomous-qa-agent-orchestration/',
-    image: 'https://mohitsharma1214.github.io/Portfolio/assets/blogs/autonomous-qa-agent-orchestration.png',
-  },
-  {
-    path: 'blogs/realtime-recommendation-systems-two-stage',
-    title: 'Low-Latency Recommendation Engines: Two-Stage Candidate Retrieval and Real-Time Ranking | Mohit Sharma',
-    description: 'Two-stage candidate retrieval and ranking pipeline achieving sub-68ms P95 recommendations using PyTorch embeddings, ANN search, and diversity penalty.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/blogs/realtime-recommendation-systems-two-stage/',
-    image: 'https://mohitsharma1214.github.io/Portfolio/assets/blogs/realtime-recommendation-systems-two-stage.png',
-  },
-  {
-    path: 'blogs/onnx-fp16-vs-int8-quantization-benchmarks',
-    title: 'Model Quantization in Practice: FP16 vs INT8 Calibration for Real-Time Edge Vision | Mohit Sharma',
-    description: 'Empirical benchmarks comparing FP32, FP16, and INT8 execution on NVIDIA GPUs and ARM edge processors with 48% VRAM reduction.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/blogs/onnx-fp16-vs-int8-quantization-benchmarks/',
-    image: 'https://mohitsharma1214.github.io/Portfolio/assets/blogs/onnx-fp16-vs-int8-quantization-benchmarks.png',
-  },
-  {
-    path: 'blogs/structuring-unstructured-healthkit-telemetry',
-    title: 'Ingesting Apple HealthKit Telemetry: Automated Schema Normalization & Anomaly Gates | Mohit Sharma',
-    description: 'Transforming multi-gigabyte irregular Apple HealthKit XML exports into normalized 5-minute time-series buckets for downstream clinical AI pipelines.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/blogs/structuring-unstructured-healthkit-telemetry/',
-    image: 'https://mohitsharma1214.github.io/Portfolio/assets/blogs/structuring-unstructured-healthkit-telemetry.png',
-  },
 ];
 
-const baseHtmlPath = path.join(distDir, 'index.html');
-if (!fs.existsSync(baseHtmlPath)) {
-  console.error('dist/index.html does not exist. Run vite build first.');
-  process.exit(1);
-}
-
-const baseHtml = fs.readFileSync(baseHtmlPath, 'utf8');
-
-for (const route of routes) {
-  const routeDir = path.join(distDir, route.path);
-  fs.mkdirSync(routeDir, { recursive: true });
-
-  let routeHtml = baseHtml;
-
-  // Replace Title
-  routeHtml = routeHtml.replace(
-    /<title>.*?<\/title>/i,
-    `<title>${route.title}</title>`
-  );
-  routeHtml = routeHtml.replace(
-    /<meta name="title" content=".*?" \/>/i,
-    `<meta name="title" content="${route.title}" />`
-  );
-
-  // Replace Description
-  routeHtml = routeHtml.replace(
-    /<meta name="description" content=".*?" \/>/i,
-    `<meta name="description" content="${route.description}" />`
-  );
-
-  // Replace Canonical URL
-  routeHtml = routeHtml.replace(
-    /<link rel="canonical" href=".*?" \/>/i,
-    `<link rel="canonical" href="${route.canonical}" />`
-  );
-
-  // Replace OG / Twitter URL
-  routeHtml = routeHtml.replace(
-    /<meta property="og:url" content=".*?" \/>/i,
-    `<meta property="og:url" content="${route.canonical}" />`
-  );
-  routeHtml = routeHtml.replace(
-    /<meta name="twitter:url" content=".*?" \/>/i,
-    `<meta name="twitter:url" content="${route.canonical}" />`
-  );
-
-  // Replace OG / Twitter Image if specific image provided
-  if (route.image) {
-    routeHtml = routeHtml.replace(
-      /<meta property="og:image" content=".*?" \/>/i,
-      `<meta property="og:image" content="${route.image}" />`
-    );
-    routeHtml = routeHtml.replace(
-      /<meta property="og:image:secure_url" content=".*?" \/>/i,
-      `<meta property="og:image:secure_url" content="${route.image}" />`
-    );
-    routeHtml = routeHtml.replace(
-      /<meta name="twitter:image" content=".*?" \/>/i,
-      `<meta name="twitter:image" content="${route.image}" />`
-    );
+async function generateAllRoutes() {
+  const baseHtmlPath = path.join(distDir, 'index.html');
+  if (!fs.existsSync(baseHtmlPath)) {
+    console.error('dist/index.html does not exist. Run vite build first.');
+    process.exit(1);
   }
 
-  fs.writeFileSync(path.join(routeDir, 'index.html'), routeHtml, 'utf8');
-  console.log(`Generated clean static route: dist/${route.path}/index.html`);
+  const baseHtml = fs.readFileSync(baseHtmlPath, 'utf8');
+
+  // Fetch blogs dynamically from Supabase
+  const blogs = await fetchPublishedBlogs();
+
+  const blogRoutes = blogs.map((blog) => {
+    const rawDesc = blog.subtitle || blog.summary || 'Technical breakdown and production engineering analysis by Mohit Sharma.';
+    // Clean description to avoid HTML/quotes breaking attributes
+    const cleanDesc = rawDesc.replace(/["\n\r]/g, ' ').substring(0, 160).trim();
+    const coverImage = blog.cover_image
+      ? (blog.cover_image.startsWith('http') ? blog.cover_image : `https://mohitsharma1214.github.io${blog.cover_image}`)
+      : `https://mohitsharma1214.github.io/Portfolio/assets/blogs/${blog.id}.png`;
+
+    return {
+      path: `blogs/${blog.id}`,
+      title: `${blog.title} | Mohit Sharma`,
+      description: cleanDesc,
+      canonical: `https://mohitsharma1214.github.io/Portfolio/blogs/${blog.id}/`,
+      image: coverImage,
+    };
+  });
+
+  const allRoutes = [...staticRoutes, ...blogRoutes];
+
+  console.log(`Generating static routes for ${allRoutes.length} pages (${blogRoutes.length} blog posts)...`);
+
+  for (const route of allRoutes) {
+    const routeDir = path.join(distDir, route.path);
+    fs.mkdirSync(routeDir, { recursive: true });
+
+    let routeHtml = baseHtml;
+
+    // Replace Title
+    routeHtml = routeHtml.replace(
+      /<title>.*?<\/title>/i,
+      `<title>${route.title}</title>`
+    );
+    routeHtml = routeHtml.replace(
+      /<meta name="title" content=".*?" \/>/i,
+      `<meta name="title" content="${route.title}" />`
+    );
+
+    // Replace Description
+    routeHtml = routeHtml.replace(
+      /<meta name="description" content=".*?" \/>/i,
+      `<meta name="description" content="${route.description}" />`
+    );
+
+    // Replace Canonical URL
+    routeHtml = routeHtml.replace(
+      /<link rel="canonical" href=".*?" \/>/i,
+      `<link rel="canonical" href="${route.canonical}" />`
+    );
+
+    // Replace OG / Twitter URL
+    routeHtml = routeHtml.replace(
+      /<meta property="og:url" content=".*?" \/>/i,
+      `<meta property="og:url" content="${route.canonical}" />`
+    );
+    routeHtml = routeHtml.replace(
+      /<meta name="twitter:url" content=".*?" \/>/i,
+      `<meta name="twitter:url" content="${route.canonical}" />`
+    );
+
+    // Replace OG / Twitter Image if specific image provided
+    if (route.image) {
+      routeHtml = routeHtml.replace(
+        /<meta property="og:image" content=".*?" \/>/i,
+        `<meta property="og:image" content="${route.image}" />`
+      );
+      routeHtml = routeHtml.replace(
+        /<meta property="og:image:secure_url" content=".*?" \/>/i,
+        `<meta property="og:image:secure_url" content="${route.image}" />`
+      );
+      routeHtml = routeHtml.replace(
+        /<meta name="twitter:image" content=".*?" \/>/i,
+        `<meta name="twitter:image" content="${route.image}" />`
+      );
+    }
+
+    fs.writeFileSync(path.join(routeDir, 'index.html'), routeHtml, 'utf8');
+  }
+
+  console.log(`Successfully generated all ${allRoutes.length} clean static route pages.`);
+
+  // Also synchronize sitemap and robots.txt in dist/ and public/
+  await runSitemapRobot();
 }
 
-console.log('Successfully generated all clean static route pages for GitHub Pages.');
+generateAllRoutes().catch((err) => {
+  console.error('Error generating routes:', err);
+  process.exit(1);
+});
