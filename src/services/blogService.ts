@@ -260,7 +260,9 @@ export const BlogService = {
   },
 
   /**
-   * Admin: Inserts a new blog post into Supabase
+   * Admin: Creates or updates a blog post in Supabase using UPSERT.
+   * If an article with the same unique id/slug already exists, it updates it
+   * instead of throwing duplicate key error.
    */
   async createBlog(
     blog: BlogFull & { published?: boolean }
@@ -284,9 +286,21 @@ export const BlogService = {
         published: blog.published ?? true,
       };
 
-      const { error } = await supabase.from('blogs').insert(dbRow);
+      const { error } = await supabase
+        .from('blogs')
+        .upsert(dbRow, { onConflict: 'id' });
 
       if (error) {
+        if (
+          error.code === '23505' ||
+          error.message.toLowerCase().includes('duplicate key') ||
+          error.message.toLowerCase().includes('unique constraint')
+        ) {
+          return {
+            success: false,
+            error: `An article with the slug URL "/blogs/${blog.id}" already exists. Please choose a different URL slug or edit the existing article.`,
+          };
+        }
         return { success: false, error: error.message };
       }
 

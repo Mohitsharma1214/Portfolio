@@ -365,6 +365,8 @@ export const AdminPage: React.FC = () => {
           setEditorError(res.error || 'Failed to create blog');
           return;
         }
+        // Seamlessly switch to edit mode once saved so subsequent saves update the article
+        setEditorMode('edit');
       } else {
         const res = await BlogService.updateBlog(slug, blogPayload);
         if (!res.success) {
@@ -420,6 +422,11 @@ export const AdminPage: React.FC = () => {
     const set = new Set(articles.map((a) => a.category).filter(Boolean));
     return Array.from(set);
   }, [articles]);
+
+  const isSlugExisting = useMemo(() => {
+    if (!slug.trim()) return false;
+    return articles.some((a) => a.id.toLowerCase() === slug.trim().toLowerCase());
+  }, [slug, articles]);
 
   // 1. Loading State
   if (authLoading) {
@@ -923,6 +930,20 @@ export const AdminPage: React.FC = () => {
                   placeholder="auto-generated-slug"
                   className="w-full px-3.5 py-2 font-mono text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-800"
                 />
+                {editorMode === 'create' && isSlugExisting && (
+                  <div className="p-2 bg-amber-50 border border-amber-200 rounded-lg text-[11px] text-amber-800 flex items-center justify-between">
+                    <span>
+                      Notice: Article <strong>/{slug}</strong> already exists. Saving will update it.
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setEditorMode('edit')}
+                      className="font-bold text-blue-600 hover:underline shrink-0 ml-2"
+                    >
+                      Switch to Edit Mode
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-1.5">
