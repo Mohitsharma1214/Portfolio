@@ -109,10 +109,17 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
                 </a>
               )}
               {project.id === 'driver-drowsiness-detection' && (
-                <div className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-900 bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5 font-mono">
+                <a
+                  href={project.docUrl || "https://copyright.gov.in/Documents/ERegister/E-Register_December_2024.pdf#page=91"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-950 bg-amber-50 hover:bg-amber-100 border border-amber-300 rounded-lg px-3 py-1.5 font-mono transition-all shadow-2xs hover:shadow-xs group"
+                  title="View official Govt. of India E-Register Gazette (Page 91)"
+                >
                   <Award className="w-3.5 h-3.5 text-amber-600" />
                   <span>Govt. of India Copyright: SW-19841/2024</span>
-                </div>
+                  <ExternalLink className="w-3 h-3 text-amber-600 group-hover:translate-x-0.5 transition-transform" />
+                </a>
               )}
             </div>
           </div>

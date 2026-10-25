@@ -10,6 +10,7 @@ export interface ProjectCaseStudy {
   featured: boolean;
   repoUrl?: string;
   demoUrl?: string;
+  docUrl?: string;
   isProprietary?: boolean;
   sections: {
     overview: string;
@@ -65,6 +66,7 @@ export const PERSONAL_INFO = {
   linkedin: "https://www.linkedin.com/in/mohitsharmas-",
   github: "https://github.com/mohitsharma1214",
   copyrightId: "SW-19841/2024",
+  copyrightDocUrl: "https://copyright.gov.in/Documents/ERegister/E-Register_December_2024.pdf#page=91",
   metrics: [
     { label: "Production Throughput", value: "5,000+", subtext: "images processed / day" },
     { label: "Inference Latency", value: "<120ms", subtext: "real-time production SLA" },
@@ -90,6 +92,7 @@ export const PROJECTS: ProjectCaseStudy[] = [
     metrics: ["<150ms End-to-End Latency", "Govt. of India Copyright (SW-19841/2024)", "100% Offline Edge Autonomy"],
     featured: true,
     repoUrl: "https://github.com/Mohitsharma1214/Driver-Drowsiness-Detection-System",
+    docUrl: "https://copyright.gov.in/Documents/ERegister/E-Register_December_2024.pdf#page=91",
     sections: {
       overview: "An autonomous, edge-deployed driver safety system designed for real-time operation in commercial vehicles. The system continuously evaluates driver facial landmarks via a camera feed to detect micro-sleep episodes, yawning, and head tilts without requiring cloud connectivity.",
       problem: "Long-haul drivers experience sudden fatigue episodes. Existing camera telematics that stream video to cloud servers incur network latency (500ms to 3s) and fail completely when vehicles pass through tunnels or remote zones. The system needed to process continuous 30fps frames locally on low-power ARM hardware (Raspberry Pi) with strict memory bounds.",

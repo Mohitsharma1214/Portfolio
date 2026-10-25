@@ -87,10 +87,19 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) =
             <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold">Instance Seg</div>
             <div className="text-sm font-bold text-slate-900 mt-1">0.84 mAP Microscopic</div>
           </div>
-          <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-xs">
-            <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold">Govt. Copyright</div>
+          <a
+            href="https://copyright.gov.in/Documents/ERegister/E-Register_December_2024.pdf#page=91"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white border border-slate-200 p-4 rounded-xl shadow-xs hover:border-amber-400 hover:shadow-sm transition-all group block"
+            title="View official Govt. of India E-Register Gazette (Page 91)"
+          >
+            <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold flex items-center justify-between">
+              <span>Govt. Copyright</span>
+              <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-amber-600 transition-colors" />
+            </div>
             <div className="text-sm font-bold text-amber-700 mt-1">SW-19841/2024</div>
-          </div>
+          </a>
         </div>
       </div>
 
@@ -115,10 +124,18 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) =
                     {project.category}
                   </span>
                   {project.id === 'driver-drowsiness-detection' && (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-mono text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded border border-amber-200 font-medium">
+                    <a
+                      href="https://copyright.gov.in/Documents/ERegister/E-Register_December_2024.pdf#page=91"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex items-center gap-1 text-[11px] font-mono text-amber-800 bg-amber-50 hover:bg-amber-100 px-2.5 py-0.5 rounded border border-amber-200 font-medium transition-colors"
+                      title="View official Govt. of India E-Register Gazette (Page 91)"
+                    >
                       <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
                       <span>Govt. Copyright</span>
-                    </span>
+                      <ExternalLink className="w-2.5 h-2.5 text-amber-600" />
+                    </a>
                   )}
                   {project.isProprietary && (
                     <span className="text-[11px] font-mono text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded border border-blue-200 font-medium">

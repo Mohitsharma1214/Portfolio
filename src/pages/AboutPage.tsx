@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import { GraduationCap, ShieldCheck, Cpu, Code2, Server, ArrowRight, CheckCircle2, Terminal } from 'lucide-react';
+import { GraduationCap, ShieldCheck, Cpu, Code2, Server, ArrowRight, CheckCircle2, Terminal, ExternalLink, FileText } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { PERSONAL_INFO, EDUCATION } from '../data/portfolioData';
 
@@ -174,9 +174,21 @@ export const AboutPage: React.FC = () => {
             <p className="text-xs sm:text-sm text-amber-950/90 leading-relaxed">
               Awarded software copyright by the Government of India Copyright Office for the mathematical formulation and architecture of the Driver Drowsiness Detection System, running fully offline on Raspberry Pi telematics hardware.
             </p>
-            <div className="pt-2 border-t border-amber-200/80 flex items-center justify-between text-xs text-amber-800 font-mono">
-              <span>Class: Computer Software</span>
-              <span className="font-semibold">Registered: 2024</span>
+            <div className="pt-3 border-t border-amber-200/80 space-y-3">
+              <div className="flex items-center justify-between text-xs text-amber-800 font-mono">
+                <span>Class: Computer Software</span>
+                <span className="font-semibold">Registered: 2024</span>
+              </div>
+              <a
+                href={PERSONAL_INFO.copyrightDocUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-900 hover:bg-amber-950 text-white font-semibold text-xs transition-all shadow-xs hover:shadow-sm"
+              >
+                <FileText className="w-4 h-4 text-amber-300" />
+                <span>View Official E-Register Gazette (Page 91)</span>
+                <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
+              </a>
             </div>
           </motion.div>
 
