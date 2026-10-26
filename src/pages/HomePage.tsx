@@ -59,8 +59,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
   const duplicatedItems = [
     ...tickerItems,
     ...tickerItems,
-    ...tickerItems,
-    ...tickerItems,
   ];
 
   return (
@@ -403,7 +401,8 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2 rounded-lg text-slate-500 hover:text-slate-950 hover:bg-slate-100 transition-colors"
-                    title="View GitHub Repository"
+                    aria-label={`View ${project.title} source code on GitHub (opens in new tab)`}
+                    title={`View ${project.title} on GitHub`}
                   >
                     <GithubIcon className="w-4 h-4" />
                   </a>

@@ -31,7 +31,7 @@ import {
   Radio,
   X,
 } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { AuthProvider, useAuth } from '../context/AuthContext';
 import { BlogService } from '../services/blogService';
 import type { BlogFull, BlogMetadata } from '../services/blogService';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
@@ -40,7 +40,7 @@ import { MarkdownRenderer } from '../components/MarkdownRenderer';
 const AUTHORIZED_ADMIN_EMAIL = 'mohitxsharma09@gmail.com';
 const MASTER_PIN = import.meta.env.VITE_ADMIN_MASTER_PIN || '984124';
 
-export const AdminPage: React.FC = () => {
+const AdminPageInner: React.FC = () => {
   const { user, loading: authLoading, signIn, signOut } = useAuth();
 
   // Auth Form State (Sign-In Only - Public Registration Disabled)
@@ -1697,3 +1697,9 @@ export const AdminPage: React.FC = () => {
     </div>
   );
 };
+
+export const AdminPage: React.FC = () => (
+  <AuthProvider>
+    <AdminPageInner />
+  </AuthProvider>
+);

@@ -1,14 +1,31 @@
 <!doctype html>
 <html lang="en" class="scroll-smooth">
   <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y331GS35CD"></script>
+    <!-- Google tag (gtag.js) - Performance Deferred Initialization -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-Y331GS35CD');
+
+      // Defer external gtag.js execution until after initial render to eliminate FCP/LCP main-thread delay
+      function loadGoogleAnalytics() {
+        if (window.__gtagLoaded) return;
+        window.__gtagLoaded = true;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-Y331GS35CD';
+        document.head.appendChild(s);
+      }
+      if ('requestIdleCallback' in window) {
+        window.addEventListener('load', function() {
+          requestIdleCallback(loadGoogleAnalytics, { timeout: 2500 });
+        });
+      } else {
+        window.addEventListener('load', function() {
+          setTimeout(loadGoogleAnalytics, 1500);
+        });
+      }
     </script>
 
     <meta charset="UTF-8" />
@@ -76,10 +93,14 @@
     <meta name="twitter:image" content="https://mohitsharma1214.github.io/Portfolio/og-image.png" />
     <meta name="twitter:image:alt" content="Mohit Sharma — AI Engineer Portfolio preview card" />
 
-    <!-- Google Fonts Preconnect -->
+    <!-- Google Fonts Preconnect & Asynchronous Non-Render-Blocking Load -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" media="print" onload="this.media='all'" />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+    </noscript>
 
     <!-- Official Google Search WebSite Schema for Site Name Identification -->
     <script type="application/ld+json">

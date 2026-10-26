@@ -5,6 +5,7 @@ https://mohitsharma1214.github.io/Portfolio/experience/
 https://mohitsharma1214.github.io/Portfolio/skills/
 https://mohitsharma1214.github.io/Portfolio/blogs/
 https://mohitsharma1214.github.io/Portfolio/contact/
+https://mohitsharma1214.github.io/Portfolio/blogs/production-ready-rag-llm-applications/
 https://mohitsharma1214.github.io/Portfolio/blogs/real-time-object-detection-yolo-production/
 https://mohitsharma1214.github.io/Portfolio/blogs/3d-mesh-generation-ai/
 https://mohitsharma1214.github.io/Portfolio/blogs/edge-fatigue-tracking-sub-150ms/

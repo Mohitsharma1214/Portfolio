@@ -1,24 +1,35 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Navigate, useParams } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { HomePage } from './pages/HomePage';
-import { AboutPage } from './pages/AboutPage';
-import { ProjectsPage } from './pages/ProjectsPage';
-import { ExperiencePage } from './pages/ExperiencePage';
-import { SkillsPage } from './pages/SkillsPage';
-import { BlogsPage } from './pages/BlogsPage';
-import { BlogPostPage } from './pages/BlogPostPage';
-import { ContactPage } from './pages/ContactPage';
-import { AdminPage } from './pages/AdminPage';
-import { AuthProvider } from './context/AuthContext';
-
-import { CaseStudyModal } from './components/CaseStudyModal';
-import { ArticleModal } from './components/ArticleModal';
 import { TECHNICAL_ARTICLES } from './data/portfolioData';
 import type { ProjectCaseStudy, TechnicalArticle } from './data/portfolioData';
+
+// Code-split subpages to minimize critical path bundle size (<80KB initial load)
+const AboutPage = lazy(() => import('./pages/AboutPage').then((m) => ({ default: m.AboutPage })));
+const ProjectsPage = lazy(() => import('./pages/ProjectsPage').then((m) => ({ default: m.ProjectsPage })));
+const ExperiencePage = lazy(() => import('./pages/ExperiencePage').then((m) => ({ default: m.ExperiencePage })));
+const SkillsPage = lazy(() => import('./pages/SkillsPage').then((m) => ({ default: m.SkillsPage })));
+const BlogsPage = lazy(() => import('./pages/BlogsPage').then((m) => ({ default: m.BlogsPage })));
+const BlogPostPage = lazy(() => import('./pages/BlogPostPage').then((m) => ({ default: m.BlogPostPage })));
+const ContactPage = lazy(() => import('./pages/ContactPage').then((m) => ({ default: m.ContactPage })));
+const AdminPage = lazy(() => import('./pages/AdminPage').then((m) => ({ default: m.AdminPage })));
+
+// Lazy-load heavy overlay modals
+const CaseStudyModal = lazy(() => import('./components/CaseStudyModal').then((m) => ({ default: m.CaseStudyModal })));
+const ArticleModal = lazy(() => import('./components/ArticleModal').then((m) => ({ default: m.ArticleModal })));
+
+// Minimal non-intrusive loading fallback for asynchronously loaded routes
+function RouteLoadingFallback() {
+  return (
+    <div className="min-h-[60vh] flex items-center justify-center">
+      <div className="w-7 h-7 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+}
 
 // Helper component to scroll window to top on route change
 function ScrollToTop() {
@@ -101,31 +112,41 @@ function AppContent() {
       {!isAdminRoute && <Navbar />}
 
       <main className="flex-grow relative z-10">
-        <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            <Route path="/" element={<HomePage onSelectProject={handleOpenProject} />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/projects" element={<ProjectsPage onSelectProject={handleOpenProject} />} />
-            <Route path="/experience" element={<ExperiencePage />} />
-            <Route path="/skills" element={<SkillsPage />} />
-            <Route path="/blogs" element={<BlogsPage />} />
-            <Route path="/blogs/:id" element={<BlogPostPage />} />
-            <Route path="/writing" element={<Navigate to="/blogs" replace />} />
-            <Route path="/writing/:id" element={<WritingIdRedirect />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/admin" element={<AdminPage />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </AnimatePresence>
+        <Suspense fallback={<RouteLoadingFallback />}>
+          <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
+              <Route path="/" element={<HomePage onSelectProject={handleOpenProject} />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/projects" element={<ProjectsPage onSelectProject={handleOpenProject} />} />
+              <Route path="/experience" element={<ExperiencePage />} />
+              <Route path="/skills" element={<SkillsPage />} />
+              <Route path="/blogs" element={<BlogsPage />} />
+              <Route path="/blogs/:id" element={<BlogPostPage />} />
+              <Route path="/writing" element={<Navigate to="/blogs" replace />} />
+              <Route path="/writing/:id" element={<WritingIdRedirect />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/admin" element={<AdminPage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </AnimatePresence>
+        </Suspense>
       </main>
 
       {!isAdminRoute && <Footer />}
 
-      {/* Interactive Case Study Modal */}
-      <CaseStudyModal project={selectedProject} onClose={handleCloseProject} />
+      {/* Interactive Case Study Modal (Lazy-Loaded) */}
+      {selectedProject && (
+        <Suspense fallback={null}>
+          <CaseStudyModal project={selectedProject} onClose={handleCloseProject} />
+        </Suspense>
+      )}
 
-      {/* Interactive Technical Writing Reader Modal */}
-      <ArticleModal article={selectedArticle} onClose={handleCloseArticle} />
+      {/* Interactive Technical Writing Reader Modal (Lazy-Loaded) */}
+      {selectedArticle && (
+        <Suspense fallback={null}>
+          <ArticleModal article={selectedArticle} onClose={handleCloseArticle} />
+        </Suspense>
+      )}
     </div>
   );
 }
@@ -133,9 +154,7 @@ function AppContent() {
 export function App() {
   return (
     <BrowserRouter basename="/Portfolio">
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
+      <AppContent />
     </BrowserRouter>
   );
 }

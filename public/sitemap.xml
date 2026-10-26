@@ -43,6 +43,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://mohitsharma1214.github.io/Portfolio/blogs/production-ready-rag-llm-applications/</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://mohitsharma1214.github.io/Portfolio/blogs/real-time-object-detection-yolo-production/</loc>
     <lastmod>2026-10-25</lastmod>
     <changefreq>monthly</changefreq>
