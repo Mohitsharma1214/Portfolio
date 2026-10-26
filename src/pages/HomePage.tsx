@@ -62,26 +62,15 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
   ];
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.25 }}
-      className="space-y-16 sm:space-y-24 pb-24"
-    >
+    <div className="space-y-16 sm:space-y-24 pb-24">
       {/* Hero Section */}
       <section className="pt-8 sm:pt-14 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
             {/* Left Content */}
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="lg:col-span-7 space-y-6"
-            >
+            <div className="lg:col-span-7 space-y-6">
               {/* Status Pill */}
-              <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-xs">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-xs">
                 <span className="relative flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
@@ -93,20 +82,20 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
                 <span className="text-xs text-slate-500 font-mono hidden sm:inline">
                   Open to AI Roles
                 </span>
-              </motion.div>
+              </div>
 
               {/* Headline */}
-              <motion.div variants={itemVariants}>
+              <div>
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold text-slate-950 tracking-tight leading-[1.12]">
                   Engineering real-time <span className="text-gradient-accent">computer vision</span> &amp; production AI systems.
                 </h1>
                 <p className="mt-5 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl">
                   Hi, I'm <strong className="text-slate-950 font-semibold">{PERSONAL_INFO.name}</strong>. I design low-latency computer vision backends and deterministic LLM pipelines. Scaled clinical dermatology inference to <strong className="text-slate-950 font-semibold">5,000+ images/day (&lt;120ms)</strong> and authored Government of India Copyright <strong className="font-mono text-slate-900 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">{PERSONAL_INFO.copyrightId}</strong> for edge driver monitoring on Raspberry Pi.
                 </p>
-              </motion.div>
+              </div>
 
               {/* Action Buttons */}
-              <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-3 pt-2">
+              <div className="flex flex-wrap items-center gap-3 pt-2">
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <NavLink
                     to="/projects"
@@ -124,6 +113,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-950 font-medium text-sm px-4 py-2.5 rounded-xl border border-slate-200 transition-all shadow-xs"
+                  aria-label="GitHub Profile"
                 >
                   <GithubIcon className="w-4 h-4 text-slate-700" />
                   <span>GitHub</span>
@@ -137,6 +127,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-950 font-medium text-sm px-4 py-2.5 rounded-xl border border-slate-200 transition-all shadow-xs"
+                  aria-label="LinkedIn Profile"
                 >
                   <LinkedinIcon className="w-4 h-4 text-[#0ea5e9]" />
                   <span>LinkedIn</span>
@@ -150,10 +141,10 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
                   <span>About My Work</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </NavLink>
-              </motion.div>
+              </div>
 
               {/* Core Stacks Badge Pill Strip */}
-              <motion.div variants={itemVariants} className="pt-2 flex flex-wrap items-center gap-2 text-xs font-mono text-slate-500">
+              <div className="pt-2 flex flex-wrap items-center gap-2 text-xs font-mono text-slate-500">
                 <span className="font-semibold text-slate-400 uppercase tracking-wider text-[10px]">Stack:</span>
                 {["PyTorch", "FastAPI", "OpenCV", "TensorRT", "CUDA", "ChromaDB", "Docker"].map((tech) => (
                   <span
@@ -163,18 +154,13 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
                     {tech}
                   </span>
                 ))}
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
 
             {/* Right Column: Interactive Explorer */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.35, delay: 0.15 }}
-              className="lg:col-span-5"
-            >
+            <div className="lg:col-span-5">
               <InteractivePipelineExplorer />
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -510,6 +496,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
           </div>
         </motion.div>
       </section>
-    </motion.div>
+    </div>
   );
 };

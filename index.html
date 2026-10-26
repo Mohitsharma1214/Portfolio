@@ -1,31 +1,29 @@
 <!doctype html>
 <html lang="en" class="scroll-smooth">
   <head>
-    <!-- Google tag (gtag.js) - Performance Deferred Initialization -->
+    <!-- Google tag (gtag.js) - Performance Deferred Initialization on User Interaction -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-Y331GS35CD');
 
-      // Defer external gtag.js execution until after initial render to eliminate FCP/LCP main-thread delay
+      // Load analytics script on user engagement (scroll/touch/click) to eliminate long tasks during first paint & TTI
       function loadGoogleAnalytics() {
         if (window.__gtagLoaded) return;
         window.__gtagLoaded = true;
+        ['scroll', 'pointerdown', 'keydown', 'touchstart'].forEach(function(e) {
+          window.removeEventListener(e, loadGoogleAnalytics);
+        });
         var s = document.createElement('script');
         s.async = true;
         s.src = 'https://www.googletagmanager.com/gtag/js?id=G-Y331GS35CD';
         document.head.appendChild(s);
       }
-      if ('requestIdleCallback' in window) {
-        window.addEventListener('load', function() {
-          requestIdleCallback(loadGoogleAnalytics, { timeout: 2500 });
-        });
-      } else {
-        window.addEventListener('load', function() {
-          setTimeout(loadGoogleAnalytics, 1500);
-        });
-      }
+      ['scroll', 'pointerdown', 'keydown', 'touchstart'].forEach(function(e) {
+        window.addEventListener(e, loadGoogleAnalytics, { once: true, passive: true });
+      });
+      setTimeout(loadGoogleAnalytics, 5000);
     </script>
 
     <meta charset="UTF-8" />
@@ -194,75 +192,90 @@
   </head>
   <body class="bg-[#f8fafc] text-slate-900 antialiased selection:bg-blue-100 selection:text-blue-900 font-sans min-h-screen">
     <div id="root">
-      <!-- Semantic Static Fallback for Search Engine Crawlers & Initial Page Load -->
-      <header style="padding: 24px 16px; border-bottom: 1px solid #e2e8f0; background: #ffffff;">
-        <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-          <div>
-            <strong style="font-size: 1.25rem; color: #0f172a;">Mohit Sharma</strong>
-            <p style="font-size: 0.875rem; color: #64748b; margin: 2px 0 0 0;">AI Engineer • Computer Vision &amp; LLM Systems</p>
+      <!-- Pre-Rendered Critical Shell for Instant First Contentful Paint & Zero LCP Delay -->
+      <div class="min-h-screen flex flex-col bg-[#f8fafc] text-slate-900 font-sans relative overflow-x-hidden modern-grid">
+        <!-- Static Navbar Shell -->
+        <header class="sticky top-0 z-40 bg-white/70 backdrop-blur-sm border-b border-slate-200/50">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+              <a href="/Portfolio/" class="flex items-center gap-3 rounded-lg p-1">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-bold text-xs tracking-wider flex items-center justify-center shadow-xs">
+                  MS
+                </div>
+                <div class="flex flex-col">
+                  <span class="font-bold text-slate-950 text-sm sm:text-base tracking-tight leading-none">
+                    Mohit Sharma
+                  </span>
+                  <span class="text-[11px] font-mono text-slate-500 mt-1 leading-none font-medium">
+                    AI Systems Engineer
+                  </span>
+                </div>
+              </a>
+              <nav aria-label="Main Navigation" class="hidden md:flex items-center gap-1 bg-slate-100/90 p-1 rounded-full border border-slate-200/80 shadow-xs text-xs font-medium text-slate-600">
+                <span class="px-4 py-1.5 rounded-full bg-white text-blue-600 font-semibold shadow-xs border border-slate-200/80">Home</span>
+                <a href="/Portfolio/about" class="px-4 py-1.5 hover:text-slate-950 transition-colors">About</a>
+                <a href="/Portfolio/projects" class="px-4 py-1.5 hover:text-slate-950 transition-colors">Projects</a>
+                <a href="/Portfolio/experience" class="px-4 py-1.5 hover:text-slate-950 transition-colors">Experience</a>
+                <a href="/Portfolio/skills" class="px-4 py-1.5 hover:text-slate-950 transition-colors">Skills</a>
+                <a href="/Portfolio/blogs" class="px-4 py-1.5 hover:text-slate-950 transition-colors">Blogs</a>
+                <a href="/Portfolio/contact" class="px-4 py-1.5 hover:text-slate-950 transition-colors">Contact</a>
+              </nav>
+              <div class="hidden sm:flex items-center gap-3">
+                <a href="/Portfolio/contact" class="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-blue-600 rounded-xl px-4 py-2.5 shadow-xs">
+                  <span>Get in Touch</span>
+                </a>
+              </div>
+            </div>
           </div>
-          <nav aria-label="Main Navigation">
-            <ul style="display: flex; gap: 16px; list-style: none; margin: 0; padding: 0; font-size: 0.875rem;">
-              <li><a href="/Portfolio/" style="color: #2563eb; text-decoration: none;">Home</a></li>
-              <li><a href="/Portfolio/about" style="color: #475569; text-decoration: none;">About</a></li>
-              <li><a href="/Portfolio/projects" style="color: #475569; text-decoration: none;">Projects</a></li>
-              <li><a href="/Portfolio/experience" style="color: #475569; text-decoration: none;">Experience</a></li>
-              <li><a href="/Portfolio/skills" style="color: #475569; text-decoration: none;">Skills</a></li>
-              <li><a href="/Portfolio/blogs" style="color: #475569; text-decoration: none;">Blogs</a></li>
-              <li><a href="/Portfolio/contact" style="color: #475569; text-decoration: none;">Contact</a></li>
-            </ul>
-          </nav>
-        </div>
-      </header>
+        </header>
 
-      <main style="max-width: 1200px; margin: 0 auto; padding: 48px 16px;">
-        <section aria-labelledby="hero-heading">
-          <h1 id="hero-heading" style="font-size: 2.25rem; font-weight: 800; color: #0f172a; line-height: 1.25; margin-bottom: 16px;">
-            Mohit Sharma — AI Engineer specializing in Real-Time Computer Vision &amp; Production AI Systems
-          </h1>
-          <p style="font-size: 1.125rem; color: #475569; line-height: 1.6; max-w-3xl;">
-            AI Developer at Sodio Technologies designing low-latency computer vision backends and deterministic LLM pipelines. Scaled clinical dermatology inference to 5,000+ images/day (&lt;120ms P95 SLA) and authored Government of India Copyright SW-19841/2024 for edge driver monitoring on Raspberry Pi.
-          </p>
-        </section>
+        <!-- Static Hero Shell matching exact React output -->
+        <main class="flex-grow relative z-10">
+          <div class="space-y-16 sm:space-y-24 pb-24">
+            <section class="pt-8 sm:pt-14 overflow-hidden">
+              <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+                  <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-xs">
+                      <span class="relative flex h-2.5 w-2.5">
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                      </span>
+                      <span class="text-xs font-mono font-medium text-slate-800">
+                        AI Developer @ Sodio Technologies
+                      </span>
+                      <span class="text-slate-300">|</span>
+                      <span class="text-xs text-slate-500 font-mono hidden sm:inline">
+                        Open to AI Roles
+                      </span>
+                    </div>
 
-        <section style="margin-top: 40px; padding: 24px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px;">
-          <h2 style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-bottom: 16px;">Verified Production Telemetry</h2>
-          <ul style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; list-style: none; padding: 0; margin: 0;">
-            <li style="border-left: 3px solid #2563eb; padding-left: 12px;">
-              <div style="font-size: 0.75rem; color: #64748b; text-transform: uppercase;">Throughput</div>
-              <strong style="color: #0f172a;">5,000+ Clinical Imgs/Day</strong>
-            </li>
-            <li style="border-left: 3px solid #10b981; padding-left: 12px;">
-              <div style="font-size: 0.75rem; color: #64748b; text-transform: uppercase;">Latency SLA</div>
-              <strong style="color: #0f172a;">&lt;120ms P95 Latency</strong>
-            </li>
-            <li style="border-left: 3px solid #9333ea; padding-left: 12px;">
-              <div style="font-size: 0.75rem; color: #64748b; text-transform: uppercase;">Copyright IP</div>
-              <strong style="color: #0f172a;">Govt. of India SW-19841/2024</strong>
-            </li>
-            <li style="border-left: 3px solid #ea580c; padding-left: 12px;">
-              <div style="font-size: 0.75rem; color: #64748b; text-transform: uppercase;">Segmentation</div>
-              <strong style="color: #0f172a;">0.84 mAP / TensorRT FP16</strong>
-            </li>
-          </ul>
-        </section>
+                    <div>
+                      <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold text-slate-950 tracking-tight leading-[1.12]">
+                        Engineering real-time <span class="text-gradient-accent">computer vision</span> &amp; production AI systems.
+                      </h1>
+                      <p class="mt-5 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl">
+                        Hi, I'm <strong class="text-slate-950 font-semibold">Mohit Sharma</strong>. I design low-latency computer vision backends and deterministic LLM pipelines. Scaled clinical dermatology inference to <strong class="text-slate-950 font-semibold">5,000+ images/day (&lt;120ms)</strong> and authored Government of India Copyright <strong class="font-mono text-slate-900 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">SW-19841/2024</strong> for edge driver monitoring on Raspberry Pi.
+                      </p>
+                    </div>
 
-        <section style="margin-top: 48px;">
-          <h2 style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin-bottom: 20px;">Featured Engineering Projects</h2>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
-            <article style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px;">
-              <h3 style="font-size: 1.125rem; font-weight: 700; color: #0f172a; margin: 0 0 8px 0;">Hairscope — Scaled Clinical Trichology Diagnostic Inference</h3>
-              <p style="font-size: 0.875rem; color: #475569; line-height: 1.5;">Automated trichoscopy analytics pipeline serving 5,000+ clinical images/day with sub-120ms P95 latency using PyTorch, FastAPI, and TensorRT.</p>
-              <a href="/Portfolio/projects" style="font-size: 0.875rem; color: #2563eb; font-weight: 600; text-decoration: none;">View Case Study &rarr;</a>
-            </article>
-            <article style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px;">
-              <h3 style="font-size: 1.125rem; font-weight: 700; color: #0f172a; margin: 0 0 8px 0;">Driver Drowsiness Edge Detection System</h3>
-              <p style="font-size: 0.875rem; color: #475569; line-height: 1.5;">Real-time offline facial landmark telemetry on Raspberry Pi 4 (28+ FPS) registered under Government of India Software Copyright SW-19841/2024.</p>
-              <a href="/Portfolio/projects" style="font-size: 0.875rem; color: #2563eb; font-weight: 600; text-decoration: none;">View Case Study &rarr;</a>
-            </article>
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                      <a href="/Portfolio/projects" class="inline-flex items-center gap-2 bg-blue-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-xs">
+                        <span>Explore Case Studies</span>
+                      </a>
+                      <a href="https://github.com/Mohitsharma1214" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-white text-slate-700 font-medium text-sm px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs">
+                        <span>GitHub</span>
+                      </a>
+                      <a href="https://linkedin.com/in/mohitsharma-ai" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-white text-slate-700 font-medium text-sm px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs">
+                        <span>LinkedIn</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
-        </section>
-      </main>
+        </main>
+      </div>
     </div>
 
     <noscript>
