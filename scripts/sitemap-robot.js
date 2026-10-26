@@ -154,6 +154,20 @@ ${urls.join('\n')}
 `;
 }
 
+export function buildSitemapTxt(blogs) {
+  const urls = [];
+  for (const page of CORE_ROUTES) {
+    urls.push(page.path ? `${BASE_URL}/${page.path}` : `${BASE_URL}/`);
+  }
+  const seenIds = new Set();
+  for (const blog of blogs) {
+    if (!blog.id || seenIds.has(blog.id)) continue;
+    seenIds.add(blog.id);
+    urls.push(`${BASE_URL}/blogs/${blog.id}/`);
+  }
+  return urls.join('\n') + '\n';
+}
+
 /**
  * Generates robots.txt content
  */
@@ -165,6 +179,7 @@ Disallow: /admin/
 
 # Search Engine Crawlers & Sitemaps
 Sitemap: ${BASE_URL}/sitemap.xml
+Sitemap: ${BASE_URL}/sitemap.txt
 `;
 }
 
@@ -197,20 +212,23 @@ export async function runSitemapRobot({ ping = false } = {}) {
 
   const blogs = await fetchPublishedBlogs();
   const xmlContent = buildSitemapXml(blogs);
+  const txtContent = buildSitemapTxt(blogs);
   const robotsContent = buildRobotsTxt();
 
   // 1. Write to public/
   fs.mkdirSync(publicDir, { recursive: true });
   fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), xmlContent, 'utf8');
+  fs.writeFileSync(path.join(publicDir, 'sitemap.txt'), txtContent, 'utf8');
   fs.writeFileSync(path.join(publicDir, 'robots.txt'), robotsContent, 'utf8');
-  console.log(`🤖 [Sitemap Robot]: Wrote public/sitemap.xml (${blogs.length} blogs + ${CORE_ROUTES.length} core pages)`);
-  console.log(`🤖 [Sitemap Robot]: Wrote public/robots.txt (Disallowed /admin/, configured sitemap directive)`);
+  console.log(`🤖 [Sitemap Robot]: Wrote public/sitemap.xml and public/sitemap.txt (${blogs.length} blogs + ${CORE_ROUTES.length} core pages)`);
+  console.log(`🤖 [Sitemap Robot]: Wrote public/robots.txt (Disallowed /admin/, configured sitemap directives)`);
 
   // 2. Write to dist/ if it exists (e.g. during build)
   if (fs.existsSync(distDir)) {
     fs.writeFileSync(path.join(distDir, 'sitemap.xml'), xmlContent, 'utf8');
+    fs.writeFileSync(path.join(distDir, 'sitemap.txt'), txtContent, 'utf8');
     fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsContent, 'utf8');
-    console.log('🤖 [Sitemap Robot]: Synced sitemap.xml and robots.txt to dist/');
+    console.log('🤖 [Sitemap Robot]: Synced sitemap.xml, sitemap.txt, and robots.txt to dist/');
   }
 
   // 3. Ping search engines if requested
