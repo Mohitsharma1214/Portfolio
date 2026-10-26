@@ -4,7 +4,7 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/Portfolio/',
+  base: '/',
   build: {
     target: 'es2020',
     cssCodeSplit: true,

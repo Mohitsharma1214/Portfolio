@@ -12,49 +12,49 @@ const staticRoutes = [
     path: 'about',
     title: 'About Mohit Sharma | AI Engineer & Systems Specialist',
     description: 'Verified background, engineering philosophy, and track record of AI Engineer Mohit Sharma specializing in low-latency computer vision and edge AI.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/about/',
+    canonical: 'https://mohitsharma1214.github.io/about/',
   },
   {
     path: 'projects',
     title: 'Projects & Case Studies | Mohit Sharma • AI Engineer',
     description: 'Production computer vision pipelines, edge ARM deployments on Raspberry Pi, and grounded LLM architectures evaluated with strict SLAs.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/projects/',
+    canonical: 'https://mohitsharma1214.github.io/projects/',
   },
   {
     path: 'experience',
     title: 'Work Experience | Mohit Sharma • AI Developer at Sodio Technologies',
     description: 'Verified engineering experience delivering production computer vision backends at Hairscope, Sodio Technologies, and Centilytics.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/experience/',
+    canonical: 'https://mohitsharma1214.github.io/experience/',
   },
   {
     path: 'skills',
     title: 'Skills & Technology Stack | Mohit Sharma • AI Engineer',
     description: 'Production skills in PyTorch, TensorRT, CUDA, OpenCV, FastAPI, ChromaDB, Edge AI on Raspberry Pi, and MLOps deployment.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/skills/',
+    canonical: 'https://mohitsharma1214.github.io/skills/',
   },
   {
     path: 'blogs',
     title: 'Technical Blogs & Engineering Notes | Mohit Sharma • AI Engineer',
     description: 'Deep technical articles, latency benchmarks, quantization analyses, and architectural breakdowns derived directly from production AI and edge deployments.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/blogs/',
+    canonical: 'https://mohitsharma1214.github.io/blogs/',
   },
   {
     path: 'writing',
     title: 'Technical Blogs & Engineering Notes | Mohit Sharma • AI Engineer',
     description: 'Deep technical articles, latency benchmarks, quantization analyses, and architectural breakdowns derived directly from production AI and edge deployments.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/blogs/',
+    canonical: 'https://mohitsharma1214.github.io/blogs/',
   },
   {
     path: 'contact',
     title: 'Contact Mohit Sharma | AI Engineer • Computer Vision & LLM Systems',
     description: 'Direct contact information for AI Engineer Mohit Sharma. Available for engineering discussions, full-time AI roles, and consulting.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/contact/',
+    canonical: 'https://mohitsharma1214.github.io/contact/',
   },
   {
     path: 'admin',
     title: 'Blog Studio Admin | Mohit Sharma',
     description: 'Administrative portal for creating, editing, and publishing technical blog posts.',
-    canonical: 'https://mohitsharma1214.github.io/Portfolio/admin/',
+    canonical: 'https://mohitsharma1214.github.io/admin/',
   },
 ];
 
@@ -76,13 +76,13 @@ async function generateAllRoutes() {
     const cleanDesc = rawDesc.replace(/["\n\r]/g, ' ').substring(0, 160).trim();
     const coverImage = blog.cover_image
       ? (blog.cover_image.startsWith('http') ? blog.cover_image : `https://mohitsharma1214.github.io${blog.cover_image}`)
-      : `https://mohitsharma1214.github.io/Portfolio/assets/blogs/${blog.id}.png`;
+      : `https://mohitsharma1214.github.io/assets/blogs/${blog.id}.png`;
 
     return {
       path: `blogs/${blog.id}`,
       title: `${blog.title} | Mohit Sharma`,
       description: cleanDesc,
-      canonical: `https://mohitsharma1214.github.io/Portfolio/blogs/${blog.id}/`,
+      canonical: `https://mohitsharma1214.github.io/blogs/${blog.id}/`,
       image: coverImage,
     };
   });

@@ -20,7 +20,7 @@ const BASELINE_BLOG_SLUGS = [
   'structuring-unstructured-healthkit-telemetry',
 ];
 
-const BASE_URL = 'https://mohitsharma1214.github.io/Portfolio';
+const BASE_URL = 'https://mohitsharma1214.github.io';
 
 const CORE_ROUTES = [
   { path: '', changefreq: 'weekly', priority: '1.0' },

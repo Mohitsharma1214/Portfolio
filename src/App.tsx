@@ -153,7 +153,7 @@ function AppContent() {
 
 export function App() {
   return (
-    <BrowserRouter basename="/Portfolio">
+    <BrowserRouter>
       <AppContent />
     </BrowserRouter>
   );

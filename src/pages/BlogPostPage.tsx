@@ -127,7 +127,7 @@ export const BlogPostPage: React.FC = () => {
       {/* Hero Cover Graphic */}
       <div className="relative rounded-3xl overflow-hidden aspect-[16/9] border border-slate-200 bg-slate-100 shadow-xs">
         <img
-          src={blog.coverImage || `/Portfolio/assets/blogs/${blog.id}.png`}
+          src={blog.coverImage || `/assets/blogs/${blog.id}.png`}
           alt={blog.title}
           className="w-full h-full object-cover"
         />

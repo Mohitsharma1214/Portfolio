@@ -44,7 +44,7 @@ function mapDbRowToMetadata(row: any): BlogMetadata {
     category: row.category || 'General',
     readTime: row.read_time || '5 min read',
     status: row.status || 'Published',
-    coverImage: row.cover_image || `/Portfolio/assets/blogs/${row.id}.png`,
+    coverImage: row.cover_image || `/assets/blogs/${row.id}.png`,
     publishDate: row.publish_date || 'Oct 2026',
     summary: row.summary || '',
     createdAt: row.created_at,
@@ -146,7 +146,7 @@ export const BlogService = {
       category: a.category,
       readTime: a.readTime,
       status: a.status,
-      coverImage: a.coverImage || `/Portfolio/assets/blogs/${a.id}.png`,
+      coverImage: a.coverImage || `/assets/blogs/${a.id}.png`,
       publishDate: a.publishDate || 'Oct 2026',
       summary: a.summary,
     }));
@@ -193,7 +193,7 @@ export const BlogService = {
       category: local.category,
       readTime: local.readTime,
       status: local.status,
-      coverImage: local.coverImage || `/Portfolio/assets/blogs/${local.id}.png`,
+      coverImage: local.coverImage || `/assets/blogs/${local.id}.png`,
       publishDate: local.publishDate || 'Oct 2026',
       summary: local.summary,
       contentMarkdown: local.contentMarkdown,
@@ -253,7 +253,7 @@ export const BlogService = {
       category: a.category,
       readTime: a.readTime,
       status: a.status,
-      coverImage: a.coverImage || `/Portfolio/assets/blogs/${a.id}.png`,
+      coverImage: a.coverImage || `/assets/blogs/${a.id}.png`,
       publishDate: a.publishDate || 'Oct 2026',
       summary: a.summary,
     }));
@@ -430,7 +430,7 @@ export const BlogService = {
    * whenever a new blog is published or updated.
    */
   async pingSearchEnginesForBlog(slug: string): Promise<{ success: boolean; pinged: string[]; error?: string }> {
-    const sitemapUrl = encodeURIComponent('https://mohitsharma1214.github.io/Portfolio/sitemap.xml');
+    const sitemapUrl = encodeURIComponent('https://mohitsharma1214.github.io/sitemap.xml');
     const encodedSlug = encodeURIComponent(slug);
     const pingTargets = [
       { name: 'Googlebot', url: `https://www.google.com/ping?sitemap=${sitemapUrl}&target_article=${encodedSlug}` },
@@ -463,7 +463,7 @@ export const BlogService = {
   getSitemapXmlSnippet(slug: string, date?: string): string {
     const today = date ? date.split('T')[0] : new Date().toISOString().split('T')[0];
     return `  <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/blogs/${slug}/</loc>
+    <loc>https://mohitsharma1214.github.io/blogs/${slug}/</loc>
     <lastmod>${today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>

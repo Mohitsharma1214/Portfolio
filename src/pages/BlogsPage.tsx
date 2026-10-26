@@ -250,7 +250,7 @@ export const BlogsPage: React.FC = () => {
                     aria-label={`Read article: ${blog.title}`}
                   >
                     <img
-                      src={blog.coverImage || `/Portfolio/assets/blogs/${blog.id}.png`}
+                      src={blog.coverImage || `/assets/blogs/${blog.id}.png`}
                       alt={blog.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       loading="lazy"

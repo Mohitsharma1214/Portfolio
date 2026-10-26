@@ -20,11 +20,11 @@ Positioned for technical decision-makers (startup founders, CTOs, engineering ma
 ## 🛠️ Technology Stack
 
 - **Framework**: [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
-- **Bundler & Dev Server**: [Vite 6](https://vitejs.dev/) with project base path resolution (`base: '/Portfolio/'`) tailored for GitHub Pages
+- **Bundler & Dev Server**: [Vite 6](https://vitejs.dev/) with user root base path resolution (`base: '/'`) tailored for GitHub Pages User Site
 - **Styling**: [Tailwind CSS v3](https://tailwindcss.com/) with modern light design tokens (off-white `#f8fafc`, slate `#0f172a`, and clean electric blue accents `#2563eb`)
 - **Icons**: [Lucide React](https://lucide.dev/) + custom vector SVGs
 - **Animations**: [Framer Motion](https://www.framer.com/motion/) with reduced motion support
-- **Deployment Target**: 100% Free on **GitHub Pages** (via automated GitHub Actions) at `https://mohitsharma1214.github.io/Portfolio/`
+- **Deployment Target**: 100% Free on **GitHub Pages** (via automated GitHub Actions) at `https://mohitsharma1214.github.io/`
 
 ---
 
@@ -33,8 +33,8 @@ Positioned for technical decision-makers (startup founders, CTOs, engineering ma
 The repository incorporates modern SEO standards, structured data, and search crawler fallbacks:
 
 ### 1. Canonical URLs & Meta Configuration
-- **Deployed Site Root**: `https://mohitsharma1214.github.io/Portfolio/`
-- **Canonical Tag**: `<link rel="canonical" href="https://mohitsharma1214.github.io/Portfolio/" />`
+- **Deployed Site Root**: `https://mohitsharma1214.github.io/`
+- **Canonical Tag**: `<link rel="canonical" href="https://mohitsharma1214.github.io/" />`
 - **Primary Keywords**: Naturally integrated without keyword stuffing for queries such as:
   - *Mohit Sharma AI Engineer*
   - *Machine Learning Engineer*
@@ -43,7 +43,7 @@ The repository incorporates modern SEO standards, structured data, and search cr
 - **Page Titles**: Dynamic document title updater (`PageMetadataUpdater` in `src/App.tsx`) updates `<title>` on route navigation.
 
 ### 2. Social Media Preview Cards (Open Graph & Twitter Cards)
-- **Image URL**: `https://mohitsharma1214.github.io/Portfolio/og-image.png`
+- **Image URL**: `https://mohitsharma1214.github.io/og-image.png`
 - **Resolution**: 1200 × 630 pixels (standard high-contrast PNG format compatible with LinkedIn, Twitter/X, Discord, Slack, and Facebook).
 - **Twitter Card**: `summary_large_image`.
 
@@ -52,11 +52,11 @@ The repository incorporates modern SEO standards, structured data, and search cr
   ```
   User-agent: *
   Allow: /
-  Sitemap: https://mohitsharma1214.github.io/Portfolio/sitemap.xml
+  Sitemap: https://mohitsharma1214.github.io/sitemap.xml
   ```
 - **Sitemap XML** (`public/sitemap.xml`):
   - Compliant with `sitemaps.org` schema.
-  - Points to the canonical URL `https://mohitsharma1214.github.io/Portfolio/`.
+  - Points to the canonical URL `https://mohitsharma1214.github.io/`.
   - Excludes `#` hash fragments (as per Google Search Central specifications, URL fragments are client-side only and not permitted in XML sitemaps).
 
 ### 4. Structured Data (Schema.org JSON-LD)
@@ -80,8 +80,8 @@ For search engine bots, Lynx, or assistive technologies that parse raw HTML befo
 When React boots, `createRoot` seamlessly replaces this initial DOM tree.
 
 ### 6. GitHub Pages Client-Side Routing Architecture & Fallback
-- **Router**: `HashRouter` is used to guarantee that internal navigation (`/#/projects`, `/#/experience`, `/#/about`) never produces 404 errors on GitHub Pages static file servers.
-- **Direct Link Redirector** (`public/404.html`): If an external user enters a clean path URL without a hash (e.g. `https://mohitsharma1214.github.io/Portfolio/projects`), `404.html` detects the route and immediately redirects to `https://mohitsharma1214.github.io/Portfolio/#/projects` while preventing the 404 page itself from being indexed via `<meta name="robots" content="noindex, follow" />`.
+- **Router**: Clean HTML5 history routing (`BrowserRouter`) with SSG route generation and `404.html` redirect fallback for deep links.
+- **Direct Link Redirector** (`public/404.html`): If an external user enters a clean path URL without a hash (e.g. `https://mohitsharma1214.github.io/projects`), `404.html` detects the route and preserves the clean URL while preventing the 404 page itself from being indexed via `<meta name="robots" content="noindex, follow" />`.
 
 ---
 
@@ -95,15 +95,15 @@ Follow these steps once your GitHub Pages site is live:
 1. **Open Google Search Console**:
    - Visit [search.google.com/search-console](https://search.google.com/search-console).
 2. **Add Property**:
-   - Choose **URL prefix** and enter `https://mohitsharma1214.github.io/Portfolio/`.
+   - Choose **URL prefix** and enter `https://mohitsharma1214.github.io/`.
 3. **Verify Ownership**:
    - **Method A (HTML Tag)**: Copy the verification meta tag provided by Google (e.g. `<meta name="google-site-verification" content="..." />`) and add it to the `<head>` of `index.html`, commit, and push.
    - **Method B (GitHub Pages / Google Account)**: If using Google Analytics or domain DNS, select that option.
 4. **Submit Sitemap**:
    - In the left sidebar of Google Search Console, click **Sitemaps**.
-   - Under **Add a new sitemap**, type `sitemap.xml` (or full URL `https://mohitsharma1214.github.io/Portfolio/sitemap.xml`) and click **Submit**.
+   - Under **Add a new sitemap**, type `sitemap.xml` (or full URL `https://mohitsharma1214.github.io/sitemap.xml`) and click **Submit**.
 5. **Request Indexing**:
-   - Use the **URL Inspection** bar at the top and paste `https://mohitsharma1214.github.io/Portfolio/`.
+   - Use the **URL Inspection** bar at the top and paste `https://mohitsharma1214.github.io/`.
    - Click **Test Live URL**.
    - Once the live test passes, click **Request Indexing**.
 
@@ -118,9 +118,9 @@ Follow these steps once your GitHub Pages site is live:
 ├── public/
 │   ├── favicon.svg               # Custom monogram "MS" SVG favicon
 │   ├── og-image.png              # 1200x630 Open Graph & Twitter preview card
-│   ├── robots.txt                # Search engine crawlers index directive pointing to /Portfolio/sitemap.xml
-│   ├── sitemap.xml               # Standard sitemap.xml pointing to canonical /Portfolio/
-│   └── 404.html                  # Single Page App routing fallback preserving subpaths for /Portfolio/
+│   ├── robots.txt                # Search engine crawlers index directive pointing to /sitemap.xml
+│   ├── sitemap.xml               # Standard sitemap.xml pointing to canonical /
+│   └── 404.html                  # Single Page App routing fallback preserving subpaths
 ├── src/
 │   ├── assets/                   # Static assets
 │   ├── components/
@@ -141,14 +141,14 @@ Follow these steps once your GitHub Pages site is live:
 │   │   └── ContactPage.tsx       # Direct mailto and 1-click clipboard copy
 │   ├── data/
 │   │   └── portfolioData.ts      # Primary source of truth for resume data, projects, & articles
-│   ├── App.tsx                   # HashRouter orchestrator & PageMetadataUpdater
+│   ├── App.tsx                   # BrowserRouter orchestrator & PageMetadataUpdater
 │   ├── index.css                 # Base Tailwind styles & dot grid pattern
 │   └── main.tsx                  # React entry point
 ├── Mohit-Sharma-Resume-S-Links.pdf # Primary resume document source
 ├── index.html                    # SEO meta tags, OpenGraph, JSON-LD schema, fallback HTML
 ├── tailwind.config.js            # Custom design tokens & typography
 ├── tsconfig.json                 # Strict TypeScript configuration
-└── vite.config.ts                # Build configuration with base: '/Portfolio/'
+└── vite.config.ts                # Build configuration with base: '/'
 ```
 
 ---
@@ -168,7 +168,7 @@ npm install --legacy-peer-deps
 ```bash
 npm run dev
 ```
-Open [http://localhost:5173/Portfolio/](http://localhost:5173/Portfolio/) in your browser.
+Open [http://localhost:5173/](http://localhost:5173/) in your browser.
 
 ### 4. Build Production Bundle
 ```bash
@@ -187,11 +187,11 @@ npm run preview
 
 This repository is preconfigured to deploy automatically via GitHub Actions:
 
-1. Push your changes to the `main` branch of `https://github.com/Mohitsharma1214/Portfolio`.
+1. Push your changes to the `main` branch of `https://github.com/Mohitsharma1214/mohitsharma1214.github.io`.
 2. In your GitHub repository, ensure **Settings** → **Pages** → **Source** is set to **GitHub Actions**.
 3. The workflow in `.github/workflows/deploy.yml` builds the site and publishes it to:
    ```
-   https://mohitsharma1214.github.io/Portfolio/
+   https://mohitsharma1214.github.io/
    ```
 
 ---

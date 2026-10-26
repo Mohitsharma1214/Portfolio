@@ -409,7 +409,7 @@ export const TECHNICAL_ARTICLES: TechnicalArticle[] = [
     category: "Computer Vision & Edge AI",
     readTime: "6 min read",
     status: "Published Technical Breakdown",
-    coverImage: "/Portfolio/assets/blogs/edge-fatigue-tracking-sub-150ms.png",
+    coverImage: "/assets/blogs/edge-fatigue-tracking-sub-150ms.png",
     publishDate: "Oct 2026",
     summary: "A technical breakdown of engineering the Driver Drowsiness Detection System (Govt. of India Copyright SW-19841/2024). Explores the trade-offs between heavy end-to-end vision neural nets versus localized eye-aspect-ratio (EAR) geometry on low-power ARM architectures.",
     contentMarkdown: `### The Edge Latency Conundrum
@@ -461,7 +461,7 @@ This system was formally registered with the Government of India Copyright Offic
     category: "MLOps & High-Throughput Inference",
     readTime: "7 min read",
     status: "Engineering Note",
-    coverImage: "/Portfolio/assets/blogs/scaling-medical-cv-tensorrt-5000-images.png",
+    coverImage: "/assets/blogs/scaling-medical-cv-tensorrt-5000-images.png",
     publishDate: "Oct 2026",
     summary: "Production lessons learned at Hairscope while serving deep learning dermatology models at 5,000+ daily images with sub-120ms latency on limited GPU infrastructure.",
     contentMarkdown: `### The Challenge: Scale vs GPU Costs
@@ -523,7 +523,7 @@ High-performance AI engineering is 20% model selection and 80% systems engineeri
     category: "LLM Systems & Information Retrieval",
     readTime: "8 min read",
     status: "Architecture Deep Dive",
-    coverImage: "/Portfolio/assets/blogs/strictly-grounded-rag-logistics.png",
+    coverImage: "/assets/blogs/strictly-grounded-rag-logistics.png",
     publishDate: "Oct 2026",
     summary: "Examining the system design choices behind Ultra-Doc-Intelligence. Why vector similarity alone is insufficient for multi-page logistics contracts, and how hybrid confidence scoring creates provable negative-answer guarantees.",
     contentMarkdown: `### The Problem with Naive RAG in Enterprise Workflows
@@ -570,7 +570,7 @@ This single guardrail decreased false positive extractions by over 70% during be
     category: "Deep Learning & Instance Segmentation",
     readTime: "9 min read",
     status: "Published Technical Breakdown",
-    coverImage: "/Portfolio/assets/blogs/microscopic-hair-segmentation-yolov11-maskrcnn.png",
+    coverImage: "/assets/blogs/microscopic-hair-segmentation-yolov11-maskrcnn.png",
     publishDate: "Sep 2026",
     summary: "A detailed engineering breakdown on segmenting overlapping, microscopic hair strands under polarized dermatological imaging. Explores why standard segmentation heads bleed boundaries together, and how targeted IoU boundary loss plus TensorRT FP16 achieved 0.84 mAP.",
     contentMarkdown: `### The Microscopic Challenge
@@ -625,7 +625,7 @@ To deploy inside clinical workstations without requiring high-end data center GP
     category: "Agentic AI & Test Automation",
     readTime: "7 min read",
     status: "Architecture Deep Dive",
-    coverImage: "/Portfolio/assets/blogs/autonomous-qa-agent-orchestration.png",
+    coverImage: "/assets/blogs/autonomous-qa-agent-orchestration.png",
     publishDate: "Sep 2026",
     summary: "How we architected autonomous QA test automation agents at Sodio Technologies. Details the state-machine transition model, DOM action tool-calling definitions, exponential backoff to prevent infinite reasoning loops, and structured reporting.",
     contentMarkdown: `### The Fragility of Hard-Coded UI Scripts
@@ -667,7 +667,7 @@ Automated end-to-end regression passes reduced manual QA verification time from 
     category: "Production Platforms & RecSys",
     readTime: "8 min read",
     status: "Engineering Note",
-    coverImage: "/Portfolio/assets/blogs/realtime-recommendation-systems-two-stage.png",
+    coverImage: "/assets/blogs/realtime-recommendation-systems-two-stage.png",
     publishDate: "Aug 2026",
     summary: "Designing scalable content recommendation pipelines at Sodio Technologies. Why monolithic deep ranking models fail 100ms SLAs, and how splitting inference into Stage 1 candidate retrieval and Stage 2 weighted ranking solved latency bottlenecks.",
     contentMarkdown: `### The Real-Time Recommendation Dilemma
@@ -711,7 +711,7 @@ For newly registered users without historical interaction signals, the system se
     category: "ML Hardware & Optimization",
     readTime: "6 min read",
     status: "Architecture Deep Dive",
-    coverImage: "/Portfolio/assets/blogs/onnx-fp16-vs-int8-quantization-benchmarks.png",
+    coverImage: "/assets/blogs/onnx-fp16-vs-int8-quantization-benchmarks.png",
     publishDate: "Jul 2026",
     summary: "Hands-on benchmarks comparing FP32, FP16, and INT8 execution on NVIDIA GPUs and ARM edge processors. Demonstrates how post-training quantization (PTQ) saves 48% VRAM without sacrificing boundary segmentation fidelity.",
     contentMarkdown: `### The Quantization Trade-Off
@@ -743,7 +743,7 @@ However, naive quantization can drastically degrade fine-grained boundary segmen
     category: "Data Engineering & Clinical AI",
     readTime: "7 min read",
     status: "Engineering Note",
-    coverImage: "/Portfolio/assets/blogs/structuring-unstructured-healthkit-telemetry.png",
+    coverImage: "/assets/blogs/structuring-unstructured-healthkit-telemetry.png",
     publishDate: "Jun 2026",
     summary: "Engineering scalable health telemetry parsers at Sodio Technologies. Addresses missing sampling intervals, physiological boundary verification, and deterministic schema sanitization before downstream model consumption.",
     contentMarkdown: `### The Messiness of Real-World Health Exports

@@ -77,7 +77,7 @@ const AdminPageInner: React.FC = () => {
   const [customCategory, setCustomCategory] = useState('');
   const [readTime, setReadTime] = useState('5 min read');
   const [status, setStatus] = useState('Published Technical Breakdown');
-  const [coverImage, setCoverImage] = useState('/Portfolio/assets/blogs/edge-fatigue-tracking-sub-150ms.png');
+  const [coverImage, setCoverImage] = useState('/assets/blogs/edge-fatigue-tracking-sub-150ms.png');
   const [publishDate, setPublishDate] = useState('Oct 2026');
   const [summary, setSummary] = useState('');
   const [contentMarkdown, setContentMarkdown] = useState('');
@@ -212,7 +212,7 @@ const AdminPageInner: React.FC = () => {
     setCustomCategory('');
     setReadTime('5 min read');
     setStatus('Published Technical Breakdown');
-    setCoverImage('/Portfolio/assets/blogs/edge-fatigue-tracking-sub-150ms.png');
+    setCoverImage('/assets/blogs/edge-fatigue-tracking-sub-150ms.png');
     setPublishDate('Oct 2026');
     setSummary('');
     setContentMarkdown('');
@@ -433,19 +433,19 @@ const AdminPageInner: React.FC = () => {
   const fullSitemapXml = useMemo(() => {
     const today = new Date().toISOString().split('T')[0];
     const coreRoutes = [
-      { loc: 'https://mohitsharma1214.github.io/Portfolio/', lastmod: today, changefreq: 'weekly', priority: '1.0' },
-      { loc: 'https://mohitsharma1214.github.io/Portfolio/about/', lastmod: today, changefreq: 'monthly', priority: '0.9' },
-      { loc: 'https://mohitsharma1214.github.io/Portfolio/projects/', lastmod: today, changefreq: 'weekly', priority: '0.9' },
-      { loc: 'https://mohitsharma1214.github.io/Portfolio/experience/', lastmod: today, changefreq: 'monthly', priority: '0.8' },
-      { loc: 'https://mohitsharma1214.github.io/Portfolio/skills/', lastmod: today, changefreq: 'monthly', priority: '0.8' },
-      { loc: 'https://mohitsharma1214.github.io/Portfolio/blogs/', lastmod: today, changefreq: 'weekly', priority: '0.9' },
-      { loc: 'https://mohitsharma1214.github.io/Portfolio/contact/', lastmod: today, changefreq: 'monthly', priority: '0.8' },
+      { loc: 'https://mohitsharma1214.github.io/', lastmod: today, changefreq: 'weekly', priority: '1.0' },
+      { loc: 'https://mohitsharma1214.github.io/about/', lastmod: today, changefreq: 'monthly', priority: '0.9' },
+      { loc: 'https://mohitsharma1214.github.io/projects/', lastmod: today, changefreq: 'weekly', priority: '0.9' },
+      { loc: 'https://mohitsharma1214.github.io/experience/', lastmod: today, changefreq: 'monthly', priority: '0.8' },
+      { loc: 'https://mohitsharma1214.github.io/skills/', lastmod: today, changefreq: 'monthly', priority: '0.8' },
+      { loc: 'https://mohitsharma1214.github.io/blogs/', lastmod: today, changefreq: 'weekly', priority: '0.9' },
+      { loc: 'https://mohitsharma1214.github.io/contact/', lastmod: today, changefreq: 'monthly', priority: '0.8' },
     ];
     const blogUrls = articles
       .filter((a) => (a as BlogMetadata & { published?: boolean }).published !== false)
       .map((a) => {
         const lastmod = (a.createdAt || a.publishDate || today).split('T')[0];
-        return `  <url>\n    <loc>https://mohitsharma1214.github.io/Portfolio/blogs/${a.id}/</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.85</priority>\n  </url>`;
+        return `  <url>\n    <loc>https://mohitsharma1214.github.io/blogs/${a.id}/</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.85</priority>\n  </url>`;
       });
     const coreUrls = coreRoutes.map(
       (r) => `  <url>\n    <loc>${r.loc}</loc>\n    <lastmod>${r.lastmod}</lastmod>\n    <changefreq>${r.changefreq}</changefreq>\n    <priority>${r.priority}</priority>\n  </url>`
@@ -877,7 +877,7 @@ const AdminPageInner: React.FC = () => {
                           <div className="flex items-center gap-3">
                             <div className="w-12 h-8 rounded-lg overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
                               <img
-                                src={article.coverImage || `/Portfolio/assets/blogs/${article.id}.png`}
+                                src={article.coverImage || `/assets/blogs/${article.id}.png`}
                                 alt=""
                                 className="w-full h-full object-cover"
                               />
@@ -1297,11 +1297,11 @@ const AdminPageInner: React.FC = () => {
                         type="text"
                         value={coverImage}
                         onChange={(e) => setCoverImage(e.target.value)}
-                        placeholder="https://... or /Portfolio/assets/blogs/..."
+                        placeholder="https://... or /assets/blogs/..."
                         className="w-full px-3.5 py-2.5 text-xs font-mono bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-800"
                       />
                       <p className="text-[11px] text-slate-400">
-                        Enter an external CDN image URL, or reference existing static assets in <code className="font-mono bg-slate-100 px-1 py-0.5 rounded">/Portfolio/assets/blogs/</code>.
+                        Enter an external CDN image URL, or reference existing static assets in <code className="font-mono bg-slate-100 px-1 py-0.5 rounded">/assets/blogs/</code>.
                       </p>
                     </div>
                   )}
@@ -1310,11 +1310,11 @@ const AdminPageInner: React.FC = () => {
                 {/* Preview Box */}
                 <div className="w-full aspect-video rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 relative group flex items-center justify-center">
                   <img
-                    src={coverImage || '/Portfolio/assets/blogs/edge-fatigue-tracking-sub-150ms.png'}
+                    src={coverImage || '/assets/blogs/edge-fatigue-tracking-sub-150ms.png'}
                     alt="Cover preview"
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/Portfolio/assets/blogs/edge-fatigue-tracking-sub-150ms.png';
+                      (e.target as HTMLImageElement).src = '/assets/blogs/edge-fatigue-tracking-sub-150ms.png';
                     }}
                   />
                   <div className="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-mono text-white">
@@ -1610,7 +1610,7 @@ const AdminPageInner: React.FC = () => {
                   </a>
 
                   <a
-                    href="https://mohitsharma1214.github.io/Portfolio/sitemap.xml"
+                    href="https://mohitsharma1214.github.io/sitemap.xml"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 flex items-center justify-between transition-colors"
@@ -1620,7 +1620,7 @@ const AdminPageInner: React.FC = () => {
                   </a>
 
                   <a
-                    href="https://mohitsharma1214.github.io/Portfolio/robots.txt"
+                    href="https://mohitsharma1214.github.io/robots.txt"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 flex items-center justify-between transition-colors"

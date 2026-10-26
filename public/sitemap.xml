@@ -1,109 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/</loc>
+    <loc>https://mohitsharma1214.github.io/</loc>
     <lastmod>2026-10-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/about/</loc>
+    <loc>https://mohitsharma1214.github.io/about/</loc>
     <lastmod>2026-10-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/projects/</loc>
+    <loc>https://mohitsharma1214.github.io/projects/</loc>
     <lastmod>2026-10-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/experience/</loc>
+    <loc>https://mohitsharma1214.github.io/experience/</loc>
     <lastmod>2026-10-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/skills/</loc>
+    <loc>https://mohitsharma1214.github.io/skills/</loc>
     <lastmod>2026-10-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/blogs/</loc>
+    <loc>https://mohitsharma1214.github.io/blogs/</loc>
     <lastmod>2026-10-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/contact/</loc>
+    <loc>https://mohitsharma1214.github.io/contact/</loc>
     <lastmod>2026-10-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/blogs/production-ready-rag-llm-applications/</loc>
+    <loc>https://mohitsharma1214.github.io/blogs/production-ready-rag-llm-applications/</loc>
     <lastmod>2026-10-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/blogs/real-time-object-detection-yolo-production/</loc>
+    <loc>https://mohitsharma1214.github.io/blogs/real-time-object-detection-yolo-production/</loc>
     <lastmod>2026-10-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/blogs/3d-mesh-generation-ai/</loc>
+    <loc>https://mohitsharma1214.github.io/blogs/3d-mesh-generation-ai/</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/blogs/edge-fatigue-tracking-sub-150ms/</loc>
+    <loc>https://mohitsharma1214.github.io/blogs/edge-fatigue-tracking-sub-150ms/</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/blogs/scaling-medical-cv-tensorrt-5000-images/</loc>
+    <loc>https://mohitsharma1214.github.io/blogs/scaling-medical-cv-tensorrt-5000-images/</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/blogs/strictly-grounded-rag-logistics/</loc>
+    <loc>https://mohitsharma1214.github.io/blogs/strictly-grounded-rag-logistics/</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/blogs/microscopic-hair-segmentation-yolov11-maskrcnn/</loc>
+    <loc>https://mohitsharma1214.github.io/blogs/microscopic-hair-segmentation-yolov11-maskrcnn/</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/blogs/autonomous-qa-agent-orchestration/</loc>
+    <loc>https://mohitsharma1214.github.io/blogs/autonomous-qa-agent-orchestration/</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/blogs/realtime-recommendation-systems-two-stage/</loc>
+    <loc>https://mohitsharma1214.github.io/blogs/realtime-recommendation-systems-two-stage/</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/blogs/onnx-fp16-vs-int8-quantization-benchmarks/</loc>
+    <loc>https://mohitsharma1214.github.io/blogs/onnx-fp16-vs-int8-quantization-benchmarks/</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://mohitsharma1214.github.io/Portfolio/blogs/structuring-unstructured-healthkit-telemetry/</loc>
+    <loc>https://mohitsharma1214.github.io/blogs/structuring-unstructured-healthkit-telemetry/</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
