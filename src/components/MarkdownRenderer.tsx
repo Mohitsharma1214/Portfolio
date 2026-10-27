@@ -15,6 +15,35 @@ marked.setOptions({
   breaks: true,
 });
 
+marked.use({
+  renderer: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    link(this: any, { href, title, text, tokens }: any) {
+      // Guard against false-positive mailto autolinking on technical parameters and metrics (e.g. mAP@0.50, IoU@0.75, recall@10)
+      if (href && href.startsWith('mailto:')) {
+        const email = href.slice(7);
+        // Legitimate email domains must have an alphabetic TLD of at least 2 chars (e.g. .com, .ai, .org, .edu)
+        // Numeric values like 0.50 or 0.95 are evaluation thresholds, not domain names
+        const validEmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!validEmailRegex.test(email)) {
+          return this.parser ? this.parser.parseInline(tokens) : text;
+        }
+      }
+
+      // Open external links securely in a new tab
+      const isExternal = href && (href.startsWith('http://') || href.startsWith('https://'));
+      const parsedText = this.parser ? this.parser.parseInline(tokens) : text;
+      const titleAttr = title ? ` title="${title}"` : '';
+
+      if (isExternal) {
+        return `<a href="${href}"${titleAttr} target="_blank" rel="noopener noreferrer">${parsedText}</a>`;
+      }
+
+      return false; // Use marked's default renderer for internal routes and legitimate emails
+    },
+  },
+});
+
 /**
  * Pre-processes markdown to detect and render LaTeX math formulas using KaTeX
  * before and after marked runs.
