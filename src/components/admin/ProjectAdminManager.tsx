@@ -20,6 +20,11 @@ import {
   FileCode,
   ArrowUp,
   ArrowDown,
+  GripVertical,
+  ArrowUpDown,
+  Grid,
+  ChevronsUp,
+  ChevronsDown,
 } from 'lucide-react';
 import { ProjectService } from '../../services/projectService';
 import { PROJECTS } from '../../data/portfolioData';
@@ -91,8 +96,13 @@ export const ProjectAdminManager: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [isFromDb, setIsFromDb] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'list' | 'editor'>('list');
+  const [viewMode, setViewMode] = useState<'reorder' | 'cards'>('reorder');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [categoryFilter, setCategoryFilter] = useState<string>('All');
+
+  // Drag and drop state
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
 
   // Editor State
   const [editorMode, setEditorMode] = useState<'create' | 'edit'>('create');
@@ -225,27 +235,22 @@ export const ProjectAdminManager: React.FC = () => {
     setRankInput(String(staticProj.displayOrder ?? 999));
   };
 
-  // Handle Move Up / Move Down in list
-  const handleMoveProject = async (index: number, direction: 'up' | 'down') => {
-    const targetIndex = direction === 'up' ? index - 1 : index + 1;
-    if (targetIndex < 0 || targetIndex >= filteredProjects.length) return;
+  // Core Reorder Logic for both drag-and-drop and manual rank shifts
+  const reorderProjects = async (sourceId: string, targetId: string) => {
+    if (sourceId === targetId) return;
 
-    const newProjects = [...projects];
-    const itemA = filteredProjects[index];
-    const itemB = filteredProjects[targetIndex];
+    const currentList = [...projects];
+    const sourceIndex = currentList.findIndex((p) => p.id === sourceId);
+    const targetIndex = currentList.findIndex((p) => p.id === targetId);
 
-    const idxA = newProjects.findIndex((p) => p.id === itemA.id);
-    const idxB = newProjects.findIndex((p) => p.id === itemB.id);
+    if (sourceIndex === -1 || targetIndex === -1) return;
 
-    if (idxA === -1 || idxB === -1) return;
-
-    // Swap items in projects array
-    const temp = newProjects[idxA];
-    newProjects[idxA] = newProjects[idxB];
-    newProjects[idxB] = temp;
+    // Move item in array
+    const [movedItem] = currentList.splice(sourceIndex, 1);
+    currentList.splice(targetIndex, 0, movedItem);
 
     // Re-assign sequential displayOrder (1-indexed)
-    const updatedWithOrder = newProjects.map((p, idx) => ({
+    const updatedWithOrder = currentList.map((p, idx) => ({
       ...p,
       displayOrder: idx + 1,
     }));
@@ -253,7 +258,7 @@ export const ProjectAdminManager: React.FC = () => {
     // Optimistic UI update
     setProjects(updatedWithOrder);
     setOrderMessage(
-      `Moved "${itemA.title}" ${direction === 'up' ? 'higher (Rank #' + (targetIndex + 1) + ')' : 'lower (Rank #' + (targetIndex + 1) + ')'}. Saving to database...`
+      `✨ Moved "${movedItem.title}" to Rank #${targetIndex + 1}. Saving to database...`
     );
 
     const payload = updatedWithOrder.map((p) => ({
@@ -263,11 +268,85 @@ export const ProjectAdminManager: React.FC = () => {
 
     const res = await ProjectService.updateProjectsOrder(payload);
     if (res.success) {
-      setOrderMessage('Project ranking successfully saved to cloud database!');
-      setTimeout(() => setOrderMessage(null), 3500);
+      setOrderMessage(`Rank saved: "${movedItem.title}" is now Rank #${targetIndex + 1}!`);
+      setTimeout(() => setOrderMessage(null), 3000);
     } else {
-      setOrderMessage('Ranking updated. (Note: Login to sync writes to Supabase).');
-      setTimeout(() => setOrderMessage(null), 4000);
+      setOrderMessage('Rank updated locally.');
+      setTimeout(() => setOrderMessage(null), 3500);
+    }
+  };
+
+  // Drag and Drop Event Handlers
+  const handleDragStart = (e: React.DragEvent, id: string) => {
+    e.dataTransfer.setData('text/plain', id);
+    e.dataTransfer.effectAllowed = 'move';
+    setDraggedId(id);
+  };
+
+  const handleDragOver = (e: React.DragEvent, id: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (dragOverId !== id) {
+      setDragOverId(id);
+    }
+  };
+
+  const handleDragLeave = (_e: React.DragEvent, id: string) => {
+    if (dragOverId === id) {
+      setDragOverId(null);
+    }
+  };
+
+  const handleDrop = async (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    const sourceId = draggedId || e.dataTransfer.getData('text/plain');
+    setDraggedId(null);
+    setDragOverId(null);
+
+    if (!sourceId || sourceId === targetId) return;
+    await reorderProjects(sourceId, targetId);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedId(null);
+    setDragOverId(null);
+  };
+
+  // Jump to specific numerical rank (1-indexed)
+  const handleMoveToRank = async (sourceId: string, newRank: number) => {
+    if (isNaN(newRank) || newRank < 1) return;
+    const currentList = [...projects];
+    const sourceIndex = currentList.findIndex((p) => p.id === sourceId);
+    if (sourceIndex === -1) return;
+
+    const targetIndex = Math.max(0, Math.min(currentList.length - 1, newRank - 1));
+    if (sourceIndex === targetIndex) return;
+
+    const targetItem = currentList[targetIndex];
+    if (targetItem) {
+      await reorderProjects(sourceId, targetItem.id);
+    }
+  };
+
+  // Jump to Top (Rank #1)
+  const handleMoveToTop = (sourceId: string) => {
+    handleMoveToRank(sourceId, 1);
+  };
+
+  // Jump to Bottom (Rank #N)
+  const handleMoveToBottom = (sourceId: string) => {
+    handleMoveToRank(sourceId, projects.length);
+  };
+
+  // Step Move Up / Move Down
+  const handleMoveProject = async (index: number, direction: 'up' | 'down') => {
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= filteredProjects.length) return;
+
+    const itemA = filteredProjects[index];
+    const itemB = filteredProjects[targetIndex];
+    if (itemA && itemB) {
+      await reorderProjects(itemA.id, itemB.id);
     }
   };
 
@@ -576,8 +655,8 @@ export const ProjectAdminManager: React.FC = () => {
       {/* Main View: List OR Editor */}
       {activeTab === 'list' ? (
         <div className="space-y-6">
-          {/* Search & Category Filter Bar */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center">
+          {/* Search, Filter & View Mode Bar */}
+          <div className="flex flex-col lg:flex-row gap-3 justify-between items-stretch lg:items-center">
             {/* Search Input */}
             <div className="relative flex-1 max-w-md">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -590,26 +669,73 @@ export const ProjectAdminManager: React.FC = () => {
               />
             </div>
 
-            {/* Category Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 sm:pb-0">
-              {categories.map((cat) => (
+            <div className="flex flex-wrap items-center justify-between sm:justify-end gap-3">
+              {/* Category Pills */}
+              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 sm:pb-0">
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setCategoryFilter(cat)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
+                      categoryFilter === cat
+                        ? 'bg-blue-600 text-white font-semibold shadow-xs'
+                        : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+
+              {/* View Switcher: Reorder Mode vs Cards Grid */}
+              <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 shrink-0">
                 <button
-                  key={cat}
                   type="button"
-                  onClick={() => setCategoryFilter(cat)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
-                    categoryFilter === cat
-                      ? 'bg-blue-600 text-white font-semibold shadow-xs'
-                      : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200'
+                  onClick={() => setViewMode('reorder')}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    viewMode === 'reorder'
+                      ? 'bg-blue-600 text-white shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
+                  title="Drag & Drop List (Best for rapid reordering of many projects)"
                 >
-                  {cat}
+                  <ArrowUpDown className="w-3.5 h-3.5" />
+                  <span>Drag &amp; Drop Reorder</span>
                 </button>
-              ))}
+                <button
+                  type="button"
+                  onClick={() => setViewMode('cards')}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    viewMode === 'cards'
+                      ? 'bg-blue-600 text-white shadow-2xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                  title="Visual Cards Grid View"
+                >
+                  <Grid className="w-3.5 h-3.5" />
+                  <span>Cards Grid</span>
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Projects Cards Grid */}
+          {/* Drag & Drop Guidance Banner */}
+          <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-600">
+            <div className="flex items-center gap-2">
+              <span className="p-1 rounded-md bg-blue-100 text-blue-700">
+                <GripVertical className="w-3.5 h-3.5" />
+              </span>
+              <span>
+                <strong>Drag &amp; Drop Ranking:</strong> Grab any project by its handle or card to drag and drop it into place. Ranks re-number automatically and save to Supabase.
+              </span>
+            </div>
+            <div className="text-[11px] font-mono text-slate-500 shrink-0">
+              Showing {filteredProjects.length} of {projects.length} projects
+            </div>
+          </div>
+
+          {/* Projects View */}
           {loading ? (
             <div className="p-12 text-center text-xs font-mono text-slate-500 bg-white rounded-3xl border border-slate-200 shadow-xs">
               <RefreshCw className="w-6 h-6 animate-spin mx-auto text-blue-600 mb-2" />
@@ -623,127 +749,345 @@ export const ProjectAdminManager: React.FC = () => {
                 No projects matched your search criteria. Try clearing the filter or add a new project above.
               </p>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProjects.map((project, index) => (
-                <div
-                  key={project.id}
-                  className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-xs hover:border-blue-300 hover:shadow-card transition-all flex flex-col justify-between group"
-                >
-                  <div>
-                    {/* Project Screenshot Thumbnail or High-Tech Placeholder */}
-                    <div className="p-3.5 pb-0">
-                      <ProjectCoverImage
-                        coverImage={project.coverImage}
-                        title={project.title}
-                        category={project.category}
-                        metric={project.metrics?.[0]}
-                      />
-                    </div>
+          ) : viewMode === 'reorder' ? (
+            /* ==============================================================
+               MODE 1: Drag-and-Drop Reorder List (High productivity for 10-50+ items)
+               ============================================================== */
+            <div className="space-y-2.5">
+              {filteredProjects.map((project, index) => {
+                const isDragging = draggedId === project.id;
+                const isTarget = dragOverId === project.id && draggedId !== project.id;
+                const currentRank = project.displayOrder ?? index + 1;
 
-                    <div className="p-5 space-y-3">
-                      {/* Status row */}
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-1.5 truncate">
-                          <span className="inline-flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded-md bg-blue-600 text-white font-extrabold shadow-2xs shrink-0">
-                            Rank #{project.displayOrder ?? index + 1}
-                          </span>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 font-semibold truncate">
+                return (
+                  <div
+                    key={project.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, project.id)}
+                    onDragOver={(e) => handleDragOver(e, project.id)}
+                    onDragLeave={(e) => handleDragLeave(e, project.id)}
+                    onDrop={(e) => handleDrop(e, project.id)}
+                    onDragEnd={handleDragEnd}
+                    className={`group relative bg-white rounded-2xl border transition-all duration-150 p-3.5 sm:p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs ${
+                      isDragging
+                        ? 'opacity-40 border-dashed border-blue-400 bg-blue-50/20 scale-[0.99]'
+                        : isTarget
+                        ? 'ring-2 ring-blue-500 border-blue-400 bg-blue-50/50 scale-[1.01] shadow-md'
+                        : 'border-slate-200 hover:border-slate-300 hover:shadow-2xs'
+                    }`}
+                  >
+                    {/* Drop insertion indicator line */}
+                    {isTarget && (
+                      <div className="absolute -top-1.5 left-4 right-4 h-1 bg-blue-600 rounded-full shadow-sm animate-pulse pointer-events-none" />
+                    )}
+
+                    {/* Left: Drag Handle, Rank Badge, Thumbnail, Info */}
+                    <div className="flex items-center gap-3.5 min-w-0 flex-1">
+                      {/* Drag Handle */}
+                      <div
+                        className="p-1.5 text-slate-400 hover:text-blue-600 rounded-lg hover:bg-slate-100 cursor-grab active:cursor-grabbing transition-colors shrink-0"
+                        title="Click and drag to reorder rank"
+                      >
+                        <GripVertical className="w-5 h-5" />
+                      </div>
+
+                      {/* Rank Badge */}
+                      <div className="shrink-0">
+                        <span className="inline-flex items-center justify-center min-w-[58px] px-2.5 py-1 rounded-xl bg-blue-600 text-white font-mono text-xs font-black shadow-2xs">
+                          Rank #{currentRank}
+                        </span>
+                      </div>
+
+                      {/* Thumbnail Mini Preview */}
+                      <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-slate-200 bg-slate-900 shadow-2xs relative hidden sm:flex items-center justify-center">
+                        {project.coverImage ? (
+                          <img
+                            src={project.coverImage}
+                            alt={project.title}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <Layers className="w-5 h-5 text-blue-400" />
+                        )}
+                      </div>
+
+                      {/* Title & Metadata */}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="text-sm font-bold text-slate-950 truncate max-w-sm group-hover:text-blue-600 transition-colors">
+                            {project.title}
+                          </h3>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 font-semibold shrink-0">
                             {project.category}
                           </span>
-                        </div>
-                        <div className="flex items-center gap-1.5 shrink-0">
                           {project.featured && (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-mono text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 font-bold">
+                            <span className="inline-flex items-center gap-1 text-[10px] font-mono text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 font-bold shrink-0">
                               <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
                               <span>Featured</span>
                             </span>
                           )}
-                          {project.isProprietary && (
-                            <span className="text-[10px] font-mono text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 font-medium">
-                              Production
+                        </div>
+                        <p className="text-xs text-slate-500 truncate mt-0.5 max-w-xl">
+                          {project.subtitle}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Right: Quick Numerical Jump & Step Action Buttons */}
+                    <div className="flex items-center justify-between md:justify-end gap-2 w-full md:w-auto pt-2 md:pt-0 border-t md:border-t-0 border-slate-100 shrink-0">
+                      {/* Direct Jump Rank Input */}
+                      <div
+                        className="flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-xl border border-slate-200"
+                        title="Type a rank number and hit Enter to jump directly"
+                      >
+                        <span className="text-[10px] font-mono font-bold text-slate-400 uppercase">Rank</span>
+                        <input
+                          type="number"
+                          min={1}
+                          max={projects.length}
+                          defaultValue={currentRank}
+                          key={`${project.id}-${currentRank}`}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              const val = parseInt((e.target as HTMLInputElement).value, 10);
+                              if (!isNaN(val)) {
+                                handleMoveToRank(project.id, val);
+                              }
+                            }
+                          }}
+                          className="w-11 px-1.5 py-0.5 text-center text-xs font-mono font-bold bg-white border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-1 focus:ring-blue-500 shadow-2xs"
+                        />
+                      </div>
+
+                      {/* Quick Position Step Buttons */}
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          disabled={index === 0}
+                          onClick={() => handleMoveToTop(project.id)}
+                          className="p-1.5 rounded-lg bg-white hover:bg-blue-50 border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors shadow-2xs disabled:opacity-25 disabled:pointer-events-none cursor-pointer"
+                          title="Jump directly to Top (Rank #1)"
+                        >
+                          <ChevronsUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={index === 0}
+                          onClick={() => handleMoveProject(index, 'up')}
+                          className="p-1.5 rounded-lg bg-white hover:bg-blue-50 border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors shadow-2xs disabled:opacity-25 disabled:pointer-events-none cursor-pointer"
+                          title="Move Up 1 Rank"
+                        >
+                          <ArrowUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={index === filteredProjects.length - 1}
+                          onClick={() => handleMoveProject(index, 'down')}
+                          className="p-1.5 rounded-lg bg-white hover:bg-blue-50 border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors shadow-2xs disabled:opacity-25 disabled:pointer-events-none cursor-pointer"
+                          title="Move Down 1 Rank"
+                        >
+                          <ArrowDown className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={index === filteredProjects.length - 1}
+                          onClick={() => handleMoveToBottom(project.id)}
+                          className="p-1.5 rounded-lg bg-white hover:bg-blue-50 border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors shadow-2xs disabled:opacity-25 disabled:pointer-events-none cursor-pointer"
+                          title="Jump directly to Bottom"
+                        >
+                          <ChevronsDown className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      {/* Edit & Delete Buttons */}
+                      <div className="flex items-center gap-1 pl-1 border-l border-slate-200">
+                        <button
+                          type="button"
+                          onClick={() => handleStartEdit(project)}
+                          className="p-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-blue-600 transition-colors shadow-2xs cursor-pointer"
+                          title="Edit project details"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(project.id, project.title)}
+                          className="p-2 rounded-xl bg-white hover:bg-red-50 border border-slate-200 text-slate-500 hover:text-red-600 transition-colors shadow-2xs cursor-pointer"
+                          title="Delete project"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            /* ==============================================================
+               MODE 2: Draggable Cards Grid (Rich Visual View)
+               ============================================================== */
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredProjects.map((project, index) => {
+                const isDragging = draggedId === project.id;
+                const isTarget = dragOverId === project.id && draggedId !== project.id;
+                const currentRank = project.displayOrder ?? index + 1;
+
+                return (
+                  <div
+                    key={project.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, project.id)}
+                    onDragOver={(e) => handleDragOver(e, project.id)}
+                    onDragLeave={(e) => handleDragLeave(e, project.id)}
+                    onDrop={(e) => handleDrop(e, project.id)}
+                    onDragEnd={handleDragEnd}
+                    className={`bg-white rounded-3xl border overflow-hidden transition-all duration-150 flex flex-col justify-between group ${
+                      isDragging
+                        ? 'opacity-40 border-dashed border-blue-400 bg-blue-50/20 scale-[0.98]'
+                        : isTarget
+                        ? 'ring-2 ring-blue-500 border-blue-400 bg-blue-50/30 scale-[1.01] shadow-lg'
+                        : 'border-slate-200 shadow-xs hover:border-blue-300 hover:shadow-card'
+                    }`}
+                  >
+                    <div>
+                      {/* Project Screenshot Thumbnail or High-Tech Placeholder */}
+                      <div className="p-3.5 pb-0">
+                        <ProjectCoverImage
+                          coverImage={project.coverImage}
+                          title={project.title}
+                          category={project.category}
+                          metric={project.metrics?.[0]}
+                        />
+                      </div>
+
+                      <div className="p-5 space-y-3">
+                        {/* Status row with Drag Handle & Rank Badge */}
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5 truncate">
+                            {/* Grip Drag Handle */}
+                            <div
+                              className="p-1 text-slate-400 hover:text-blue-600 rounded cursor-grab active:cursor-grabbing hover:bg-slate-100 transition-colors"
+                              title="Drag card to reorder rank"
+                            >
+                              <GripVertical className="w-4 h-4" />
+                            </div>
+                            <span className="inline-flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded-md bg-blue-600 text-white font-extrabold shadow-2xs shrink-0">
+                              Rank #{currentRank}
+                            </span>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 font-semibold truncate">
+                              {project.category}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            {project.featured && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-mono text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 font-bold">
+                                <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                                <span>Featured</span>
+                              </span>
+                            )}
+                            {project.isProprietary && (
+                              <span className="text-[10px] font-mono text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 font-medium">
+                                Production
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Title & Subtitle */}
+                        <div>
+                          <h3 className="text-base font-bold text-slate-950 tracking-tight line-clamp-1 group-hover:text-blue-600 transition-colors">
+                            {project.title}
+                          </h3>
+                          <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
+                            {project.subtitle}
+                          </p>
+                        </div>
+
+                        {/* Tech Pills */}
+                        <div className="flex flex-wrap gap-1 pt-1">
+                          {project.technologies?.slice(0, 4).map((tech) => (
+                            <span
+                              key={tech}
+                              className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                          {(project.technologies?.length || 0) > 4 && (
+                            <span className="text-[10px] font-mono text-slate-400 px-1 py-0.5">
+                              +{(project.technologies?.length || 0) - 4}
                             </span>
                           )}
                         </div>
                       </div>
+                    </div>
 
-                      {/* Title & Subtitle */}
-                      <div>
-                        <h3 className="text-base font-bold text-slate-950 tracking-tight line-clamp-1">
-                          {project.title}
-                        </h3>
-                        <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
-                          {project.subtitle}
-                        </p>
+                    {/* Card Footer Actions */}
+                    <div className="p-4 pt-3 border-t border-slate-100 bg-slate-50/60 flex items-center justify-between">
+                      {/* Reorder Buttons */}
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          disabled={index === 0}
+                          onClick={() => handleMoveToTop(project.id)}
+                          className="p-1.5 rounded-lg bg-white hover:bg-blue-50 border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors shadow-2xs disabled:opacity-25 disabled:pointer-events-none cursor-pointer"
+                          title="Jump directly to Top (Rank #1)"
+                        >
+                          <ChevronsUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={index === 0}
+                          onClick={() => handleMoveProject(index, 'up')}
+                          className="p-1.5 rounded-lg bg-white hover:bg-blue-50 border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors shadow-2xs disabled:opacity-25 disabled:pointer-events-none cursor-pointer"
+                          title="Move Up 1 Rank"
+                        >
+                          <ArrowUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={index === filteredProjects.length - 1}
+                          onClick={() => handleMoveProject(index, 'down')}
+                          className="p-1.5 rounded-lg bg-white hover:bg-blue-50 border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors shadow-2xs disabled:opacity-25 disabled:pointer-events-none cursor-pointer"
+                          title="Move Down 1 Rank"
+                        >
+                          <ArrowDown className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={index === filteredProjects.length - 1}
+                          onClick={() => handleMoveToBottom(project.id)}
+                          className="p-1.5 rounded-lg bg-white hover:bg-blue-50 border border-slate-200 text-slate-600 hover:text-blue-600 transition-colors shadow-2xs disabled:opacity-25 disabled:pointer-events-none cursor-pointer"
+                          title="Jump directly to Bottom"
+                        >
+                          <ChevronsDown className="w-3.5 h-3.5" />
+                        </button>
                       </div>
 
-                      {/* Tech Pills */}
-                      <div className="flex flex-wrap gap-1 pt-1">
-                        {project.technologies?.slice(0, 4).map((tech) => (
-                          <span
-                            key={tech}
-                            className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                        {(project.technologies?.length || 0) > 4 && (
-                          <span className="text-[10px] font-mono text-slate-400 px-1 py-0.5">
-                            +{(project.technologies?.length || 0) - 4}
-                          </span>
-                        )}
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => handleStartEdit(project)}
+                          className="p-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-blue-600 transition-colors shadow-2xs cursor-pointer"
+                          title="Edit project details & rank"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(project.id, project.title)}
+                          className="p-2 rounded-xl bg-white hover:bg-red-50 border border-slate-200 text-slate-500 hover:text-red-600 transition-colors shadow-2xs cursor-pointer"
+                          title="Delete project"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                       </div>
                     </div>
                   </div>
-
-                  {/* Card Footer Actions */}
-                  <div className="p-4 pt-3 border-t border-slate-100 bg-slate-50/60 flex items-center justify-between">
-                    {/* Reorder Buttons */}
-                    <div className="flex items-center gap-1">
-                      <span className="text-[10px] font-mono text-slate-400 mr-1 hidden sm:inline">
-                        Rank:
-                      </span>
-                      <button
-                        type="button"
-                        disabled={index === 0}
-                        onClick={() => handleMoveProject(index, 'up')}
-                        className="p-1.5 rounded-lg bg-white hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 transition-colors shadow-2xs disabled:opacity-25 disabled:pointer-events-none cursor-pointer"
-                        title="Move Up in Portfolio Rank"
-                      >
-                        <ArrowUp className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        disabled={index === filteredProjects.length - 1}
-                        onClick={() => handleMoveProject(index, 'down')}
-                        className="p-1.5 rounded-lg bg-white hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 transition-colors shadow-2xs disabled:opacity-25 disabled:pointer-events-none cursor-pointer"
-                        title="Move Down in Portfolio Rank"
-                      >
-                        <ArrowDown className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => handleStartEdit(project)}
-                        className="p-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-blue-600 transition-colors shadow-2xs cursor-pointer"
-                        title="Edit project details & rank"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(project.id, project.title)}
-                        className="p-2 rounded-xl bg-white hover:bg-red-50 border border-slate-200 text-slate-500 hover:text-red-600 transition-colors shadow-2xs cursor-pointer"
-                        title="Delete project"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
