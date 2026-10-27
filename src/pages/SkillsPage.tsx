@@ -99,22 +99,22 @@ export const SkillsPage: React.FC = () => {
         </div>
 
         {/* Highlights Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2 border-t border-slate-200">
-          <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-xs">
-            <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold">Primary Core</div>
-            <div className="text-sm font-bold text-slate-900 mt-1">Python, C++, CUDA</div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 pt-2 border-t border-slate-200">
+          <div className="bg-white border border-slate-200 p-3 sm:p-4 rounded-xl shadow-xs">
+            <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold truncate">Primary Core</div>
+            <div className="text-xs sm:text-sm font-bold text-slate-900 mt-1 truncate">Python, C++, CUDA</div>
           </div>
-          <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-xs">
-            <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold">Vision &amp; Edge</div>
-            <div className="text-sm font-bold text-slate-900 mt-1">PyTorch, OpenCV, Dlib</div>
+          <div className="bg-white border border-slate-200 p-3 sm:p-4 rounded-xl shadow-xs">
+            <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold truncate">Vision &amp; Edge</div>
+            <div className="text-xs sm:text-sm font-bold text-slate-900 mt-1 truncate">PyTorch, OpenCV, Dlib</div>
           </div>
-          <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-xs">
-            <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold">Inference Acceleration</div>
-            <div className="text-sm font-bold text-slate-900 mt-1">TensorRT &bull; ONNX Runtime</div>
+          <div className="bg-white border border-slate-200 p-3 sm:p-4 rounded-xl shadow-xs">
+            <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold truncate">Inference Acceleration</div>
+            <div className="text-xs sm:text-sm font-bold text-slate-900 mt-1 truncate">TensorRT &bull; ONNX Runtime</div>
           </div>
-          <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-xs">
-            <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold">Backend &amp; LLM</div>
-            <div className="text-sm font-bold text-slate-900 mt-1">FastAPI &bull; ChromaDB &bull; RAG</div>
+          <div className="bg-white border border-slate-200 p-3 sm:p-4 rounded-xl shadow-xs">
+            <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold truncate">Backend &amp; LLM</div>
+            <div className="text-xs sm:text-sm font-bold text-slate-900 mt-1 truncate">FastAPI &bull; ChromaDB &bull; RAG</div>
           </div>
         </div>
       </div>
@@ -131,7 +131,7 @@ export const SkillsPage: React.FC = () => {
             key={idx}
             variants={itemVariants}
             whileHover={{ y: -4, transition: { duration: 0.2 } }}
-            className="modern-card bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 flex flex-col justify-between shadow-xs hover:border-blue-300 hover:shadow-card transition-all"
+            className="modern-card bg-white rounded-3xl border border-slate-200 p-5 sm:p-8 flex flex-col justify-between shadow-xs hover:border-blue-300 hover:shadow-card transition-all"
           >
             <div>
               <div className="flex items-center gap-3.5 mb-4">

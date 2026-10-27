@@ -86,7 +86,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
 
               {/* Headline */}
               <div>
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold text-slate-950 tracking-tight leading-[1.12]">
+                <h1 className="text-[1.85rem] leading-[1.18] sm:text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold text-slate-950 tracking-tight sm:leading-[1.12]">
                   Engineering real-time <span className="text-gradient-accent">computer vision</span> &amp; production AI systems.
                 </h1>
                 <p className="mt-5 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl">
@@ -95,48 +95,50 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3 pt-2">
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-2">
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
                   <NavLink
                     to="/projects"
-                    className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-all shadow-xs"
+                    className="w-full sm:w-auto justify-center inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-all shadow-xs"
                   >
                     <span>Explore Case Studies</span>
                     <ArrowRight className="w-4 h-4" />
                   </NavLink>
                 </motion.div>
 
-                <motion.a
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  href={PERSONAL_INFO.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-950 font-medium text-sm px-4 py-2.5 rounded-xl border border-slate-200 transition-all shadow-xs"
-                  aria-label="GitHub Profile"
-                >
-                  <GithubIcon className="w-4 h-4 text-slate-700" />
-                  <span>GitHub</span>
-                  <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-                </motion.a>
+                <div className="flex items-center gap-2.5 w-full sm:w-auto">
+                  <motion.a
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    href={PERSONAL_INFO.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 sm:flex-initial justify-center inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-950 font-medium text-sm px-4 py-2.5 rounded-xl border border-slate-200 transition-all shadow-xs"
+                    aria-label="GitHub Profile"
+                  >
+                    <GithubIcon className="w-4 h-4 text-slate-700" />
+                    <span>GitHub</span>
+                    <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                  </motion.a>
 
-                <motion.a
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  href={PERSONAL_INFO.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-950 font-medium text-sm px-4 py-2.5 rounded-xl border border-slate-200 transition-all shadow-xs"
-                  aria-label="LinkedIn Profile"
-                >
-                  <LinkedinIcon className="w-4 h-4 text-[#0ea5e9]" />
-                  <span>LinkedIn</span>
-                  <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-                </motion.a>
+                  <motion.a
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    href={PERSONAL_INFO.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 sm:flex-initial justify-center inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-950 font-medium text-sm px-4 py-2.5 rounded-xl border border-slate-200 transition-all shadow-xs"
+                    aria-label="LinkedIn Profile"
+                  >
+                    <LinkedinIcon className="w-4 h-4 text-[#0ea5e9]" />
+                    <span>LinkedIn</span>
+                    <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                  </motion.a>
+                </div>
 
                 <NavLink
                   to="/about"
-                  className="inline-flex items-center gap-1.5 text-slate-600 hover:text-slate-950 font-medium text-sm px-3 py-2.5 transition-colors"
+                  className="w-full sm:w-auto justify-center sm:justify-start inline-flex items-center gap-1.5 text-slate-600 hover:text-slate-950 font-medium text-sm px-3 py-2 transition-colors"
                 >
                   <span>About My Work</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -169,10 +171,10 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
       <section className="border-y border-slate-200 bg-white/85 backdrop-blur-md py-3.5 overflow-hidden shadow-xs relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-4 sm:gap-6">
           {/* Pinned Stationary Label */}
-          <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-blue-700 shrink-0 pr-4 sm:pr-6 border-r border-slate-200 z-10 bg-white/95">
+          <div className="flex items-center gap-1.5 sm:gap-2 text-xs font-mono font-bold uppercase tracking-wider text-blue-700 shrink-0 pr-3 sm:pr-6 border-r border-slate-200 z-10 bg-white/95">
             <Activity className="w-4 h-4 text-blue-600 animate-pulse" />
             <span className="hidden sm:inline">Verified Telemetry:</span>
-            <span className="sm:hidden">Telemetry:</span>
+            <span className="sm:hidden text-[11px]">Telemetry:</span>
           </div>
 
           {/* Continuous Auto-Scrolling Track (No scrollbar, smooth 60fps infinite loop, pauses on hover) */}
@@ -206,24 +208,24 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4"
+            className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4"
           >
             {PERSONAL_INFO.metrics.map((metric, idx) => (
               <motion.div
                 key={idx}
                 variants={itemVariants}
                 whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                className="bg-white border border-slate-200 p-6 rounded-2xl shadow-xs hover:border-blue-300 hover:shadow-card transition-all"
+                className="bg-white border border-slate-200 p-4 sm:p-6 rounded-2xl shadow-xs hover:border-blue-300 hover:shadow-card transition-all"
               >
-                <div className="text-3xl sm:text-4xl font-extrabold text-slate-950 tracking-tight">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-950 tracking-tight">
                   {metric.value}
                 </div>
-                <div className="text-xs font-mono text-slate-600 mt-1 uppercase tracking-wide font-medium">
+                <div className="text-[11px] sm:text-xs font-mono text-slate-600 mt-1 uppercase tracking-wide font-medium">
                   {metric.label}
                 </div>
-                <div className="text-xs text-blue-600 font-semibold mt-2 flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>{metric.subtext}</span>
+                <div className="text-[11px] sm:text-xs text-blue-600 font-semibold mt-2 flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">{metric.subtext}</span>
                 </div>
               </motion.div>
             ))}

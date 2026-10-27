@@ -42,63 +42,65 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) =
           </div>
 
           {/* Filter Tabs with animated sliding pill */}
-          <div className="flex flex-wrap gap-1 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 self-start md:self-auto shadow-xs">
-            {categories.map((cat) => {
-              const isActive = activeCategory === cat;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className="relative px-4 py-2 rounded-xl text-xs font-medium transition-colors z-10"
-                >
-                  {isActive && (
-                    <motion.div
-                      layoutId="projectFilterPill"
-                      className="absolute inset-0 bg-white rounded-xl shadow-xs border border-slate-200 -z-10"
-                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                    />
-                  )}
-                  <span
-                    className={
-                      isActive
-                        ? 'text-blue-600 font-bold'
-                        : 'text-slate-600 hover:text-slate-950'
-                    }
+          <div className="w-full md:w-auto overflow-x-auto no-scrollbar pb-1 -mx-4 px-4 sm:mx-0 sm:px-0">
+            <div className="flex items-center gap-1 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 w-max md:w-auto shadow-xs">
+              {categories.map((cat) => {
+                const isActive = activeCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className="relative px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-colors z-10"
                   >
-                    {cat}
-                  </span>
-                </button>
-              );
-            })}
+                    {isActive && (
+                      <motion.div
+                        layoutId="projectFilterPill"
+                        className="absolute inset-0 bg-white rounded-xl shadow-xs border border-slate-200 -z-10"
+                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                      />
+                    )}
+                    <span
+                      className={
+                        isActive
+                          ? 'text-blue-600 font-bold'
+                          : 'text-slate-600 hover:text-slate-950'
+                      }
+                    >
+                      {cat}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
         {/* Quick Highlights Summary Bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2 border-t border-slate-200">
-          <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-xs">
-            <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold">Edge Telematics</div>
-            <div className="text-sm font-bold text-slate-900 mt-1">100% Offline Autonomy</div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 pt-2 border-t border-slate-200">
+          <div className="bg-white border border-slate-200 p-3 sm:p-4 rounded-xl shadow-xs">
+            <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold truncate">Edge Telematics</div>
+            <div className="text-xs sm:text-sm font-bold text-slate-900 mt-1 truncate">100% Offline Autonomy</div>
           </div>
-          <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-xs">
-            <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold">Throughput Scale</div>
-            <div className="text-sm font-bold text-slate-900 mt-1">5,000+ Imgs/Day</div>
+          <div className="bg-white border border-slate-200 p-3 sm:p-4 rounded-xl shadow-xs">
+            <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold truncate">Throughput Scale</div>
+            <div className="text-xs sm:text-sm font-bold text-slate-900 mt-1 truncate">5,000+ Imgs/Day</div>
           </div>
-          <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-xs">
-            <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold">Instance Seg</div>
-            <div className="text-sm font-bold text-slate-900 mt-1">0.84 mAP Microscopic</div>
+          <div className="bg-white border border-slate-200 p-3 sm:p-4 rounded-xl shadow-xs">
+            <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold truncate">Instance Seg</div>
+            <div className="text-xs sm:text-sm font-bold text-slate-900 mt-1 truncate">0.84 mAP Microscopic</div>
           </div>
           <a
             href="https://copyright.gov.in/Documents/ERegister/E-Register_December_2024.pdf#page=91"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-white border border-slate-200 p-4 rounded-xl shadow-xs hover:border-amber-400 hover:shadow-sm transition-all group block"
+            className="bg-white border border-slate-200 p-3 sm:p-4 rounded-xl shadow-xs hover:border-amber-400 hover:shadow-sm transition-all group block"
             title="View official Govt. of India E-Register Gazette (Page 91)"
           >
             <div className="text-[10px] font-mono uppercase text-slate-500 font-semibold flex items-center justify-between">
-              <span>Govt. Copyright</span>
-              <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-amber-600 transition-colors" />
+              <span className="truncate">Govt. Copyright</span>
+              <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-amber-600 transition-colors shrink-0" />
             </div>
-            <div className="text-sm font-bold text-amber-700 mt-1">SW-19841/2024</div>
+            <div className="text-xs sm:text-sm font-bold text-amber-700 mt-1 font-mono truncate">SW-19841/2024</div>
           </a>
         </div>
       </div>

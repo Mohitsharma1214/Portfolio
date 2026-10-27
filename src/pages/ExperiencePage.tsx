@@ -169,17 +169,17 @@ export const ExperiencePage: React.FC = () => {
           <h3 className="text-base font-bold text-slate-950">Interested in technical details?</h3>
           <p className="text-xs sm:text-sm text-slate-600">Read deep dives on architecture tradeoffs and benchmarks.</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
           <NavLink
             to="/projects"
-            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition-all shadow-xs"
+            className="flex-1 sm:flex-initial justify-center inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition-all shadow-xs"
           >
             <span>View Case Studies</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </NavLink>
           <NavLink
             to="/skills"
-            className="inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-slate-700 font-medium text-xs px-4 py-2.5 rounded-xl border border-slate-200 transition-all shadow-xs"
+            className="flex-1 sm:flex-initial justify-center inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-slate-700 font-medium text-xs px-4 py-2.5 rounded-xl border border-slate-200 transition-all shadow-xs"
           >
             <span>Explore Skills Stack</span>
           </NavLink>

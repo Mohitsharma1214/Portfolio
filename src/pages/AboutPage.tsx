@@ -54,11 +54,11 @@ export const AboutPage: React.FC = () => {
         </p>
 
         {/* Quick Facts Strip Covering Width */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-200">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 pt-4 border-t border-slate-200">
           {quickFacts.map((fact, idx) => (
-            <div key={idx} className="bg-white border border-slate-200 p-4 rounded-xl shadow-xs">
-              <div className="text-[11px] font-mono text-slate-500 uppercase tracking-wide">{fact.label}</div>
-              <div className="text-sm font-bold text-slate-900 mt-1">{fact.value}</div>
+            <div key={idx} className="bg-white border border-slate-200 p-3 sm:p-4 rounded-xl shadow-xs">
+              <div className="text-[10px] sm:text-[11px] font-mono text-slate-500 uppercase tracking-wide truncate">{fact.label}</div>
+              <div className="text-xs sm:text-sm font-bold text-slate-900 mt-1 truncate">{fact.value}</div>
             </div>
           ))}
         </div>

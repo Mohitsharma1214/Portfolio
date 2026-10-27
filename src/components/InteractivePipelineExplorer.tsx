@@ -25,16 +25,16 @@ export const InteractivePipelineExplorer: React.FC = () => {
     : 'bg-emerald-50 text-emerald-900 border-emerald-200';
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-card p-6 sm:p-7 space-y-5">
+    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-card p-4 sm:p-7 space-y-4 sm:space-y-5">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-3 sm:pb-4">
         <div className="flex items-center gap-2">
           <div className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse" />
           <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-800">
             Interactive Architecture Explorer
           </span>
         </div>
-        <span className="text-[11px] font-mono text-slate-700 font-semibold bg-slate-100 px-2.5 py-0.5 rounded border border-slate-200">
+        <span className="text-[10px] sm:text-[11px] font-mono text-slate-700 font-semibold bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
           Live Testbed
         </span>
       </div>
@@ -43,43 +43,43 @@ export const InteractivePipelineExplorer: React.FC = () => {
       <div className="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200/80">
         <button
           onClick={() => setActiveSystem('edge')}
-          className={`py-2 px-2 text-xs font-medium rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+          className={`py-2 px-1 sm:px-2 text-[11px] sm:text-xs font-medium rounded-lg transition-all flex items-center justify-center gap-1 sm:gap-1.5 ${
             activeSystem === 'edge'
               ? 'bg-white text-blue-600 font-semibold shadow-xs'
               : 'text-slate-600 hover:text-slate-900'
           }`}
         >
-          <Cpu className="w-3.5 h-3.5" />
-          <span>Edge EAR</span>
+          <Cpu className="w-3.5 h-3.5 shrink-0" />
+          <span className="truncate">Edge EAR</span>
         </button>
 
         <button
           onClick={() => setActiveSystem('vision')}
-          className={`py-2 px-2 text-xs font-medium rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+          className={`py-2 px-1 sm:px-2 text-[11px] sm:text-xs font-medium rounded-lg transition-all flex items-center justify-center gap-1 sm:gap-1.5 ${
             activeSystem === 'vision'
               ? 'bg-white text-blue-600 font-semibold shadow-xs'
               : 'text-slate-600 hover:text-slate-900'
           }`}
         >
-          <Zap className="w-3.5 h-3.5" />
-          <span>TensorRT</span>
+          <Zap className="w-3.5 h-3.5 shrink-0" />
+          <span className="truncate">TensorRT</span>
         </button>
 
         <button
           onClick={() => setActiveSystem('rag')}
-          className={`py-2 px-2 text-xs font-medium rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+          className={`py-2 px-1 sm:px-2 text-[11px] sm:text-xs font-medium rounded-lg transition-all flex items-center justify-center gap-1 sm:gap-1.5 ${
             activeSystem === 'rag'
               ? 'bg-white text-blue-600 font-semibold shadow-xs'
               : 'text-slate-600 hover:text-slate-900'
           }`}
         >
-          <ShieldCheck className="w-3.5 h-3.5" />
-          <span>Grounded RAG</span>
+          <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+          <span className="truncate">Grounded RAG</span>
         </button>
       </div>
 
       {/* Explorer Content Window */}
-      <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-4 sm:p-5 min-h-[260px] flex flex-col justify-between space-y-4">
+      <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 sm:p-5 min-h-[260px] flex flex-col justify-between space-y-4">
         <AnimatePresence mode="wait">
           {activeSystem === 'edge' && (
             <motion.div

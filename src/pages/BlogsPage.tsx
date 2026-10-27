@@ -160,21 +160,23 @@ export const BlogsPage: React.FC = () => {
         {/* Filter & Search Bar */}
         <div className="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center pt-2 border-t border-slate-200">
           {/* Category Pills */}
-          <div className="flex flex-wrap gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => handleCategoryChange(cat)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
-                  selectedCategory === cat
-                    ? 'bg-blue-600 text-white font-semibold shadow-xs'
-                    : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+          <div className="w-full sm:w-auto overflow-x-auto no-scrollbar pb-1 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
+            <div className="flex items-center gap-1.5 w-max">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => handleCategoryChange(cat)}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
+                    selectedCategory === cat
+                      ? 'bg-blue-600 text-white font-semibold shadow-xs'
+                      : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Search Box */}

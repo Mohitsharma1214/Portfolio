@@ -121,7 +121,7 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom copyright line */}
-        <div className="mt-8 pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-slate-500 text-[11px] font-mono gap-2">
+        <div className="mt-8 pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-slate-500 text-[11px] font-mono gap-2 text-center sm:text-left">
           <div>
             &copy; {currentYear} {PERSONAL_INFO.name}. All verified credentials, metrics, and case studies sourced directly from primary work.
           </div>
