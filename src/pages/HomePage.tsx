@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
@@ -18,6 +18,8 @@ import { GithubIcon, LinkedinIcon } from '../components/SocialIcons';
 import { PERSONAL_INFO, PROJECTS, TECHNICAL_ARTICLES } from '../data/portfolioData';
 import { InteractivePipelineExplorer } from '../components/InteractivePipelineExplorer';
 import type { ProjectCaseStudy } from '../data/portfolioData';
+import { ProjectService } from '../services/projectService';
+import { ProjectCoverImage } from '../components/ProjectCoverImage';
 
 interface HomePageProps {
   onSelectProject: (project: ProjectCaseStudy) => void;
@@ -44,7 +46,17 @@ const itemVariants: Variants = {
 };
 
 export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
-  const featuredProjects = PROJECTS.filter((p) => p.featured).slice(0, 2);
+  const [allProjects, setAllProjects] = useState<ProjectCaseStudy[]>(PROJECTS);
+
+  useEffect(() => {
+    ProjectService.getAllProjects().then((res) => {
+      if (res.projects && res.projects.length > 0) {
+        setAllProjects(res.projects);
+      }
+    });
+  }, []);
+
+  const featuredProjects = allProjects.filter((p) => p.featured).slice(0, 2);
   const latestArticle = TECHNICAL_ARTICLES[0];
 
   const tickerItems = [
@@ -366,10 +378,20 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
             <motion.div
               key={project.id}
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="modern-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between space-y-6 bg-white border border-slate-200 shadow-xs hover:border-blue-300 hover:shadow-card transition-all"
+              className="modern-card rounded-2xl overflow-hidden flex flex-col justify-between bg-white border border-slate-200 shadow-xs hover:border-blue-300 hover:shadow-card transition-all"
             >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between gap-2">
+              <div className="p-4 sm:p-5 pb-0">
+                <ProjectCoverImage
+                  coverImage={project.coverImage}
+                  title={project.title}
+                  category={project.category}
+                  metric={project.metrics?.[0]}
+                />
+              </div>
+
+              <div className="p-6 sm:p-8 pt-4 space-y-6 flex-1 flex flex-col justify-between">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between gap-2">
                   <span className="text-[11px] font-mono px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 border border-slate-200 font-semibold">
                     {project.category}
                   </span>
@@ -435,8 +457,9 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
                   </a>
                 )}
               </div>
-            </motion.div>
-          ))}
+            </div>
+          </motion.div>
+        ))}
         </div>
       </section>
 

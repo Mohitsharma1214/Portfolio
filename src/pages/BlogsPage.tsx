@@ -8,7 +8,6 @@ import {
   FileText, 
   CheckCircle2, 
   Search,
-  Sparkles,
   Calendar,
   Layers,
   ChevronLeft,
@@ -18,7 +17,6 @@ import {
 } from 'lucide-react';
 import { BlogService } from '../services/blogService';
 import type { BlogMetadata } from '../services/blogService';
-import { isSupabaseConfigured } from '../lib/supabase';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -46,7 +44,6 @@ export const BlogsPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const [isFromDb, setIsFromDb] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [categories, setCategories] = useState<string[]>(['All']);
   const [searchQuery, setSearchQuery] = useState('');
@@ -83,7 +80,6 @@ export const BlogsPage: React.FC = () => {
       setBlogs(res.blogs);
       setTotalPages(res.totalPages);
       setTotalCount(res.totalCount);
-      setIsFromDb(res.isFromDatabase);
     } catch (err) {
       console.error('Failed to fetch blogs:', err);
     } finally {
@@ -119,21 +115,6 @@ export const BlogsPage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
           <div className="space-y-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-mono font-semibold text-blue-700">
-                <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                <span>Dynamic Cloud Blog Architecture</span>
-              </span>
-              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-medium border ${
-                isSupabaseConfigured || isFromDb
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                  : 'bg-indigo-50 text-indigo-700 border-indigo-200'
-              }`}>
-                <Database className="w-3.5 h-3.5" />
-                <span>{isFromDb ? 'Supabase PostgreSQL (Live)' : 'Database Scalable (On-Demand)'}</span>
-              </span>
-            </div>
-
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-950 tracking-tight">
               Technical Blogs &amp; Systems Notes
             </h1>

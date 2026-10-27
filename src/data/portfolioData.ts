@@ -12,6 +12,7 @@ export interface ProjectCaseStudy {
   demoUrl?: string;
   docUrl?: string;
   isProprietary?: boolean;
+  coverImage?: string;
   sections: {
     overview: string;
     problem: string;

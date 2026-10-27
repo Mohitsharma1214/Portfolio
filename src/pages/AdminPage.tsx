@@ -30,11 +30,13 @@ import {
   Globe,
   Radio,
   X,
+  Layers,
 } from 'lucide-react';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { BlogService } from '../services/blogService';
 import type { BlogFull, BlogMetadata } from '../services/blogService';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
+import { ProjectAdminManager } from '../components/admin/ProjectAdminManager';
 
 // STRICT SECURITY PROTOCOLS
 const AUTHORIZED_ADMIN_EMAIL = 'mohitxsharma09@gmail.com';
@@ -42,6 +44,9 @@ const MASTER_PIN = import.meta.env.VITE_ADMIN_MASTER_PIN || '984124';
 
 const AdminPageInner: React.FC = () => {
   const { user, loading: authLoading, signIn, signOut } = useAuth();
+
+  // Studio Section: 'blogs' or 'projects'
+  const [studioSection, setStudioSection] = useState<'blogs' | 'projects'>('blogs');
 
   // Auth Form State (Sign-In Only - Public Registration Disabled)
   const [email, setEmail] = useState('');
@@ -670,7 +675,7 @@ const AdminPageInner: React.FC = () => {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-base font-extrabold text-slate-950 tracking-tight">
-                Blog Studio Admin
+                Portfolio Studio Admin
               </h1>
               <span className="text-[10px] font-mono text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded font-bold border border-emerald-200 flex items-center gap-1">
                 <ShieldCheck className="w-3 h-3 text-emerald-600" />
@@ -685,45 +690,49 @@ const AdminPageInner: React.FC = () => {
 
         {/* Action Controls */}
         <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
-          {activeTab === 'editor' ? (
-            <button
-              type="button"
-              onClick={() => setActiveTab('list')}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>All Articles</span>
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={handleStartCreate}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-all"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Write New Blog</span>
-            </button>
+          {studioSection === 'blogs' && (
+            <>
+              {activeTab === 'editor' ? (
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('list')}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>All Articles</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleStartCreate}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-all"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Write New Blog</span>
+                </button>
+              )}
+
+              {/* 🤖 Sitemap Robot Control Trigger */}
+              <button
+                type="button"
+                onClick={() => setSitemapRobotModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 transition-colors shadow-xs"
+                title="Inspect and manage automated Sitemap Robot"
+              >
+                <Bot className="w-3.5 h-3.5 text-blue-600" />
+                <span>Sitemap Robot</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block ml-0.5" />
+              </button>
+            </>
           )}
 
-          {/* 🤖 Sitemap Robot Control Trigger */}
-          <button
-            type="button"
-            onClick={() => setSitemapRobotModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 transition-colors shadow-xs"
-            title="Inspect and manage automated Sitemap Robot"
-          >
-            <Bot className="w-3.5 h-3.5 text-blue-600" />
-            <span>Sitemap Robot</span>
-            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block ml-0.5" />
-          </button>
-
           <Link
-            to="/blogs"
+            to={studioSection === 'projects' ? '/projects' : '/blogs'}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors shadow-xs"
           >
-            <span>View Live Site</span>
+            <span>{studioSection === 'projects' ? 'View Projects Page' : 'View Blogs Page'}</span>
             <ExternalLink className="w-3 h-3 text-slate-400" />
           </Link>
 
@@ -738,8 +747,39 @@ const AdminPageInner: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Body: Either List View or Editor View */}
-      {activeTab === 'list' ? (
+      {/* Primary Section Switcher: Technical Blogs vs Projects & Case Studies */}
+      <div className="flex items-center gap-1.5 p-1.5 bg-white rounded-2xl border border-slate-200 shadow-xs w-fit">
+        <button
+          type="button"
+          onClick={() => setStudioSection('blogs')}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            studioSection === 'blogs'
+              ? 'bg-blue-600 text-white shadow-xs'
+              : 'text-slate-600 hover:text-slate-950 hover:bg-slate-50'
+          }`}
+        >
+          <FileText className="w-4 h-4" />
+          <span>Technical Blogs ({articles.length})</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setStudioSection('projects')}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            studioSection === 'projects'
+              ? 'bg-blue-600 text-white shadow-xs'
+              : 'text-slate-600 hover:text-slate-950 hover:bg-slate-50'
+          }`}
+        >
+          <Layers className="w-4 h-4" />
+          <span>Projects &amp; Case Studies</span>
+        </button>
+      </div>
+
+      {/* Section Content: Projects Manager OR Blogs Manager */}
+      {studioSection === 'projects' ? (
+        <ProjectAdminManager />
+      ) : activeTab === 'list' ? (
         <div className="space-y-6">
           {/* Quick Stats Bar */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">

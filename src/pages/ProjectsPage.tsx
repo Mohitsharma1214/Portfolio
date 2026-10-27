@@ -1,22 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, ArrowRight, ShieldCheck, Layers } from 'lucide-react';
 import { GithubIcon } from '../components/SocialIcons';
 import { PROJECTS } from '../data/portfolioData';
 import type { ProjectCaseStudy } from '../data/portfolioData';
+import { ProjectService } from '../services/projectService';
+import { ProjectCoverImage } from '../components/ProjectCoverImage';
 
 interface ProjectsPageProps {
   onSelectProject: (project: ProjectCaseStudy) => void;
 }
 
 export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) => {
+  const [projects, setProjects] = useState<ProjectCaseStudy[]>(PROJECTS);
   const [activeCategory, setActiveCategory] = useState<string>('All');
+
+  useEffect(() => {
+    ProjectService.getAllProjects().then((res) => {
+      if (res.projects && res.projects.length > 0) {
+        setProjects(res.projects);
+      }
+    });
+  }, []);
 
   const categories = ['All', 'Computer Vision & Edge', 'LLM & Agentic AI', 'Production Platforms'];
 
   const filteredProjects = activeCategory === 'All'
-    ? PROJECTS
-    : PROJECTS.filter((p) => p.category === activeCategory);
+    ? projects
+    : projects.filter((p) => p.category === activeCategory);
 
   return (
     <motion.div
@@ -119,7 +130,17 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) =
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
               className="modern-card bg-white rounded-3xl border border-slate-200 flex flex-col justify-between overflow-hidden shadow-xs hover:border-blue-300 hover:shadow-card transition-all"
             >
-              <div className="p-6 sm:p-8 space-y-5">
+              {/* Project Screenshot or High-Tech Placeholder */}
+              <div className="p-4 sm:p-5 pb-0">
+                <ProjectCoverImage
+                  coverImage={project.coverImage}
+                  title={project.title}
+                  category={project.category}
+                  metric={project.metrics?.[0]}
+                />
+              </div>
+
+              <div className="p-6 sm:p-8 pt-4 space-y-5">
                 {/* Header Badge */}
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-[11px] font-mono px-3 py-1 rounded-md bg-slate-100 text-slate-700 border border-slate-200 font-semibold">
