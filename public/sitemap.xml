@@ -43,6 +43,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://mohitsharma1214.github.io/blogs/yolo-model-evaluation-map-iou/</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://mohitsharma1214.github.io/blogs/image-segmentation-deep-learning-guide/</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://mohitsharma1214.github.io/blogs/production-ready-rag-llm-applications/</loc>
     <lastmod>2026-10-26</lastmod>
     <changefreq>monthly</changefreq>
@@ -56,54 +68,6 @@
   </url>
   <url>
     <loc>https://mohitsharma1214.github.io/blogs/3d-mesh-generation-ai/</loc>
-    <lastmod>2026-10-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma1214.github.io/blogs/edge-fatigue-tracking-sub-150ms/</loc>
-    <lastmod>2026-10-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma1214.github.io/blogs/scaling-medical-cv-tensorrt-5000-images/</loc>
-    <lastmod>2026-10-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma1214.github.io/blogs/strictly-grounded-rag-logistics/</loc>
-    <lastmod>2026-10-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma1214.github.io/blogs/microscopic-hair-segmentation-yolov11-maskrcnn/</loc>
-    <lastmod>2026-10-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma1214.github.io/blogs/autonomous-qa-agent-orchestration/</loc>
-    <lastmod>2026-10-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma1214.github.io/blogs/realtime-recommendation-systems-two-stage/</loc>
-    <lastmod>2026-10-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma1214.github.io/blogs/onnx-fp16-vs-int8-quantization-benchmarks/</loc>
-    <lastmod>2026-10-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma1214.github.io/blogs/structuring-unstructured-healthkit-telemetry/</loc>
     <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>

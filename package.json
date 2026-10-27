@@ -16,8 +16,10 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.109.0",
     "@types/dompurify": "^3.0.5",
+    "@types/katex": "^0.16.8",
     "dompurify": "^3.4.17",
     "framer-motion": "^14.6.0",
+    "katex": "^0.19.1",
     "lucide-react": "^1.61.0",
     "marked": "^18.1.1",
     "react": "^19.0.0",

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { X, Clock } from 'lucide-react';
 import type { TechnicalArticle } from '../data/portfolioData';
+import { MarkdownRenderer } from './MarkdownRenderer';
 
 interface ArticleModalProps {
   article: TechnicalArticle | null;
@@ -78,37 +79,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({ article, onClose }) 
           </div>
 
           <div className="border-t border-slate-200 pt-6">
-            <div className="space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed">
-              {article.contentMarkdown.split('\n\n').map((paragraph, index) => {
-                if (paragraph.startsWith('### ')) {
-                  return (
-                    <h2 key={index} className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight pt-4">
-                      {paragraph.replace('### ', '')}
-                    </h2>
-                  );
-                }
-                if (paragraph.startsWith('```')) {
-                  const lines = paragraph.split('\n');
-                  const code = lines.slice(1, -1).join('\n');
-                  return (
-                    <div key={index} className="my-4 rounded-xl overflow-hidden border border-slate-800 bg-[#0f172a] text-slate-200 shadow-md">
-                      <div className="bg-slate-900/90 px-4 py-2 text-xs font-mono text-slate-400 border-b border-slate-800 flex items-center justify-between">
-                        <span className="text-slate-300">Python Implementation</span>
-                        <span className="text-[10px] text-blue-400 font-mono">Production snippet</span>
-                      </div>
-                      <pre className="p-4 font-mono text-xs overflow-x-auto leading-relaxed text-slate-200">
-                        <code>{code}</code>
-                      </pre>
-                    </div>
-                  );
-                }
-                return (
-                  <p key={index} className="leading-relaxed">
-                    {paragraph}
-                  </p>
-                );
-              })}
-            </div>
+            <MarkdownRenderer content={article.contentMarkdown} />
           </div>
         </div>
 
