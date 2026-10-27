@@ -6,13 +6,12 @@ import {
   Clock, 
   ArrowRight, 
   FileText, 
-  CheckCircle2, 
   Search,
   Calendar,
   Layers,
   ChevronLeft,
   ChevronRight,
-  Database,
+  Mail,
   Loader2
 } from 'lucide-react';
 import { BlogService } from '../services/blogService';
@@ -348,20 +347,31 @@ export const BlogsPage: React.FC = () => {
         </div>
       )}
 
-      {/* Primary Source Quality Verification Banner */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
-        <div className="space-y-1 text-center sm:text-left">
-          <div className="text-base font-bold text-slate-950 flex items-center gap-2 justify-center sm:justify-start">
-            <Database className="w-4 h-4 text-blue-600" />
-            <span>Scalable PostgreSQL Database Architecture</span>
+      {/* Reader Call-to-Action Banner */}
+      <div className="bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-md border border-blue-900/40 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="space-y-1.5 text-center sm:text-left relative z-10">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-[11px] font-mono font-semibold">
+            <Mail className="w-3 h-3 text-blue-400" />
+            <span>Have Questions or Project Ideas?</span>
           </div>
-          <div className="text-xs sm:text-sm text-slate-600">
-            Articles are paginated on-demand. Heavy content markdown is loaded only when viewing individual articles, keeping the initial bundle fast and lightweight even with 1,000+ blogs.
-          </div>
+          <h3 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+            Interested in discussing Computer Vision, Edge AI, or Hiring?
+          </h3>
+          <p className="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
+            I'm always open to discussing low-latency model optimizations, systems architectures, and technical engineering roles. Let's connect!
+          </p>
         </div>
-        <div className="flex items-center gap-2 text-xs font-mono text-emerald-800 bg-emerald-50 px-3.5 py-2 rounded-xl border border-emerald-200 shrink-0 font-bold">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-          <span>Zero Bundle Bloat</span>
+
+        <div className="relative z-10 shrink-0">
+          <Link
+            to="/contact"
+            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-xl transition-all shadow-md shadow-blue-600/30 cursor-pointer"
+          >
+            <span>Get in Touch with Mohit</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </div>
     </motion.div>
