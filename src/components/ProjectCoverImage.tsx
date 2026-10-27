@@ -7,6 +7,7 @@ interface ProjectCoverImageProps {
   category: string;
   metric?: string;
   className?: string;
+  aspectRatio?: string;
 }
 
 export const ProjectCoverImage: React.FC<ProjectCoverImageProps> = ({
@@ -15,11 +16,12 @@ export const ProjectCoverImage: React.FC<ProjectCoverImageProps> = ({
   category,
   metric,
   className = '',
+  aspectRatio = 'aspect-[16/9] sm:aspect-[2/1]',
 }) => {
   // If screenshot image exists, render it with smooth loaded state
   if (coverImage && coverImage.trim()) {
     return (
-      <div className={`relative w-full aspect-[16/9] sm:aspect-[2/1] overflow-hidden rounded-2xl bg-slate-900 border border-slate-200/80 shadow-xs group ${className}`}>
+      <div className={`relative w-full ${aspectRatio} overflow-hidden rounded-2xl bg-slate-900 border border-slate-200/80 shadow-xs group ${className}`}>
         <img
           src={coverImage}
           alt={`${title} project preview`}
@@ -85,7 +87,7 @@ export const ProjectCoverImage: React.FC<ProjectCoverImageProps> = ({
 
   return (
     <div
-      className={`relative w-full aspect-[16/9] sm:aspect-[2/1] overflow-hidden rounded-2xl bg-gradient-to-br ${details.gradient} border ${details.borderColor} shadow-xs flex flex-col justify-between p-4 sm:p-5 text-white select-none group ${className}`}
+      className={`relative w-full ${aspectRatio} overflow-hidden rounded-2xl bg-gradient-to-br ${details.gradient} border ${details.borderColor} shadow-xs flex flex-col justify-between p-4 sm:p-5 text-white select-none group ${className}`}
     >
       {/* Background SVG Geometric Matrix Grid */}
       <svg

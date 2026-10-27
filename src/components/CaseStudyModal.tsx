@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
-import { X, ExternalLink, CheckCircle2, AlertTriangle, Layers, Cpu, Award } from 'lucide-react';
+import { X, ExternalLink, CheckCircle2, AlertTriangle, Layers, Cpu, Award, Maximize2 } from 'lucide-react';
 import { GithubIcon } from './SocialIcons';
 import type { ProjectCaseStudy } from '../data/portfolioData';
 import { ArchitectureDiagram } from './ArchitectureDiagram';
+import { ProjectCoverImage } from './ProjectCoverImage';
 
 interface CaseStudyModalProps {
   project: ProjectCaseStudy | null;
@@ -119,6 +120,50 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
                   <Award className="w-3.5 h-3.5 text-amber-600" />
                   <span>Govt. of India Copyright: SW-19841/2024</span>
                   <ExternalLink className="w-3 h-3 text-amber-600 group-hover:translate-x-0.5 transition-transform" />
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* Project Screenshot / Visual Showcase */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs font-mono text-slate-500">
+              <span className="uppercase tracking-wider font-semibold text-slate-700 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                Production Screenshot &amp; System Preview
+              </span>
+              {project.coverImage && (
+                <a
+                  href={project.coverImage}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 hover:underline font-semibold"
+                >
+                  <Maximize2 className="w-3.5 h-3.5" />
+                  <span>Open Full Resolution</span>
+                </a>
+              )}
+            </div>
+
+            <div className="relative group rounded-2xl overflow-hidden border border-slate-200 shadow-md bg-slate-950">
+              <ProjectCoverImage
+                coverImage={project.coverImage}
+                title={project.title}
+                category={project.category}
+                metric={project.metrics?.[0]}
+                aspectRatio="aspect-[16/9] sm:aspect-[16/9]"
+                className="w-full"
+              />
+              {project.coverImage && (
+                <a
+                  href={project.coverImage}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="absolute top-3.5 right-3.5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950/80 hover:bg-slate-900 backdrop-blur-md text-white text-xs font-mono font-medium border border-white/20 shadow-md transition-all hover:scale-105"
+                  title="Open full resolution screenshot in new tab"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>View Full Screenshot</span>
                 </a>
               )}
             </div>
