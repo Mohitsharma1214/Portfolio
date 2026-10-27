@@ -152,11 +152,11 @@ export const ArchitectureDiagram: React.FC<ArchitectureDiagramProps> = ({ projec
           <g transform="translate(360, 20)">
             <rect width="160" height="110" rx="8" fill="#1e1b4b" stroke="#6366f1" strokeWidth="1.5" />
             <rect width="160" height="26" rx="8" fill="#312e81" stroke="#6366f1" strokeWidth="1.5" />
-            <text x="80" y="17" textAnchor="middle" fontWeight="700" fill="#c7d2fe" fontSize="11">YOLOv11l-seg / Mask R-CNN</text>
-            <text x="80" y="48" textAnchor="middle" fill="#a5b4fc" fontSize="10" fontWeight="600">FPN Multi-Scale Neck</text>
-            <text x="80" y="68" textAnchor="middle" fill="#cbd5e1" fontSize="10">Boundary Loss Penalty</text>
-            <text x="80" y="86" textAnchor="middle" fill="#cbd5e1" fontSize="10">High-Res Mask Prototypes</text>
-            <text x="80" y="104" textAnchor="middle" fill="#c7d2fe" fontSize="9" fontWeight="600">Overlapping Strand Logic</text>
+            <text x="80" y="17" textAnchor="middle" fontWeight="700" fill="#c7d2fe" fontSize="11">Mask R-CNN (ResNet-50-FPN)</text>
+            <text x="80" y="48" textAnchor="middle" fill="#a5b4fc" fontSize="10" fontWeight="600">ResNet-50 + FPN Neck</text>
+            <text x="80" y="68" textAnchor="middle" fill="#cbd5e1" fontSize="10">Sub-Pixel RoIAlign (14×14)</text>
+            <text x="80" y="86" textAnchor="middle" fill="#cbd5e1" fontSize="10">Boundary Loss Penalty</text>
+            <text x="80" y="104" textAnchor="middle" fill="#c7d2fe" fontSize="9" fontWeight="600">Instance Mask Branch</text>
           </g>
 
           <line x1="520" y1="75" x2="555" y2="75" stroke="#38bdf8" strokeWidth="2" markerEnd="url(#arrow2Dark)" />

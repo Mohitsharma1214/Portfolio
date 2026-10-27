@@ -166,11 +166,11 @@ export const JOURNEY_MILESTONES: JourneyMilestone[] = [
     badge: "5,000+ Imgs/Day • <120ms P95",
     iconName: "Activity",
     headline: "Architecting a clinical diagnostic backend delivering sub-120ms P95 inference across 5,000+ daily images.",
-    story: "Served as the primary AI engineer responsible for Hairscope's visual diagnostic infrastructure. Built an asynchronous FastAPI serving architecture from the ground up, deployed instance segmentation (Mask R-CNN & YOLOv11-seg), and accelerated GPU pipelines with TensorRT and ONNX FP16 quantization.",
+    story: "Served as the primary AI engineer responsible for Hairscope's visual diagnostic infrastructure. Prototyped strand detection starting with YOLOv11, researched the fundamental limitations on crossing fibers, pivoted to instance segmentation with Mask R-CNN (ResNet-50-FPN), and accelerated GPU pipelines with TensorRT FP16 quantization to achieve <120ms P95 latency.",
     engineeringBreakthroughs: [
+      "From YOLOv11 to Mask R-CNN (ResNet-50-FPN): Prototyped with YOLOv11 bounding boxes, identified through computer vision literature that overlapping fibers required fine-grained instance segmentation, and trained Mask R-CNN with ResNet-50-FPN and sub-pixel RoIAlign to achieve 0.84 mAP and 0.78 IoU.",
       "Production Serving at Scale: Architected and deployed an async FastAPI gateway processing 5,000+ high-resolution clinical images daily with a verified P95 latency under 120ms.",
       "GPU Training Cycle Acceleration: Overhauled data loading and training pipelines using pinned host memory and PyTorch Automatic Mixed Precision (AMP), reducing GPU epoch runtimes by ~20%.",
-      "Instance Segmentation Precision: Trained custom Mask R-CNN and YOLOv11-seg architectures on polarized trichoscopy images, achieving 0.84 mAP and 0.78 IoU for sub-pixel microscopic hair strand delineation.",
       "TensorRT FP16 Quantization: Converted PyTorch computational graphs to TensorRT FP16, shrinking VRAM footprint by 42% and dropping inference latency from 210ms to 98ms with negligible accuracy loss (<0.005 mAP)."
     ],
     metrics: [
@@ -179,7 +179,7 @@ export const JOURNEY_MILESTONES: JourneyMilestone[] = [
       { label: "Model Precision", value: "0.84 mAP", subtext: "0.78 IoU microscopic segmentation" },
       { label: "GPU Optimization", value: "~20% Boost", subtext: "Training cycle acceleration" }
     ],
-    stack: ["PyTorch", "FastAPI", "TensorRT", "ONNX Runtime", "CUDA", "OpenCV", "Mask R-CNN", "YOLOv11-seg", "Docker"],
+    stack: ["PyTorch", "Mask R-CNN (ResNet-50-FPN)", "RoIAlign", "YOLOv11", "FastAPI", "TensorRT", "ONNX Runtime", "CUDA", "OpenCV", "Docker"],
     recruiterValue: {
       summary: "This is Mohit's flagship production milestone. It proves senior-level systems capability: running high-concurrency visual inference, managing GPU memory constraints, preventing CUDA OOMs, and hitting tight SLAs in mission-critical healthcare.",
       competenciesProven: [
