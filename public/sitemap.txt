@@ -5,6 +5,8 @@ https://mohitsharma1214.github.io/experience/
 https://mohitsharma1214.github.io/skills/
 https://mohitsharma1214.github.io/blogs/
 https://mohitsharma1214.github.io/contact/
+https://mohitsharma1214.github.io/blogs/synthetic-data-computer-vision/
+https://mohitsharma1214.github.io/blogs/real-time-video-analytics-computer-vision/
 https://mohitsharma1214.github.io/blogs/yolo-model-evaluation-map-iou/
 https://mohitsharma1214.github.io/blogs/image-segmentation-deep-learning-guide/
 https://mohitsharma1214.github.io/blogs/production-ready-rag-llm-applications/

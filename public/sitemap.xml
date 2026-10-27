@@ -43,6 +43,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://mohitsharma1214.github.io/blogs/synthetic-data-computer-vision/</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://mohitsharma1214.github.io/blogs/real-time-video-analytics-computer-vision/</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://mohitsharma1214.github.io/blogs/yolo-model-evaluation-map-iou/</loc>
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>

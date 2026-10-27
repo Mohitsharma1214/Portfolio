@@ -798,7 +798,7 @@ const AdminPageInner: React.FC = () => {
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <a
-                  href={`https://search.google.com/search-console/inspect?resource_id=https%3A%2F%2Fmohitsharma1214.github.io%2FPortfolio%2F&page_url=https%3A%2F%2Fmohitsharma1214.github.io%2FPortfolio%2Fblogs%2F${sitemapRobotStatus.lastBlogSlug}%2F`}
+                  href={`https://search.google.com/search-console/inspect?resource_id=https%3A%2F%2Fmohitsharma1214.github.io%2F&page_url=https%3A%2F%2Fmohitsharma1214.github.io%2Fblogs%2F${sitemapRobotStatus.lastBlogSlug}%2F`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-3 py-1.5 bg-white hover:bg-slate-50 text-blue-700 font-semibold rounded-xl border border-blue-200 inline-flex items-center gap-1.5 transition-colors shadow-xs"
@@ -1032,7 +1032,7 @@ const AdminPageInner: React.FC = () => {
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <a
-                  href={`https://search.google.com/search-console/inspect?resource_id=https%3A%2F%2Fmohitsharma1214.github.io%2FPortfolio%2F&page_url=https%3A%2F%2Fmohitsharma1214.github.io%2FPortfolio%2Fblogs%2F${slug}%2F`}
+                  href={`https://search.google.com/search-console/inspect?resource_id=https%3A%2F%2Fmohitsharma1214.github.io%2F&page_url=https%3A%2F%2Fmohitsharma1214.github.io%2Fblogs%2F${slug}%2F`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-2.5 py-1 bg-white hover:bg-slate-50 text-blue-700 font-semibold rounded-lg border border-blue-200 inline-flex items-center gap-1 transition-colors"
@@ -1592,7 +1592,7 @@ const AdminPageInner: React.FC = () => {
                   </button>
 
                   <a
-                    href="https://search.google.com/search-console/sitemaps?resource_id=https%3A%2F%2Fmohitsharma1214.github.io%2FPortfolio%2F"
+                    href="https://search.google.com/search-console/sitemaps?resource_id=https%3A%2F%2Fmohitsharma1214.github.io%2F"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-left text-slate-800 transition-colors flex items-center justify-between"
