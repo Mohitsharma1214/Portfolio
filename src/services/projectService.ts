@@ -73,7 +73,25 @@ export const ProjectService = {
 
         if (!error && data && data.length > 0) {
           const mapped = data.map(mapDbRowToProject);
-          return { projects: mapped, isFromDatabase: true };
+
+          // SMART MERGE: Check if any static projects from PROJECTS are not yet in Supabase.
+          // This guarantees that creating or editing one project never causes the other default projects to vanish!
+          let deletedIds: string[] = [];
+          try {
+            deletedIds = JSON.parse(localStorage.getItem('portfolio_deleted_project_ids') || '[]');
+          } catch {
+            deletedIds = [];
+          }
+
+          const dbIds = new Set(mapped.map((p) => p.id));
+          const missingStatic = PROJECTS.filter(
+            (p) => !dbIds.has(p.id) && !deletedIds.includes(p.id)
+          );
+
+          return {
+            projects: [...mapped, ...missingStatic],
+            isFromDatabase: true,
+          };
         }
 
         if (error) {
@@ -147,6 +165,19 @@ export const ProjectService = {
     }
 
     try {
+      // Record in local deletion blacklist so static fallback never resurrects it
+      try {
+        const deletedIds: string[] = JSON.parse(
+          localStorage.getItem('portfolio_deleted_project_ids') || '[]'
+        );
+        if (!deletedIds.includes(id)) {
+          deletedIds.push(id);
+          localStorage.setItem('portfolio_deleted_project_ids', JSON.stringify(deletedIds));
+        }
+      } catch {
+        // ignore storage errors
+      }
+
       const { error } = await supabase.from('projects').delete().eq('id', id);
       if (error) {
         return { success: false, error: error.message };
@@ -161,7 +192,7 @@ export const ProjectService = {
   },
 
   /**
-   * Admin: 1-Click Migrates / Seeds all existing static PROJECTS into Supabase
+   * Admin: 1-Click Migrates / Seeds missing static PROJECTS into Supabase without overwriting existing edits
    */
   async seedProjectsFromStatic(): Promise<{ success: boolean; seededCount: number; error?: string }> {
     if (!isSupabaseConfigured || !supabase) {
@@ -169,7 +200,23 @@ export const ProjectService = {
     }
 
     try {
-      const rows = PROJECTS.map(mapProjectToDbRow);
+      // Fetch existing project IDs so we NEVER overwrite user edits or custom cover images
+      const { data: existingRows, error: fetchError } = await supabase
+        .from('projects')
+        .select('id');
+
+      if (fetchError) {
+        return { success: false, seededCount: 0, error: fetchError.message };
+      }
+
+      const existingIds = new Set((existingRows || []).map((r: { id: string }) => r.id));
+      const missingProjects = PROJECTS.filter((p) => !existingIds.has(p.id));
+
+      if (missingProjects.length === 0) {
+        return { success: true, seededCount: 0 };
+      }
+
+      const rows = missingProjects.map(mapProjectToDbRow);
       const { error } = await supabase
         .from('projects')
         .upsert(rows, { onConflict: 'id' });
