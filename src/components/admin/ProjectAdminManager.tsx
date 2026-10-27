@@ -673,9 +673,36 @@ export const ProjectAdminManager: React.FC = () => {
           </div>
 
           {editorError && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              <span>{editorError}</span>
+            <div className="p-4 bg-red-50 border border-red-200 rounded-2xl text-xs text-red-800 space-y-2.5">
+              <div className="flex items-start gap-2 font-semibold">
+                <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                <span>
+                  {editorError.includes('public.projects') || editorError.includes('PGRST205')
+                    ? "Table 'public.projects' was not found in your Supabase database. Run the SQL schema script below in your Supabase SQL Editor to initialize it."
+                    : editorError}
+                </span>
+              </div>
+              {(editorError.includes('public.projects') || editorError.includes('PGRST205')) && (
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={handleCopySql}
+                    className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>{sqlCopied ? 'SQL Schema Copied!' : 'Copy 1-Click SQL Schema'}</span>
+                  </button>
+                  <a
+                    href="https://supabase.com/dashboard/project/zxovekhtcajtefedkkee/sql"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 rounded-lg bg-white border border-red-200 text-red-700 hover:bg-red-50 text-xs font-semibold inline-flex items-center gap-1"
+                  >
+                    <span>Open Supabase SQL Editor</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              )}
             </div>
           )}
 
