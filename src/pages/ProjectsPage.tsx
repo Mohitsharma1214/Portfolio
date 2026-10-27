@@ -4,7 +4,7 @@ import { ExternalLink, ArrowRight, ShieldCheck, Layers } from 'lucide-react';
 import { GithubIcon } from '../components/SocialIcons';
 import { PROJECTS } from '../data/portfolioData';
 import type { ProjectCaseStudy } from '../data/portfolioData';
-import { ProjectService } from '../services/projectService';
+import { ProjectService, sortProjectsByRank } from '../services/projectService';
 import { ProjectCoverImage } from '../components/ProjectCoverImage';
 
 interface ProjectsPageProps {
@@ -12,7 +12,7 @@ interface ProjectsPageProps {
 }
 
 export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) => {
-  const [projects, setProjects] = useState<ProjectCaseStudy[]>(PROJECTS);
+  const [projects, setProjects] = useState<ProjectCaseStudy[]>(() => sortProjectsByRank(PROJECTS));
   const [activeCategory, setActiveCategory] = useState<string>('All');
 
   useEffect(() => {

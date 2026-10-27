@@ -18,7 +18,7 @@ import { GithubIcon, LinkedinIcon } from '../components/SocialIcons';
 import { PERSONAL_INFO, PROJECTS, TECHNICAL_ARTICLES } from '../data/portfolioData';
 import { InteractivePipelineExplorer } from '../components/InteractivePipelineExplorer';
 import type { ProjectCaseStudy } from '../data/portfolioData';
-import { ProjectService } from '../services/projectService';
+import { ProjectService, sortProjectsByRank } from '../services/projectService';
 import { ProjectCoverImage } from '../components/ProjectCoverImage';
 
 interface HomePageProps {
@@ -46,7 +46,7 @@ const itemVariants: Variants = {
 };
 
 export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
-  const [allProjects, setAllProjects] = useState<ProjectCaseStudy[]>(PROJECTS);
+  const [allProjects, setAllProjects] = useState<ProjectCaseStudy[]>(() => sortProjectsByRank(PROJECTS));
 
   useEffect(() => {
     ProjectService.getAllProjects().then((res) => {

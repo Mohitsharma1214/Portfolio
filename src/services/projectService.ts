@@ -2,9 +2,27 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { PROJECTS } from '../data/portfolioData';
 import type { ProjectCaseStudy } from '../data/portfolioData';
 
+// Helper to sort projects by user-defined rank / displayOrder
+export function sortProjectsByRank(projects: ProjectCaseStudy[]): ProjectCaseStudy[] {
+  return [...projects].sort((a, b) => {
+    const rankA = typeof a.displayOrder === 'number' ? a.displayOrder : 999;
+    const rankB = typeof b.displayOrder === 'number' ? b.displayOrder : 999;
+    if (rankA !== rankB) return rankA - rankB;
+    if (a.featured !== b.featured) return a.featured ? -1 : 1;
+    return a.title.localeCompare(b.title);
+  });
+}
+
 // Helper to map DB row to ProjectCaseStudy
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapDbRowToProject(row: any): ProjectCaseStudy {
+  const displayOrder =
+    typeof row.display_order === 'number'
+      ? row.display_order
+      : typeof row.sections?.displayOrder === 'number'
+      ? row.sections.displayOrder
+      : undefined;
+
   return {
     id: row.id,
     title: row.title,
@@ -20,6 +38,7 @@ function mapDbRowToProject(row: any): ProjectCaseStudy {
     docUrl: row.doc_url || undefined,
     isProprietary: Boolean(row.is_proprietary),
     coverImage: row.cover_image || undefined,
+    displayOrder,
     sections: row.sections && typeof row.sections === 'object' ? row.sections : {
       overview: row.problem_statement || '',
       problem: row.problem_statement || '',
@@ -52,7 +71,10 @@ function mapProjectToDbRow(p: ProjectCaseStudy) {
     doc_url: p.docUrl || null,
     is_proprietary: Boolean(p.isProprietary),
     cover_image: p.coverImage || null,
-    sections: p.sections || {},
+    sections: {
+      ...(p.sections || {}),
+      displayOrder: typeof p.displayOrder === 'number' ? p.displayOrder : 999,
+    },
     architecture_diagram_svg: p.architectureDiagramSvg || null,
   };
 }
@@ -61,6 +83,7 @@ export const ProjectService = {
   /**
    * Fetches all projects from Supabase.
    * If table does not exist or database is empty, falls back seamlessly to static PROJECTS.
+   * Always sorts by user-defined rank / displayOrder.
    */
   async getAllProjects(): Promise<{ projects: ProjectCaseStudy[]; isFromDatabase: boolean; error?: string }> {
     if (isSupabaseConfigured && supabase) {
@@ -88,8 +111,9 @@ export const ProjectService = {
             (p) => !dbIds.has(p.id) && !deletedIds.includes(p.id)
           );
 
+          const combined = [...mapped, ...missingStatic];
           return {
-            projects: [...mapped, ...missingStatic],
+            projects: sortProjectsByRank(combined),
             isFromDatabase: true,
           };
         }
@@ -102,8 +126,8 @@ export const ProjectService = {
       }
     }
 
-    // Fallback to static PROJECTS
-    return { projects: PROJECTS, isFromDatabase: false };
+    // Fallback to static PROJECTS sorted by rank
+    return { projects: sortProjectsByRank(PROJECTS), isFromDatabase: false };
   },
 
   /**
@@ -275,6 +299,55 @@ export const ProjectService = {
       return {
         success: false,
         error: err instanceof Error ? err.message : 'Unknown storage error',
+      };
+    }
+  },
+
+  /**
+   * Admin: Fast batch reorder of projects with automatic cloud persistence
+   */
+  async updateProjectsOrder(
+    orderedList: { id: string; displayOrder: number }[]
+  ): Promise<{ success: boolean; error?: string }> {
+    if (!isSupabaseConfigured || !supabase) {
+      return { success: false, error: 'Supabase client is not configured.' };
+    }
+
+    try {
+      for (const item of orderedList) {
+        const { data } = await supabase
+          .from('projects')
+          .select('*')
+          .eq('id', item.id)
+          .single();
+
+        if (data) {
+          const currentSections = data.sections || {};
+          await supabase
+            .from('projects')
+            .update({
+              sections: {
+                ...currentSections,
+                displayOrder: item.displayOrder,
+              },
+            })
+            .eq('id', item.id);
+        } else {
+          // If not yet in Supabase, seed from static with the new displayOrder
+          const staticP = PROJECTS.find((p) => p.id === item.id);
+          if (staticP) {
+            await ProjectService.upsertProject({
+              ...staticP,
+              displayOrder: item.displayOrder,
+            });
+          }
+        }
+      }
+      return { success: true };
+    } catch (err: unknown) {
+      return {
+        success: false,
+        error: err instanceof Error ? err.message : 'Failed to update order in Supabase',
       };
     }
   },
