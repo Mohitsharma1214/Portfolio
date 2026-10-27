@@ -116,9 +116,9 @@ function AppContent() {
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<HomePage onSelectProject={handleOpenProject} />} />
-              <Route path="/about" element={<AboutPage />} />
+              <Route path="/about" element={<AboutPage onSelectProject={handleOpenProject} />} />
               <Route path="/projects" element={<ProjectsPage onSelectProject={handleOpenProject} />} />
-              <Route path="/experience" element={<ExperiencePage />} />
+              <Route path="/experience" element={<ExperiencePage onSelectProject={handleOpenProject} />} />
               <Route path="/skills" element={<SkillsPage />} />
               <Route path="/blogs" element={<BlogsPage />} />
               <Route path="/blogs/:id" element={<BlogPostPage />} />

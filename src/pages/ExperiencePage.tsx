@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import { Briefcase, Calendar, MapPin, CheckCircle2, Building2, ArrowRight } from 'lucide-react';
+import { Briefcase, Calendar, MapPin, CheckCircle2, Building2, ArrowRight, Layers, Compass } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { EXPERIENCES } from '../data/portfolioData';
+import type { ProjectCaseStudy } from '../data/portfolioData';
+import { InteractiveJourneyRoadmap } from '../components/InteractiveJourneyRoadmap';
+
+interface ExperiencePageProps {
+  onSelectProject?: (project: ProjectCaseStudy) => void;
+}
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -25,7 +31,9 @@ const itemVariants: Variants = {
   },
 };
 
-export const ExperiencePage: React.FC = () => {
+export const ExperiencePage: React.FC<ExperiencePageProps> = ({ onSelectProject }) => {
+  const [viewMode, setViewMode] = useState<'roadmap' | 'timeline'>('roadmap');
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -78,13 +86,50 @@ export const ExperiencePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Timeline Section */}
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="relative border-l-2 border-slate-200 ml-4 sm:ml-6 space-y-12"
-      >
+      {/* View Switcher Controls */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        <div className="text-xs font-mono uppercase tracking-wider text-slate-500 font-semibold">
+          {viewMode === 'roadmap' ? '🗺️ Interactive Milestone Roadmap' : '📋 Chronological Employment Timeline'}
+        </div>
+        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 border border-slate-200 self-start sm:self-auto shadow-2xs">
+          <button
+            type="button"
+            onClick={() => setViewMode('roadmap')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
+              viewMode === 'roadmap'
+                ? 'bg-white text-blue-600 font-bold shadow-xs'
+                : 'text-slate-600 hover:text-slate-950'
+            }`}
+          >
+            <Compass className="w-3.5 h-3.5" />
+            <span>Interactive Roadmap</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode('timeline')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
+              viewMode === 'timeline'
+                ? 'bg-white text-blue-600 font-bold shadow-xs'
+                : 'text-slate-600 hover:text-slate-950'
+            }`}
+          >
+            <Layers className="w-3.5 h-3.5" />
+            <span>Chronological Resume</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Conditional View Rendering */}
+      {viewMode === 'roadmap' ? (
+        <InteractiveJourneyRoadmap onSelectProject={onSelectProject} />
+      ) : (
+        /* Timeline Section */
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="relative border-l-2 border-slate-200 ml-4 sm:ml-6 space-y-12"
+        >
         {EXPERIENCES.map((exp, idx) => (
           <motion.div
             key={idx}
@@ -162,6 +207,7 @@ export const ExperiencePage: React.FC = () => {
           </motion.div>
         ))}
       </motion.div>
+    )}
 
       {/* Footer Call to Action */}
       <div className="pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">

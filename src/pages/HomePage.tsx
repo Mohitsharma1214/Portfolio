@@ -11,7 +11,8 @@ import {
   Mail, 
   CheckCircle2, 
   Activity,
-  Sparkles
+  Sparkles,
+  Compass
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/SocialIcons';
 import { PERSONAL_INFO, PROJECTS, TECHNICAL_ARTICLES } from '../data/portfolioData';
@@ -298,6 +299,44 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
                 Outcome: 5,000+ images/day &bull; Govt Copyright SW-19841/2024
               </div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Recruiter-Focused Interactive Engineering Journey Banner */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 text-white rounded-3xl p-6 sm:p-10 shadow-xl border border-blue-900/40 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div className="space-y-3 max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-mono">
+                <Compass className="w-3.5 h-3.5 text-blue-400" />
+                <span>Interactive Career Journey</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
+                From First Code to 5,000+ Daily Clinical Inferences &amp; Registered Silicon IP
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                Explore an interactive milestone roadmap engineered for recruiters and engineering leaders: drill into zero-cloud edge optimization breakthroughs, clinical micro-batching architectures, and verified production outcomes.
+              </p>
+              <div className="flex flex-wrap gap-2 pt-1 text-xs font-mono text-blue-200">
+                <span className="bg-white/10 px-2.5 py-0.5 rounded border border-white/10">2021: B.Tech (AI &amp; DS)</span>
+                <span className="bg-white/10 px-2.5 py-0.5 rounded border border-white/10">2024: Govt. Copyright SW-19841/2024</span>
+                <span className="bg-white/10 px-2.5 py-0.5 rounded border border-white/10">2025: 5k+ Imgs/Day (&lt;120ms SLA)</span>
+                <span className="bg-white/10 px-2.5 py-0.5 rounded border border-white/10">2026: Autonomous Agents</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+              <NavLink
+                to="/about#journey"
+                className="inline-flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-400 active:bg-blue-600 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl transition-all shadow-md shadow-blue-500/30"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>Launch Interactive Journey</span>
+                <ArrowRight className="w-4 h-4" />
+              </NavLink>
+            </div>
           </div>
         </div>
       </section>

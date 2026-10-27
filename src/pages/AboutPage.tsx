@@ -1,9 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import type { Variants } from 'framer-motion';
-import { GraduationCap, ShieldCheck, Cpu, Code2, Server, ArrowRight, CheckCircle2, Terminal, ExternalLink, FileText } from 'lucide-react';
+import { GraduationCap, ShieldCheck, Cpu, Code2, Server, ArrowRight, CheckCircle2, ExternalLink, FileText } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { PERSONAL_INFO, EDUCATION } from '../data/portfolioData';
+import type { ProjectCaseStudy } from '../data/portfolioData';
+import { InteractiveJourneyRoadmap } from '../components/InteractiveJourneyRoadmap';
+
+interface AboutPageProps {
+  onSelectProject?: (project: ProjectCaseStudy) => void;
+}
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -25,7 +31,7 @@ const itemVariants: Variants = {
   },
 };
 
-export const AboutPage: React.FC = () => {
+export const AboutPage: React.FC<AboutPageProps> = ({ onSelectProject }) => {
   const quickFacts = [
     { label: "Core Focus", value: "Real-Time Vision & Edge ML" },
     { label: "Production SLA", value: "<120ms Latency @ 5k+ Imgs" },
@@ -64,22 +70,15 @@ export const AboutPage: React.FC = () => {
         </div>
       </motion.div>
 
+      {/* Featured Interactive Engineering Journey for Recruiters */}
+      <div id="journey">
+        <InteractiveJourneyRoadmap onSelectProject={onSelectProject} />
+      </div>
+
       {/* Main 2-Column Wide Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        {/* Left Column: Biography & Pillars */}
+        {/* Left Column: Core Engineering Pillars & Production Discipline */}
         <div className="lg:col-span-7 space-y-8">
-          {/* Detailed Biography */}
-          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-5 shadow-xs">
-            <h2 className="text-xl font-bold text-slate-950 tracking-tight flex items-center gap-2">
-              <Terminal className="w-5 h-5 text-blue-600" />
-              <span>Engineering Journey &amp; Focus</span>
-            </h2>
-            <div className="space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed">
-              {PERSONAL_INFO.bioParagraphs.map((para, idx) => (
-                <p key={idx}>{para}</p>
-              ))}
-            </div>
-          </div>
 
           {/* Core Engineering Pillars */}
           <div className="space-y-4">
