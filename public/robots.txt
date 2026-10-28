@@ -4,5 +4,5 @@ Disallow: /admin
 Disallow: /admin/
 
 # Search Engine Crawlers & Sitemaps
-Sitemap: https://mohitsharma1214.github.io/sitemap.xml
-Sitemap: https://mohitsharma1214.github.io/sitemap.txt
+Sitemap: https://mohitsharma.is-a.dev/sitemap.xml
+Sitemap: https://mohitsharma.is-a.dev/sitemap.txt

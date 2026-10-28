@@ -440,19 +440,19 @@ const AdminPageInner: React.FC = () => {
   const fullSitemapXml = useMemo(() => {
     const today = new Date().toISOString().split('T')[0];
     const coreRoutes = [
-      { loc: 'https://mohitsharma1214.github.io/', lastmod: today, changefreq: 'weekly', priority: '1.0' },
-      { loc: 'https://mohitsharma1214.github.io/about/', lastmod: today, changefreq: 'monthly', priority: '0.9' },
-      { loc: 'https://mohitsharma1214.github.io/projects/', lastmod: today, changefreq: 'weekly', priority: '0.9' },
-      { loc: 'https://mohitsharma1214.github.io/experience/', lastmod: today, changefreq: 'monthly', priority: '0.8' },
-      { loc: 'https://mohitsharma1214.github.io/skills/', lastmod: today, changefreq: 'monthly', priority: '0.8' },
-      { loc: 'https://mohitsharma1214.github.io/blogs/', lastmod: today, changefreq: 'weekly', priority: '0.9' },
-      { loc: 'https://mohitsharma1214.github.io/contact/', lastmod: today, changefreq: 'monthly', priority: '0.8' },
+      { loc: 'https://mohitsharma.is-a.dev/', lastmod: today, changefreq: 'weekly', priority: '1.0' },
+      { loc: 'https://mohitsharma.is-a.dev/about/', lastmod: today, changefreq: 'monthly', priority: '0.9' },
+      { loc: 'https://mohitsharma.is-a.dev/projects/', lastmod: today, changefreq: 'weekly', priority: '0.9' },
+      { loc: 'https://mohitsharma.is-a.dev/experience/', lastmod: today, changefreq: 'monthly', priority: '0.8' },
+      { loc: 'https://mohitsharma.is-a.dev/skills/', lastmod: today, changefreq: 'monthly', priority: '0.8' },
+      { loc: 'https://mohitsharma.is-a.dev/blogs/', lastmod: today, changefreq: 'weekly', priority: '0.9' },
+      { loc: 'https://mohitsharma.is-a.dev/contact/', lastmod: today, changefreq: 'monthly', priority: '0.8' },
     ];
     const blogUrls = articles
       .filter((a) => (a as BlogMetadata & { published?: boolean }).published !== false)
       .map((a) => {
         const lastmod = (a.createdAt || a.publishDate || today).split('T')[0];
-        return `  <url>\n    <loc>https://mohitsharma1214.github.io/blogs/${a.id}/</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.85</priority>\n  </url>`;
+        return `  <url>\n    <loc>https://mohitsharma.is-a.dev/blogs/${a.id}/</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.85</priority>\n  </url>`;
       });
     const coreUrls = coreRoutes.map(
       (r) => `  <url>\n    <loc>${r.loc}</loc>\n    <lastmod>${r.lastmod}</lastmod>\n    <changefreq>${r.changefreq}</changefreq>\n    <priority>${r.priority}</priority>\n  </url>`
@@ -855,7 +855,7 @@ const AdminPageInner: React.FC = () => {
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <a
-                  href={`https://search.google.com/search-console/inspect?resource_id=https%3A%2F%2Fmohitsharma1214.github.io%2F&page_url=https%3A%2F%2Fmohitsharma1214.github.io%2Fblogs%2F${sitemapRobotStatus.lastBlogSlug}%2F`}
+                  href={`https://search.google.com/search-console/inspect?resource_id=https%3A%2F%2Fmohitsharma.is-a.dev%2F&page_url=https%3A%2F%2Fmohitsharma.is-a.dev%2Fblogs%2F${sitemapRobotStatus.lastBlogSlug}%2F`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-3 py-1.5 bg-white hover:bg-slate-50 text-blue-700 font-semibold rounded-xl border border-blue-200 inline-flex items-center gap-1.5 transition-colors shadow-xs"
@@ -1089,7 +1089,7 @@ const AdminPageInner: React.FC = () => {
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <a
-                  href={`https://search.google.com/search-console/inspect?resource_id=https%3A%2F%2Fmohitsharma1214.github.io%2F&page_url=https%3A%2F%2Fmohitsharma1214.github.io%2Fblogs%2F${slug}%2F`}
+                  href={`https://search.google.com/search-console/inspect?resource_id=https%3A%2F%2Fmohitsharma.is-a.dev%2F&page_url=https%3A%2F%2Fmohitsharma.is-a.dev%2Fblogs%2F${slug}%2F`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-2.5 py-1 bg-white hover:bg-slate-50 text-blue-700 font-semibold rounded-lg border border-blue-200 inline-flex items-center gap-1 transition-colors"
@@ -1649,7 +1649,7 @@ const AdminPageInner: React.FC = () => {
                   </button>
 
                   <a
-                    href="https://search.google.com/search-console/sitemaps?resource_id=https%3A%2F%2Fmohitsharma1214.github.io%2F"
+                    href="https://search.google.com/search-console/sitemaps?resource_id=https%3A%2F%2Fmohitsharma.is-a.dev%2F"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-left text-slate-800 transition-colors flex items-center justify-between"
@@ -1667,7 +1667,7 @@ const AdminPageInner: React.FC = () => {
                   </a>
 
                   <a
-                    href="https://mohitsharma1214.github.io/sitemap.xml"
+                    href="https://mohitsharma.is-a.dev/sitemap.xml"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 flex items-center justify-between transition-colors"
@@ -1677,7 +1677,7 @@ const AdminPageInner: React.FC = () => {
                   </a>
 
                   <a
-                    href="https://mohitsharma1214.github.io/robots.txt"
+                    href="https://mohitsharma.is-a.dev/robots.txt"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 flex items-center justify-between transition-colors"

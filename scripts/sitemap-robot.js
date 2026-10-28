@@ -20,7 +20,7 @@ const BASELINE_BLOG_SLUGS = [
   '3d-mesh-generation-ai',
 ];
 
-const BASE_URL = 'https://mohitsharma1214.github.io';
+const BASE_URL = 'https://mohitsharma.is-a.dev';
 
 export const INDEXNOW_KEY = 'e8b9f4a132c047d9b76e25f81a4d9302';
 export const INDEXNOW_KEY_LOCATION = `${BASE_URL}/${INDEXNOW_KEY}.txt`;
@@ -265,9 +265,10 @@ export async function runSitemapRobot({ ping = false } = {}) {
   fs.writeFileSync(path.join(publicDir, 'sitemap.txt'), txtContent, 'utf8');
   fs.writeFileSync(path.join(publicDir, 'robots.txt'), robotsContent, 'utf8');
 
-  // Ensure IndexNow key file is hosted at root
+  // Ensure IndexNow key file and CNAME are hosted at root
   const keyFileName = `${INDEXNOW_KEY}.txt`;
   fs.writeFileSync(path.join(publicDir, keyFileName), `${INDEXNOW_KEY}\n`, 'utf8');
+  fs.writeFileSync(path.join(publicDir, 'CNAME'), 'mohitsharma.is-a.dev\n', 'utf8');
 
   console.log(`🤖 [Sitemap Robot]: Wrote public/sitemap.xml and public/sitemap.txt (${blogs.length} blogs + ${CORE_ROUTES.length} core pages)`);
   console.log(`🤖 [Sitemap Robot]: Wrote public/robots.txt (Disallowed /admin/, configured sitemap directives)`);
@@ -279,7 +280,8 @@ export async function runSitemapRobot({ ping = false } = {}) {
     fs.writeFileSync(path.join(distDir, 'sitemap.txt'), txtContent, 'utf8');
     fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsContent, 'utf8');
     fs.writeFileSync(path.join(distDir, keyFileName), `${INDEXNOW_KEY}\n`, 'utf8');
-    console.log('🤖 [Sitemap Robot]: Synced sitemap.xml, sitemap.txt, robots.txt, and IndexNow key to dist/');
+    fs.writeFileSync(path.join(distDir, 'CNAME'), 'mohitsharma.is-a.dev\n', 'utf8');
+    console.log('🤖 [Sitemap Robot]: Synced sitemap.xml, sitemap.txt, robots.txt, CNAME, and IndexNow key to dist/');
   }
 
   // 3. Ping search engines & submit to IndexNow if requested

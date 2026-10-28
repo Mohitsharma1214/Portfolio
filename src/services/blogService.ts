@@ -430,7 +430,7 @@ export const BlogService = {
    * whenever a new blog is published or updated.
    */
   async pingSearchEnginesForBlog(slug: string): Promise<{ success: boolean; pinged: string[]; error?: string }> {
-    const sitemapUrl = encodeURIComponent('https://mohitsharma1214.github.io/sitemap.xml');
+    const sitemapUrl = encodeURIComponent('https://mohitsharma.is-a.dev/sitemap.xml');
     const encodedSlug = encodeURIComponent(slug);
     const pingTargets = [
       { name: 'Googlebot', url: `https://www.google.com/ping?sitemap=${sitemapUrl}&target_article=${encodedSlug}` },
@@ -463,7 +463,7 @@ export const BlogService = {
   getSitemapXmlSnippet(slug: string, date?: string): string {
     const today = date ? date.split('T')[0] : new Date().toISOString().split('T')[0];
     return `  <url>
-    <loc>https://mohitsharma1214.github.io/blogs/${slug}/</loc>
+    <loc>https://mohitsharma.is-a.dev/blogs/${slug}/</loc>
     <lastmod>${today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>

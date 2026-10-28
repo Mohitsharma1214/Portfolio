@@ -255,7 +255,7 @@ export const InteractiveJourneyRoadmap: React.FC<InteractiveJourneyRoadmapProps>
 • Production Optimization: Slashed GPU training runtimes by ~20% and reduced inference latency from 210ms to 98ms with TensorRT FP16.
 • Agentic AI & RAG: Built autonomous QA testing agents and continuous Apple Health telematics pipelines (Sodio Tech).
 • Availability: Immediate • Open to Remote Worldwide or On-Site Relocation.
-• Portfolio & Proof: https://mohitsharma1214.github.io/
+• Portfolio & Proof: https://mohitsharma.is-a.dev/
 • Contact: mohitxsharma09@gmail.com`;
 
     navigator.clipboard.writeText(pitchText);

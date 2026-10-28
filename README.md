@@ -24,7 +24,7 @@ Positioned for technical decision-makers (startup founders, CTOs, engineering ma
 - **Styling**: [Tailwind CSS v3](https://tailwindcss.com/) with modern light design tokens (off-white `#f8fafc`, slate `#0f172a`, and clean electric blue accents `#2563eb`)
 - **Icons**: [Lucide React](https://lucide.dev/) + custom vector SVGs
 - **Animations**: [Framer Motion](https://www.framer.com/motion/) with reduced motion support
-- **Deployment Target**: 100% Free on **GitHub Pages** (via automated GitHub Actions) at `https://mohitsharma1214.github.io/`
+- **Deployment Target**: 100% Free on **GitHub Pages** (via automated GitHub Actions) with custom domain at `https://mohitsharma.is-a.dev/`
 
 ---
 
@@ -33,8 +33,8 @@ Positioned for technical decision-makers (startup founders, CTOs, engineering ma
 The repository incorporates modern SEO standards, structured data, and search crawler fallbacks:
 
 ### 1. Canonical URLs & Meta Configuration
-- **Deployed Site Root**: `https://mohitsharma1214.github.io/`
-- **Canonical Tag**: `<link rel="canonical" href="https://mohitsharma1214.github.io/" />`
+- **Deployed Site Root**: `https://mohitsharma.is-a.dev/`
+- **Canonical Tag**: `<link rel="canonical" href="https://mohitsharma.is-a.dev/" />`
 - **Primary Keywords**: Naturally integrated without keyword stuffing for queries such as:
   - *Mohit Sharma AI Engineer*
   - *Machine Learning Engineer*
@@ -43,7 +43,7 @@ The repository incorporates modern SEO standards, structured data, and search cr
 - **Page Titles**: Dynamic document title updater (`PageMetadataUpdater` in `src/App.tsx`) updates `<title>` on route navigation.
 
 ### 2. Social Media Preview Cards (Open Graph & Twitter Cards)
-- **Image URL**: `https://mohitsharma1214.github.io/og-image.png`
+- **Image URL**: `https://mohitsharma.is-a.dev/og-image.png`
 - **Resolution**: 1200 × 630 pixels (standard high-contrast PNG format compatible with LinkedIn, Twitter/X, Discord, Slack, and Facebook).
 - **Twitter Card**: `summary_large_image`.
 
@@ -52,11 +52,11 @@ The repository incorporates modern SEO standards, structured data, and search cr
   ```
   User-agent: *
   Allow: /
-  Sitemap: https://mohitsharma1214.github.io/sitemap.xml
+  Sitemap: https://mohitsharma.is-a.dev/sitemap.xml
   ```
 - **Sitemap XML** (`public/sitemap.xml`):
   - Compliant with `sitemaps.org` schema.
-  - Points to the canonical URL `https://mohitsharma1214.github.io/`.
+  - Points to the canonical URL `https://mohitsharma.is-a.dev/`.
   - Excludes `#` hash fragments (as per Google Search Central specifications, URL fragments are client-side only and not permitted in XML sitemaps).
 
 ### 4. Structured Data (Schema.org JSON-LD)
@@ -81,7 +81,7 @@ When React boots, `createRoot` seamlessly replaces this initial DOM tree.
 
 ### 6. GitHub Pages Client-Side Routing Architecture & Fallback
 - **Router**: Clean HTML5 history routing (`BrowserRouter`) with SSG route generation and `404.html` redirect fallback for deep links.
-- **Direct Link Redirector** (`public/404.html`): If an external user enters a clean path URL without a hash (e.g. `https://mohitsharma1214.github.io/projects`), `404.html` detects the route and preserves the clean URL while preventing the 404 page itself from being indexed via `<meta name="robots" content="noindex, follow" />`.
+- **Direct Link Redirector** (`public/404.html`): If an external user enters a clean path URL without a hash (e.g. `https://mohitsharma.is-a.dev/projects`), `404.html` detects the route and preserves the clean URL while preventing the 404 page itself from being indexed via `<meta name="robots" content="noindex, follow" />`.
 
 ---
 
@@ -95,15 +95,15 @@ Follow these steps once your GitHub Pages site is live:
 1. **Open Google Search Console**:
    - Visit [search.google.com/search-console](https://search.google.com/search-console).
 2. **Add Property**:
-   - Choose **URL prefix** and enter `https://mohitsharma1214.github.io/`.
+   - Choose **URL prefix** and enter `https://mohitsharma.is-a.dev/`.
 3. **Verify Ownership**:
    - **Method A (HTML Tag)**: Copy the verification meta tag provided by Google (e.g. `<meta name="google-site-verification" content="..." />`) and add it to the `<head>` of `index.html`, commit, and push.
    - **Method B (GitHub Pages / Google Account)**: If using Google Analytics or domain DNS, select that option.
 4. **Submit Sitemap**:
    - In the left sidebar of Google Search Console, click **Sitemaps**.
-   - Under **Add a new sitemap**, type `sitemap.xml` (or full URL `https://mohitsharma1214.github.io/sitemap.xml`) and click **Submit**.
+   - Under **Add a new sitemap**, type `sitemap.xml` (or full URL `https://mohitsharma.is-a.dev/sitemap.xml`) and click **Submit**.
 5. **Request Indexing**:
-   - Use the **URL Inspection** bar at the top and paste `https://mohitsharma1214.github.io/`.
+   - Use the **URL Inspection** bar at the top and paste `https://mohitsharma.is-a.dev/`.
    - Click **Test Live URL**.
    - Once the live test passes, click **Request Indexing**.
 
@@ -191,7 +191,7 @@ This repository is preconfigured to deploy automatically via GitHub Actions:
 2. In your GitHub repository, ensure **Settings** → **Pages** → **Source** is set to **GitHub Actions**.
 3. The workflow in `.github/workflows/deploy.yml` builds the site and publishes it to:
    ```
-   https://mohitsharma1214.github.io/
+   https://mohitsharma.is-a.dev/
    ```
 
 ---

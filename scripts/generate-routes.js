@@ -7,61 +7,63 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const distDir = path.resolve(__dirname, '../dist');
 
+const BASE_URL = 'https://mohitsharma.is-a.dev';
+
 const staticRoutes = [
   {
     path: 'about',
     title: 'About Mohit Sharma | AI Engineer & Systems Specialist',
     description: 'Verified background, engineering philosophy, and track record of AI Engineer Mohit Sharma specializing in low-latency computer vision and edge AI.',
-    canonical: 'https://mohitsharma1214.github.io/about/',
+    canonical: `${BASE_URL}/about/`,
     breadcrumbName: 'About',
   },
   {
     path: 'projects',
     title: 'Projects & Case Studies | Mohit Sharma • AI Engineer',
     description: 'Production computer vision pipelines, edge ARM deployments on Raspberry Pi, and grounded LLM architectures evaluated with strict SLAs.',
-    canonical: 'https://mohitsharma1214.github.io/projects/',
+    canonical: `${BASE_URL}/projects/`,
     breadcrumbName: 'Projects',
   },
   {
     path: 'experience',
     title: 'Work Experience | Mohit Sharma • AI Developer at Sodio Technologies',
     description: 'Verified engineering experience delivering production computer vision backends at Hairscope, Sodio Technologies, and Centilytics.',
-    canonical: 'https://mohitsharma1214.github.io/experience/',
+    canonical: `${BASE_URL}/experience/`,
     breadcrumbName: 'Experience',
   },
   {
     path: 'skills',
     title: 'Skills & Technology Stack | Mohit Sharma • AI Engineer',
     description: 'Production skills in PyTorch, TensorRT, CUDA, OpenCV, FastAPI, ChromaDB, Edge AI on Raspberry Pi, and MLOps deployment.',
-    canonical: 'https://mohitsharma1214.github.io/skills/',
+    canonical: `${BASE_URL}/skills/`,
     breadcrumbName: 'Skills',
   },
   {
     path: 'blogs',
     title: 'Technical Blogs & Engineering Notes | Mohit Sharma • AI Engineer',
     description: 'Deep technical articles, latency benchmarks, quantization analyses, and architectural breakdowns derived directly from production AI and edge deployments.',
-    canonical: 'https://mohitsharma1214.github.io/blogs/',
+    canonical: `${BASE_URL}/blogs/`,
     breadcrumbName: 'Blogs',
   },
   {
     path: 'writing',
     title: 'Technical Blogs & Engineering Notes | Mohit Sharma • AI Engineer',
     description: 'Deep technical articles, latency benchmarks, quantization analyses, and architectural breakdowns derived directly from production AI and edge deployments.',
-    canonical: 'https://mohitsharma1214.github.io/blogs/',
+    canonical: `${BASE_URL}/blogs/`,
     breadcrumbName: 'Writing',
   },
   {
     path: 'contact',
     title: 'Contact Mohit Sharma | AI Engineer • Computer Vision & LLM Systems',
     description: 'Direct contact information for AI Engineer Mohit Sharma. Available for engineering discussions, full-time AI roles, and consulting.',
-    canonical: 'https://mohitsharma1214.github.io/contact/',
+    canonical: `${BASE_URL}/contact/`,
     breadcrumbName: 'Contact',
   },
   {
     path: 'admin',
     title: 'Blog Studio Admin | Mohit Sharma',
     description: 'Administrative portal for creating, editing, and publishing technical blog posts.',
-    canonical: 'https://mohitsharma1214.github.io/admin/',
+    canonical: `${BASE_URL}/admin/`,
     breadcrumbName: 'Admin',
   },
 ];
@@ -83,14 +85,14 @@ async function generateAllRoutes() {
     // Clean description to avoid HTML/quotes breaking attributes
     const cleanDesc = rawDesc.replace(/["\n\r]/g, ' ').substring(0, 160).trim();
     const coverImage = blog.cover_image
-      ? (blog.cover_image.startsWith('http') ? blog.cover_image : `https://mohitsharma1214.github.io${blog.cover_image}`)
-      : `https://mohitsharma1214.github.io/assets/blogs/${blog.id}.png`;
+      ? (blog.cover_image.startsWith('http') ? blog.cover_image : `${BASE_URL}${blog.cover_image}`)
+      : `${BASE_URL}/assets/blogs/${blog.id}.png`;
 
     return {
       path: `blogs/${blog.id}`,
       title: `${blog.title} | Mohit Sharma`,
       description: cleanDesc,
-      canonical: `https://mohitsharma1214.github.io/blogs/${blog.id}/`,
+      canonical: `${BASE_URL}/blogs/${blog.id}/`,
       image: coverImage,
       type: 'article',
       blogData: blog,
@@ -190,7 +192,7 @@ async function generateAllRoutes() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://mohitsharma1214.github.io/',
+        item: `${BASE_URL}/`,
       },
     ];
 
@@ -199,7 +201,7 @@ async function generateAllRoutes() {
         '@type': 'ListItem',
         position: 2,
         name: 'Blogs',
-        item: 'https://mohitsharma1214.github.io/blogs/',
+        item: `${BASE_URL}/blogs/`,
       });
       breadcrumbItems.push({
         '@type': 'ListItem',
@@ -220,12 +222,12 @@ async function generateAllRoutes() {
         author: {
           '@type': 'Person',
           name: 'Mohit Sharma',
-          url: 'https://mohitsharma1214.github.io/',
+          url: `${BASE_URL}/`,
         },
         publisher: {
           '@type': 'Person',
           name: 'Mohit Sharma',
-          url: 'https://mohitsharma1214.github.io/',
+          url: `${BASE_URL}/`,
         },
         mainEntityOfPage: {
           '@type': 'WebPage',
