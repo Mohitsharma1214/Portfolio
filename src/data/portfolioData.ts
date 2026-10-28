@@ -420,56 +420,76 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
 
 export const TECHNICAL_ARTICLES: TechnicalArticle[] = [
   {
-    id: "edge-fatigue-tracking-sub-150ms",
-    title: "Designing Low-Latency Edge Vision: Real-Time Fatigue Tracking Under 150ms",
-    subtitle: "How mathematical landmark geometry and multi-threaded audio isolation beat deep CNNs on Raspberry Pi.",
-    category: "Computer Vision & Edge AI",
-    readTime: "6 min read",
+    id: "deploying-ml-models-fastapi-docker",
+    title: "Deploying Machine Learning Models with FastAPI and Docker",
+    subtitle: "A practical guide to turning trained models into scalable APIs using FastAPI, Docker, deployment automation, and production monitoring.",
+    category: "MLOps & AI Deployment",
+    readTime: "12 min read",
     status: "Published Technical Breakdown",
-    coverImage: "/assets/blogs/edge-fatigue-tracking-sub-150ms.png",
+    coverImage: "https://zxovekhtcajtefedkkee.supabase.co/storage/v1/object/public/blog-images/covers/1793182413506-deploying-ml-models-with-fastapi-and-docker.png",
     publishDate: "Oct 2026",
-    summary: "A technical breakdown of engineering the Driver Drowsiness Detection System (Govt. of India Copyright SW-19841/2024). Explores the trade-offs between heavy end-to-end vision neural nets versus localized eye-aspect-ratio (EAR) geometry on low-power ARM architectures.",
-    contentMarkdown: `### The Edge Latency Conundrum
-When building driver monitoring systems for commercial transport, the primary design constraint is **zero-cloud dependency**. In rural transit corridors, network disconnects are inevitable. If a driver experiences micro-sleep inside a mountain pass, a cloud-dependent model with a 2-second p95 latency is useless.
+    summary: "Training a machine learning model is only one stage of delivering an AI product. Learn how to expose inference through FastAPI, package dependencies with Docker, validate inputs, manage model versions, and monitor latency, errors, and resource usage in production.",
+    contentMarkdown: `### The Transition from Notebook to Production
+Training a machine learning model is only one stage of delivering an AI product. Once validation loss converges, the artifact must be integrated into operational systems where latency, availability, concurrency, and security dictate success.
 
-The engineering challenge was clear: achieve **30 FPS visual tracking with under 150ms total response latency** strictly on an uncooled Raspberry Pi 4 Model B (4x ARM Cortex-A72 cores).
+This guide explores how to expose model inference through an asynchronous FastAPI service, package runtime dependencies cleanly inside Docker, validate payloads with Pydantic, and monitor latency and resource consumption in real-world environments.
 
-### The Math: Eye Aspect Ratio (EAR) vs Heavy Temporal CNNs
-Early experimentation explored 3D CNNs (e.g. ResNet3D) to classify video snippets directly. However, on CPU-only edge hardware, 3D convolutions pegged all cores to 100%, causing thermal throttling within 8 minutes and dropping frame rates below 6 FPS.
-
-Instead, we decoupled the problem into:
-1. **Facial Landmark Estimation**: Localizing 68 anatomical coordinates.
-2. **Geometric Metric Formulation**: Deriving instantaneous ocular state through the **Eye Aspect Ratio (EAR)** formula:
-
-$$\text{EAR} = \frac{\|p_2 - p_6\| + \|p_3 - p_5\|}{2 \|p_1 - p_4\|}$$
-
-Where $p_1 \dots p_6$ correspond to the 2D pixel coordinates of the eye boundaries.
-
-During open-eye status, the EAR fluctuates around 0.30 - 0.35. During a micro-sleep event, the vertical Euclidean distances contract, plummeting EAR below 0.20.
+### Why FastAPI for Machine Learning Inference?
+Traditional WSGI frameworks like Flask suffer from blocking I/O when processing multiple concurrent inference requests. FastAPI, built on top of Starlette and ASGI (Asynchronous Server Gateway Interface), natively supports asynchronous request routing and strict schema validation:
+- **Asynchronous Concurrency**: Non-blocking network I/O allows preprocessing and queueing while GPU or CPU execution occurs.
+- **Strict Data Contracts**: Pydantic schemas enforce type validation on incoming tensors, dimensions, and numerical ranges before inference begins.
+- **Automatic OpenAPI Documentation**: Interactive Swagger docs enable frontend and client teams to test payloads with zero manual API documentation upkeep.
 
 \`\`\`python
-def calculate_ear(eye_landmarks):
-    # Vertical distances
-    A = np.linalg.norm(eye_landmarks[1] - eye_landmarks[5])
-    B = np.linalg.norm(eye_landmarks[2] - eye_landmarks[4])
-    # Horizontal distance
-    C = np.linalg.norm(eye_landmarks[0] - eye_landmarks[3])
-    # EAR ratio
-    return (A + B) / (2.0 * C)
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
+import numpy as np
+
+app = FastAPI(title="Production Inference API", version="1.0.0")
+
+class InferencePayload(BaseModel):
+    features: list[float] = Field(..., min_length=10, max_length=10)
+
+@app.post("/predict")
+async def predict(payload: InferencePayload):
+    try:
+        data = np.array(payload.features).reshape(1, -1)
+        prediction = model.predict(data)
+        return {"prediction": prediction.tolist(), "status": "success"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 \`\`\`
 
-### Architectural Optimization: The 1-in-15 Frame Rule
-Running full-frame HOG face detection on every single 640x480 frame consumed ~85ms per frame. To optimize:
-- **Full Detection** was scheduled only once every 15 frames ($~500ms$).
-- **Intermediate Frames** cropped the prior known bounding box with a 15% padding margin, performing localized landmark alignment only.
-- This single design choice slashed average frame cycle time from **122ms to 34ms**, leaving ample CPU headroom for alerting routines.
+### Packaging with Docker for Reproducibility
+A common failure mode in machine learning deployments is environment drift—mismatches in CUDA driver versions, PyTorch compilation flags, or shared system libraries (like libGL for OpenCV).
 
-### Multi-Threaded Audio Alert Isolation
-A subtle failure mode encountered during early road testing: calling synchronous audio synthesis libraries like Pygame or ALSA blocked Python's GIL for ~180ms during buzzer initiation, freezing the camera capture loop and causing missed blinks.
-Separating audio alerting into an isolated worker thread reading from a thread-safe \`queue.Queue\` completely decoupled audio I/O from the vision loop.
+A multi-stage Docker build guarantees a minimal, secure runtime environment:
+\`\`\`dockerfile
+FROM python:3.11-slim as base
 
-### Conclusion & Copyright
-This system was formally registered with the Government of India Copyright Office (SW-19841/2024), validating that principled mathematical geometry combined with systems-level edge profiling routinely outperforms raw compute scaling.`
+WORKDIR /app
+ENV PYTHONUNBUFFERED=1 \\
+    PYTHONDONTWRITEBYTECODE=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \\
+    curl \\
+    libgomp1 \\
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
+\`\`\`
+
+### Monitoring Latency, Throughput, and Drift
+In production, continuous operational monitoring is critical:
+- **p50, p95, and p99 Latency**: Tracking tail latencies to catch micro-spikes during batch processing.
+- **Worker Concurrency & Memory**: Ensuring memory allocation does not exceed host RAM under concurrent spikes.
+- **Input Distribution Shifts**: Monitoring input distributions to detect data drift before accuracy degrades.`
   },
   {
     id: "scaling-medical-cv-tensorrt-5000-images",

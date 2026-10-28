@@ -19,6 +19,8 @@ import { PERSONAL_INFO, PROJECTS, TECHNICAL_ARTICLES } from '../data/portfolioDa
 import { InteractivePipelineExplorer } from '../components/InteractivePipelineExplorer';
 import type { ProjectCaseStudy } from '../data/portfolioData';
 import { ProjectService, sortProjectsByRank } from '../services/projectService';
+import { BlogService } from '../services/blogService';
+import type { BlogMetadata } from '../services/blogService';
 import { ProjectCoverImage } from '../components/ProjectCoverImage';
 
 interface HomePageProps {
@@ -47,6 +49,8 @@ const itemVariants: Variants = {
 
 export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
   const [allProjects, setAllProjects] = useState<ProjectCaseStudy[]>(() => sortProjectsByRank(PROJECTS));
+  const [latestArticle, setLatestArticle] = useState<BlogMetadata | null>(() => (TECHNICAL_ARTICLES[0] as unknown as BlogMetadata) || null);
+  const [blogCount, setBlogCount] = useState<number>(8);
 
   useEffect(() => {
     ProjectService.getAllProjects().then((res) => {
@@ -54,10 +58,16 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
         setAllProjects(res.projects);
       }
     });
+
+    BlogService.getPaginatedBlogs({ page: 1, pageSize: 1 }).then((res) => {
+      if (res.blogs && res.blogs.length > 0) {
+        setLatestArticle(res.blogs[0]);
+        setBlogCount(res.totalCount);
+      }
+    });
   }, []);
 
   const featuredProjects = allProjects.filter((p) => p.featured).slice(0, 2);
-  const latestArticle = TECHNICAL_ARTICLES[0];
 
   const tickerItems = [
     { label: "Throughput", val: "5,000+ Clinical Imgs/Day" },
@@ -520,7 +530,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
                 className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 px-3.5 py-2.5 rounded-xl border border-slate-200 transition-all shadow-xs"
               >
                 <BookOpen className="w-4 h-4 text-slate-600" />
-                <span>All Blogs (8)</span>
+                <span>All Blogs ({blogCount || 8})</span>
               </NavLink>
             </div>
           </motion.div>

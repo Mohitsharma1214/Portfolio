@@ -5,6 +5,7 @@ https://mohitsharma1214.github.io/experience/
 https://mohitsharma1214.github.io/skills/
 https://mohitsharma1214.github.io/blogs/
 https://mohitsharma1214.github.io/contact/
+https://mohitsharma1214.github.io/blogs/deploying-ml-models-fastapi-docker/
 https://mohitsharma1214.github.io/blogs/synthetic-data-computer-vision/
 https://mohitsharma1214.github.io/blogs/real-time-video-analytics-computer-vision/
 https://mohitsharma1214.github.io/blogs/yolo-model-evaluation-map-iou/

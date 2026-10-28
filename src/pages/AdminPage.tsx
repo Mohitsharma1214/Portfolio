@@ -82,7 +82,7 @@ const AdminPageInner: React.FC = () => {
   const [customCategory, setCustomCategory] = useState('');
   const [readTime, setReadTime] = useState('5 min read');
   const [status, setStatus] = useState('Published Technical Breakdown');
-  const [coverImage, setCoverImage] = useState('/assets/blogs/edge-fatigue-tracking-sub-150ms.png');
+  const [coverImage, setCoverImage] = useState('https://zxovekhtcajtefedkkee.supabase.co/storage/v1/object/public/blog-images/covers/1793182413506-deploying-ml-models-with-fastapi-and-docker.png');
   const [publishDate, setPublishDate] = useState('Oct 2026');
   const [summary, setSummary] = useState('');
   const [contentMarkdown, setContentMarkdown] = useState('');
@@ -217,7 +217,7 @@ const AdminPageInner: React.FC = () => {
     setCustomCategory('');
     setReadTime('5 min read');
     setStatus('Published Technical Breakdown');
-    setCoverImage('/assets/blogs/edge-fatigue-tracking-sub-150ms.png');
+    setCoverImage('https://zxovekhtcajtefedkkee.supabase.co/storage/v1/object/public/blog-images/covers/1793182413506-deploying-ml-models-with-fastapi-and-docker.png');
     setPublishDate('Oct 2026');
     setSummary('');
     setContentMarkdown('');
@@ -1350,11 +1350,11 @@ const AdminPageInner: React.FC = () => {
                 {/* Preview Box */}
                 <div className="w-full aspect-video rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 relative group flex items-center justify-center">
                   <img
-                    src={coverImage || '/assets/blogs/edge-fatigue-tracking-sub-150ms.png'}
+                    src={coverImage || 'https://zxovekhtcajtefedkkee.supabase.co/storage/v1/object/public/blog-images/covers/1793182413506-deploying-ml-models-with-fastapi-and-docker.png'}
                     alt="Cover preview"
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/assets/blogs/edge-fatigue-tracking-sub-150ms.png';
+                      (e.target as HTMLImageElement).src = 'https://zxovekhtcajtefedkkee.supabase.co/storage/v1/object/public/blog-images/covers/1793182413506-deploying-ml-models-with-fastapi-and-docker.png';
                     }}
                   />
                   <div className="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-[10px] font-mono text-white">

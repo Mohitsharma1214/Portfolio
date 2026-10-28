@@ -10,14 +10,14 @@ const distDir = path.resolve(rootDir, 'dist');
 
 // Baseline static articles (fallback if offline)
 const BASELINE_BLOG_SLUGS = [
-  'edge-fatigue-tracking-sub-150ms',
-  'scaling-medical-cv-tensorrt-5000-images',
-  'strictly-grounded-rag-logistics',
-  'microscopic-hair-segmentation-yolov11-maskrcnn',
-  'autonomous-qa-agent-orchestration',
-  'realtime-recommendation-systems-two-stage',
-  'onnx-fp16-vs-int8-quantization-benchmarks',
-  'structuring-unstructured-healthkit-telemetry',
+  'deploying-ml-models-fastapi-docker',
+  'synthetic-data-computer-vision',
+  'real-time-video-analytics-computer-vision',
+  'yolo-model-evaluation-map-iou',
+  'image-segmentation-deep-learning-guide',
+  'production-ready-rag-llm-applications',
+  'real-time-object-detection-yolo-production',
+  '3d-mesh-generation-ai',
 ];
 
 const BASE_URL = 'https://mohitsharma1214.github.io';
