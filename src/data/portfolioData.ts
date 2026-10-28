@@ -67,6 +67,7 @@ export const PERSONAL_INFO = {
   email: "mohitxsharma09@gmail.com",
   linkedin: "https://www.linkedin.com/in/mohitsharmas-",
   github: "https://github.com/mohitsharma1214",
+  resumeUrl: "https://drive.google.com/file/d/1nLixPndYSmBYlrNnzBOO5QQ46H1Gk8oj/view?usp=sharing",
   copyrightId: "SW-19841/2024",
   copyrightDocUrl: "https://copyright.gov.in/Documents/ERegister/E-Register_December_2024.pdf#page=91",
   metrics: [

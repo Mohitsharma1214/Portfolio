@@ -10,7 +10,7 @@ export interface ProfileSettings {
 }
 
 export const DEFAULT_PROFILE_SETTINGS: ProfileSettings = {
-  resumeUrl: '',
+  resumeUrl: 'https://drive.google.com/file/d/1nLixPndYSmBYlrNnzBOO5QQ46H1Gk8oj/view?usp=sharing',
   calendlyUrl: 'https://cal.com/mohitsharma',
   targetRoles: [
     'AI Engineer',
