@@ -13,12 +13,15 @@ import {
   BookOpen, 
   Mail, 
   ChevronRight,
-  Sparkles
+  Sparkles,
+  FileText
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from './SocialIcons';
 import { PERSONAL_INFO } from '../data/portfolioData';
+import { useResumeModal } from '../context/ResumeModalContext';
 
 export const Navbar: React.FC = () => {
+  const { openResumeModal } = useResumeModal();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
@@ -151,7 +154,19 @@ export const Navbar: React.FC = () => {
             </nav>
 
             {/* Desktop Right Action CTA */}
-            <div className="hidden sm:flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2.5">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={openResumeModal}
+                type="button"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-slate-950 bg-slate-100/90 hover:bg-slate-200/90 rounded-xl px-3.5 py-2.5 transition-all border border-slate-200/80 shadow-2xs cursor-pointer"
+                title="View and download verified resume PDF"
+              >
+                <FileText className="w-3.5 h-3.5 text-blue-600" />
+                <span>Resume</span>
+              </motion.button>
+
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 <NavLink
                   to="/contact"
@@ -283,6 +298,19 @@ export const Navbar: React.FC = () => {
                   );
                 })}
               </nav>
+
+              {/* Mobile View Resume Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openResumeModal();
+                }}
+                className="flex items-center justify-center gap-2 w-full text-center text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-xl py-2.5 border border-blue-200 transition-colors cursor-pointer"
+              >
+                <FileText className="w-4 h-4 text-blue-600" />
+                <span>View &amp; Download Resume (PDF)</span>
+              </button>
 
               {/* Quick Contact & Social Strip */}
               <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">

@@ -21,6 +21,8 @@ const AdminPage = lazy(() => import('./pages/AdminPage').then((m) => ({ default:
 // Lazy-load heavy overlay modals
 const CaseStudyModal = lazy(() => import('./components/CaseStudyModal').then((m) => ({ default: m.CaseStudyModal })));
 const ArticleModal = lazy(() => import('./components/ArticleModal').then((m) => ({ default: m.ArticleModal })));
+import { ResumeModalProvider, useResumeModal } from './context/ResumeModalContext';
+import { ResumeModal } from './components/ResumeModal';
 
 // Minimal non-intrusive loading fallback for asynchronously loaded routes
 function RouteLoadingFallback() {
@@ -147,14 +149,31 @@ function AppContent() {
           <ArticleModal article={selectedArticle} onClose={handleCloseArticle} />
         </Suspense>
       )}
+
+      {/* Global In-Site Resume Modal */}
+      <GlobalResumeModal />
     </div>
+  );
+}
+
+function GlobalResumeModal() {
+  const { isOpen, closeResumeModal, settings } = useResumeModal();
+  return (
+    <ResumeModal
+      isOpen={isOpen}
+      onClose={closeResumeModal}
+      resumeUrl={settings.resumeUrl}
+      calendlyUrl={settings.calendlyUrl}
+    />
   );
 }
 
 export function App() {
   return (
     <BrowserRouter>
-      <AppContent />
+      <ResumeModalProvider>
+        <AppContent />
+      </ResumeModalProvider>
     </BrowserRouter>
   );
 }

@@ -12,7 +12,8 @@ import {
   CheckCircle2, 
   Activity,
   Sparkles,
-  Compass
+  Compass,
+  FileText
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/SocialIcons';
 import { PERSONAL_INFO, PROJECTS, TECHNICAL_ARTICLES } from '../data/portfolioData';
@@ -22,6 +23,8 @@ import { ProjectService, sortProjectsByRank } from '../services/projectService';
 import { BlogService } from '../services/blogService';
 import type { BlogMetadata } from '../services/blogService';
 import { ProjectCoverImage } from '../components/ProjectCoverImage';
+import { RecruiterSnapshotCard } from '../components/RecruiterSnapshotCard';
+import { useResumeModal } from '../context/ResumeModalContext';
 
 interface HomePageProps {
   onSelectProject: (project: ProjectCaseStudy) => void;
@@ -48,6 +51,7 @@ const itemVariants: Variants = {
 };
 
 export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
+  const { openResumeModal } = useResumeModal();
   const [allProjects, setAllProjects] = useState<ProjectCaseStudy[]>(() => sortProjectsByRank(PROJECTS));
   const [latestArticle, setLatestArticle] = useState<BlogMetadata | null>(() => (TECHNICAL_ARTICLES[0] as unknown as BlogMetadata) || null);
   const [blogCount, setBlogCount] = useState<number>(8);
@@ -128,6 +132,19 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
                     <ArrowRight className="w-4 h-4" />
                   </NavLink>
                 </motion.div>
+
+                {/* 1-Click View / Download Resume */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={openResumeModal}
+                  type="button"
+                  className="w-full sm:w-auto justify-center inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-950 active:bg-black text-white font-semibold text-sm px-4 py-2.5 rounded-xl transition-all shadow-xs cursor-pointer"
+                  title="View and download verified resume PDF"
+                >
+                  <FileText className="w-4 h-4 text-blue-400" />
+                  <span>View / Download CV</span>
+                </motion.button>
 
                 <div className="flex items-center gap-2.5 w-full sm:w-auto">
                   <motion.a
@@ -216,6 +233,9 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
           </div>
         </div>
       </section>
+
+      {/* Recruiter & Hiring Manager Fast-Intelligence Card */}
+      <RecruiterSnapshotCard />
 
       {/* Production Verified Metrics Strip */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

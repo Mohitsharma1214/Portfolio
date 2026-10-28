@@ -14,12 +14,16 @@ import {
   MessageSquare,
   AlertCircle,
   Loader2,
-  CheckCircle2
+  CheckCircle2,
+  Calendar,
+  FileText
 } from 'lucide-react';
 import { LinkedinIcon, GithubIcon } from '../components/SocialIcons';
 import { PERSONAL_INFO } from '../data/portfolioData';
+import { useResumeModal } from '../context/ResumeModalContext';
 
 export const ContactPage: React.FC = () => {
+  const { openResumeModal, settings } = useResumeModal();
   const [copied, setCopied] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState<string>("Full-Time AI Engineering Role");
   
@@ -346,6 +350,69 @@ export const ContactPage: React.FC = () => {
 
         {/* Right Column: Profiles & Hiring Quick Facts */}
         <div className="lg:col-span-5 space-y-6">
+          {/* Direct Intro Meeting Card */}
+          {settings.calendlyUrl && (
+            <motion.div
+              whileHover={{ y: -3 }}
+              className="p-5 sm:p-6 rounded-3xl bg-gradient-to-br from-indigo-50/90 via-blue-50/50 to-white border border-indigo-200/90 shadow-xs space-y-4"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs">
+                  <Calendar className="w-5 h-5" />
+                </div>
+                <span className="text-[11px] font-mono font-bold text-indigo-700 bg-indigo-100/80 px-2.5 py-1 rounded-full border border-indigo-200">
+                  Instant Screener
+                </span>
+              </div>
+
+              <div className="space-y-1">
+                <h3 className="font-extrabold text-slate-950 text-base">
+                  Schedule 15-Min Intro Chat
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Skip email delays. Select an open slot directly on my calendar for recruiter screenings or engineering discussions.
+                </p>
+              </div>
+
+              <a
+                href={settings.calendlyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold text-xs transition-all shadow-xs"
+              >
+                <Calendar className="w-4 h-4" />
+                <span>Open Calendar &amp; Pick a Slot</span>
+                <ExternalLink className="w-3.5 h-3.5 text-indigo-200" />
+              </a>
+            </motion.div>
+          )}
+
+          {/* 1-Click Resume Access Card */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center shrink-0">
+                <FileText className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="font-bold text-slate-900 text-xs sm:text-sm">
+                  Verified Curriculum Vitae
+                </div>
+                <div className="text-[11px] text-slate-500 font-mono">
+                  1-Page PDF &bull; AI Systems Engineer
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={openResumeModal}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-black text-white font-semibold text-xs transition-all shadow-xs cursor-pointer shrink-0"
+            >
+              <span>View CV</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
           {/* Social Profiles */}
           <div className="space-y-3">
             <label className="text-xs font-mono uppercase tracking-wider text-slate-500 font-semibold block">
