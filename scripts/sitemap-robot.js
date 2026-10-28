@@ -22,6 +22,9 @@ const BASELINE_BLOG_SLUGS = [
 
 const BASE_URL = 'https://mohitsharma1214.github.io';
 
+export const INDEXNOW_KEY = 'e8b9f4a132c047d9b76e25f81a4d9302';
+export const INDEXNOW_KEY_LOCATION = `${BASE_URL}/${INDEXNOW_KEY}.txt`;
+
 const CORE_ROUTES = [
   { path: '', changefreq: 'weekly', priority: '1.0' },
   { path: 'about/', changefreq: 'monthly', priority: '0.9' },
@@ -184,6 +187,47 @@ Sitemap: ${BASE_URL}/sitemap.txt
 }
 
 /**
+ * Submits all active URLs to the IndexNow protocol (Bing, Yandex, DuckDuckGo, Copilot, Seznam, Naver)
+ */
+export async function submitToIndexNow(urls) {
+  const host = new URL(BASE_URL).hostname;
+  const payload = {
+    host,
+    key: INDEXNOW_KEY,
+    keyLocation: INDEXNOW_KEY_LOCATION,
+    urlList: urls,
+  };
+
+  const endpoints = [
+    'https://api.indexnow.org/indexnow',
+    'https://www.bing.com/indexnow',
+  ];
+
+  console.log(`⚡ [IndexNow]: Submitting ${urls.length} URLs to IndexNow engines...`);
+
+  for (const endpoint of endpoints) {
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.status === 200 || res.status === 202) {
+        console.log(`⚡ [IndexNow]: Delivered to ${endpoint} (HTTP ${res.status} OK)`);
+      } else {
+        const msg = await res.text().catch(() => '');
+        console.warn(`⚡ [IndexNow]: ${endpoint} returned HTTP ${res.status} - ${msg}`);
+      }
+    } catch (err) {
+      console.log(`⚡ [IndexNow]: Notice for ${endpoint} - ${err.message}`);
+    }
+  }
+}
+
+/**
  * Pings search engines (Google & Bing)
  */
 export async function pingSearchEngines() {
@@ -220,20 +264,32 @@ export async function runSitemapRobot({ ping = false } = {}) {
   fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), xmlContent, 'utf8');
   fs.writeFileSync(path.join(publicDir, 'sitemap.txt'), txtContent, 'utf8');
   fs.writeFileSync(path.join(publicDir, 'robots.txt'), robotsContent, 'utf8');
+
+  // Ensure IndexNow key file is hosted at root
+  const keyFileName = `${INDEXNOW_KEY}.txt`;
+  fs.writeFileSync(path.join(publicDir, keyFileName), `${INDEXNOW_KEY}\n`, 'utf8');
+
   console.log(`🤖 [Sitemap Robot]: Wrote public/sitemap.xml and public/sitemap.txt (${blogs.length} blogs + ${CORE_ROUTES.length} core pages)`);
   console.log(`🤖 [Sitemap Robot]: Wrote public/robots.txt (Disallowed /admin/, configured sitemap directives)`);
+  console.log(`⚡ [IndexNow]: Key file verified at public/${keyFileName}`);
 
   // 2. Write to dist/ if it exists (e.g. during build)
   if (fs.existsSync(distDir)) {
     fs.writeFileSync(path.join(distDir, 'sitemap.xml'), xmlContent, 'utf8');
     fs.writeFileSync(path.join(distDir, 'sitemap.txt'), txtContent, 'utf8');
     fs.writeFileSync(path.join(distDir, 'robots.txt'), robotsContent, 'utf8');
-    console.log('🤖 [Sitemap Robot]: Synced sitemap.xml, sitemap.txt, and robots.txt to dist/');
+    fs.writeFileSync(path.join(distDir, keyFileName), `${INDEXNOW_KEY}\n`, 'utf8');
+    console.log('🤖 [Sitemap Robot]: Synced sitemap.xml, sitemap.txt, robots.txt, and IndexNow key to dist/');
   }
 
-  // 3. Ping search engines if requested
+  // 3. Ping search engines & submit to IndexNow if requested
   if (ping) {
+    const allUrls = [
+      ...CORE_ROUTES.map((r) => `${BASE_URL}/${r.path}`),
+      ...blogs.map((b) => `${BASE_URL}/blogs/${b.id}/`),
+    ];
     await pingSearchEngines();
+    await submitToIndexNow(allUrls);
   }
 
   console.log('🤖 [Sitemap Robot]: Completed successfully.');
@@ -242,7 +298,7 @@ export async function runSitemapRobot({ ping = false } = {}) {
 
 // Allow direct CLI execution: `node scripts/sitemap-robot.js`
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const shouldPing = process.argv.includes('--ping');
+  const shouldPing = process.argv.includes('--ping') || process.argv.includes('--indexnow');
   runSitemapRobot({ ping: shouldPing }).catch((err) => {
     console.error('❌ [Sitemap Robot] Error:', err);
     process.exit(1);

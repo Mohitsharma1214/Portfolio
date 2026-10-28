@@ -277,8 +277,9 @@ async function generateAllRoutes() {
   // Ensure .nojekyll exists in dist/ to disable Jekyll on GitHub Pages
   fs.writeFileSync(path.join(distDir, '.nojekyll'), '', 'utf8');
 
-  // Also synchronize sitemap and robots.txt in dist/ and public/
-  await runSitemapRobot();
+  // Also synchronize sitemap, robots.txt, and IndexNow notifications in dist/ and public/
+  const shouldPing = process.env.CI === 'true' || process.argv.includes('--ping');
+  await runSitemapRobot({ ping: shouldPing });
 }
 
 generateAllRoutes().catch((err) => {

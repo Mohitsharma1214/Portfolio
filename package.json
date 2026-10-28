@@ -9,6 +9,7 @@
     "build": "tsc -b && vite build && node scripts/generate-routes.js",
     "sitemap": "node scripts/sitemap-robot.js",
     "sitemap:ping": "node scripts/sitemap-robot.js --ping",
+    "indexnow": "node scripts/sitemap-robot.js --ping",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "preview": "vite preview"
