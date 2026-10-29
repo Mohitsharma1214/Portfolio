@@ -1,12 +1,35 @@
 <!doctype html>
 <html lang="en" class="scroll-smooth">
   <head>
-    <!-- Google tag (gtag.js) - Performance Deferred Initialization on User Interaction -->
+    <!-- Google tag (gtag.js) - Privacy-First Cookieless Measurement (Zero Tracking Cookies) -->
     <script>
+      // Purge any legacy Google Analytics tracking cookies from previous sessions
+      try {
+        document.cookie.split(";").forEach(function(c) {
+          var name = c.trim().split("=")[0];
+          if (name.indexOf("_ga") === 0) {
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=" + window.location.hostname;
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+          }
+        });
+      } catch(e) {}
+
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-Y331GS35CD');
+
+      // Enforce zero cookie storage & privacy-safe anonymous measurement
+      gtag('consent', 'default', {
+        'analytics_storage': 'denied',
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied'
+      });
+
+      gtag('config', 'G-Y331GS35CD', {
+        'client_storage': 'none',
+        'anonymize_ip': true
+      });
 
       // Load analytics script on user engagement (scroll/touch/click) to eliminate long tasks during first paint & TTI
       function loadGoogleAnalytics() {

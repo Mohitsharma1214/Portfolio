@@ -123,7 +123,7 @@ export const Footer: React.FC = () => {
         {/* Bottom copyright line */}
         <div className="mt-8 pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-slate-500 text-[11px] font-mono gap-2 text-center sm:text-left">
           <div>
-            &copy; {currentYear} {PERSONAL_INFO.name}. All verified credentials, metrics, and case studies sourced directly from primary work.
+            &copy; {currentYear} {PERSONAL_INFO.name}. Privacy-First &bull; Zero Cookies &bull; All credentials & case studies verified.
           </div>
           <div className="text-slate-600 font-medium">
             Government of India Copyright {PERSONAL_INFO.copyrightId}
