@@ -208,15 +208,20 @@ export const BrandFaviconLoader: React.FC<BrandFaviconLoaderProps> = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.35, duration: 0.4 }}
-              className="mt-7 flex flex-col items-center w-64 sm:w-72"
+              className="mt-7 flex flex-col items-center w-72 sm:w-80"
             >
-              {/* Thin High-Tech Progress Track */}
-              <div className="w-full h-1 bg-slate-800/80 rounded-full overflow-hidden p-[1px] border border-white/10 shadow-inner">
-                <motion.div
-                  className="h-full rounded-full bg-gradient-to-r from-blue-500 via-indigo-400 to-cyan-300 shadow-[0_0_12px_rgba(56,189,248,0.8)]"
-                  style={{ width: `${progress}%` }}
-                  transition={{ ease: 'linear' }}
-                />
+              {/* High-Tech Progress Track */}
+              <div className="w-full h-2 bg-slate-900/90 rounded-full overflow-hidden p-[1px] border border-white/20 shadow-inner relative">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-blue-500 via-indigo-400 to-cyan-300 shadow-[0_0_14px_rgba(56,189,248,0.95)] relative flex items-center justify-end"
+                  style={{
+                    width: `${Math.max(progress, 2)}%`,
+                    transition: 'width 0.08s linear',
+                  }}
+                >
+                  {/* Glowing Laser Tip */}
+                  <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#ffffff,0_0_14px_#38bdf8] shrink-0" />
+                </div>
               </div>
 
               {/* Status & Numeric Telemetry Readout */}
