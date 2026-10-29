@@ -43,6 +43,30 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://mohitsharma.is-a.dev/blogs/reliable-structured-output-generative-ai-llm-systems/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://mohitsharma.is-a.dev/blogs/real-time-object-tracking-edge-detection-association/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://mohitsharma.is-a.dev/blogs/self-supervised-learning-unlabeled-data-representations/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://mohitsharma.is-a.dev/blogs/cicd-machine-learning-model-registry-safe-deployment/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://mohitsharma.is-a.dev/blogs/testing-ai-agents-evaluation-harnesses-tool-mocks/</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>

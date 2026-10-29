@@ -54,6 +54,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/sitemap.xml public/robots.txt
-          git commit -m "🤖 robot(sitemap): auto-sync sitemap.xml with newly published blogs [skip ci]"
+          git add public/sitemap.xml public/sitemap.txt public/robots.txt
+          git commit -m "🤖 robot(sitemap): auto-sync sitemap.xml with newly published blogs"
           git push origin main
