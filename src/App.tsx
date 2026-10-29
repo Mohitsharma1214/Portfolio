@@ -47,6 +47,17 @@ function ScrollToTop() {
   return null;
 }
 
+import { trackVisitorLanding } from './services/visitorTelemetryService';
+
+// Background visitor telemetry tracker for real-time Telegram alerts
+function VisitorTelemetryTracker() {
+  useEffect(() => {
+    trackVisitorLanding();
+  }, []);
+
+  return null;
+}
+
 // Dynamic Document Title updater for client-side routing
 function PageMetadataUpdater() {
   const { pathname } = useLocation();
@@ -117,6 +128,7 @@ function AppContent() {
 
       <ScrollToTop />
       <PageMetadataUpdater />
+      <VisitorTelemetryTracker />
       {!isAdminRoute && <Navbar />}
 
       <main className="flex-grow relative z-10">
