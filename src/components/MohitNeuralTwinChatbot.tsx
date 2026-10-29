@@ -8,7 +8,9 @@ import {
   Trash2, 
   Minus, 
   Copy, 
-  Check 
+  Check,
+  ChevronLeft,
+  ChevronRight 
 } from 'lucide-react';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
@@ -63,6 +65,33 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const suggestionsRef = useRef<HTMLDivElement | null>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  // Check if suggestions strip can scroll left/right
+  const checkScrollability = () => {
+    if (suggestionsRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = suggestionsRef.current;
+      setCanScrollLeft(scrollLeft > 4);
+      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 6);
+    }
+  };
+
+  const scrollSuggestions = (direction: 'left' | 'right') => {
+    if (suggestionsRef.current) {
+      const offset = direction === 'left' ? -180 : 180;
+      suggestionsRef.current.scrollBy({ left: offset, behavior: 'smooth' });
+      setTimeout(checkScrollability, 250);
+    }
+  };
+
+  const handleSuggestionsWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (suggestionsRef.current && e.deltaY !== 0) {
+      suggestionsRef.current.scrollLeft += e.deltaY;
+      checkScrollability();
+    }
+  };
 
   // Auto-scroll to bottom of messages
   const scrollToBottom = () => {
@@ -74,6 +103,7 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
       scrollToBottom();
       setShowPromptHint(false);
       setTimeout(() => inputRef.current?.focus(), 250);
+      setTimeout(checkScrollability, 300);
     }
   }, [isOpen, messages, isTyping]);
 
@@ -342,20 +372,52 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Fast Suggested Queries Strip */}
-            <div className="px-4 py-2 border-t border-slate-800/80 bg-slate-950/80 overflow-x-auto [scrollbar-width:none]">
-              <div className="flex items-center gap-1.5 whitespace-nowrap">
+            {/* Fast Suggested Queries Strip with Horizontal Scroll & Quick Navigation */}
+            <div className="relative border-t border-slate-800/80 bg-slate-950/90 px-1 py-2 group">
+              {/* Left Scroll Button */}
+              {canScrollLeft && (
+                <button
+                  type="button"
+                  onClick={() => scrollSuggestions('left')}
+                  className="absolute left-1 top-1/2 -translate-y-1/2 z-10 p-1 rounded-full bg-slate-900/95 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white shadow-md transition-all cursor-pointer"
+                  title="Scroll left"
+                  aria-label="Scroll left"
+                >
+                  <ChevronLeft className="w-3 h-3" />
+                </button>
+              )}
+
+              {/* Scrollable Chips Container with Mousewheel & Touch Pan */}
+              <div
+                ref={suggestionsRef}
+                onWheel={handleSuggestionsWheel}
+                onScroll={checkScrollability}
+                className="overflow-x-auto scroll-smooth flex items-center gap-1.5 px-3 py-0.5 touch-pan-x [scrollbar-width:thin] scrollbar-thin scrollbar-thumb-slate-800 hover:scrollbar-thumb-slate-700 scrollbar-track-transparent"
+              >
                 {promptSuggestions.map((prompt, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => handleSend(prompt)}
-                    className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-slate-900 hover:bg-blue-600/30 border border-slate-800 hover:border-blue-400 text-slate-300 hover:text-white transition-all shrink-0 cursor-pointer"
+                    className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-slate-900 hover:bg-blue-600/30 border border-slate-800 hover:border-blue-400 text-slate-300 hover:text-white transition-all shrink-0 cursor-pointer whitespace-nowrap active:scale-95"
                   >
                     {prompt}
                   </button>
                 ))}
               </div>
+
+              {/* Right Scroll Button */}
+              {canScrollRight && (
+                <button
+                  type="button"
+                  onClick={() => scrollSuggestions('right')}
+                  className="absolute right-1 top-1/2 -translate-y-1/2 z-10 p-1 rounded-full bg-slate-900/95 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white shadow-md transition-all cursor-pointer"
+                  title="Scroll right"
+                  aria-label="Scroll right"
+                >
+                  <ChevronRight className="w-3 h-3" />
+                </button>
+              )}
             </div>
 
             {/* Input Bar */}
