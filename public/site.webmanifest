@@ -1,0 +1,23 @@
+{
+  "name": "Mohit Sharma \u2014 AI Systems Engineer",
+  "short_name": "Mohit Sharma",
+  "description": "Portfolio of Mohit Sharma, AI Engineer specializing in real-time computer vision, low-latency edge AI on Raspberry Pi, and production LLM pipelines.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

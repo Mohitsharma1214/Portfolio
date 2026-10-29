@@ -10,6 +10,7 @@
     "sitemap": "node scripts/sitemap-robot.js",
     "sitemap:ping": "node scripts/sitemap-robot.js --ping",
     "indexnow": "node scripts/sitemap-robot.js --ping",
+    "favicons": "python3 scripts/generate-favicons.py",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "preview": "vite preview"
