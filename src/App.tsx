@@ -104,7 +104,7 @@ function AppContent() {
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f8fafc] text-slate-900 selection:bg-blue-100 selection:text-blue-900 font-sans relative overflow-x-hidden modern-grid">
+    <div className="min-h-screen flex flex-col bg-[#f8fafc] text-slate-900 selection:bg-blue-100 selection:text-blue-900 font-sans relative overflow-x-clip modern-grid">
       {!isAdminRoute && <BrandFaviconLoader />}
       {!isAdminRoute && <NeuralNetworkCanvas />}
       {!isAdminRoute && <MohitNeuralTwinChatbot />}

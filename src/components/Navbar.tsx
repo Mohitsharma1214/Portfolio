@@ -28,8 +28,9 @@ export const Navbar: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 12);
+      setScrolled(window.scrollY > 8);
     };
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -89,10 +90,10 @@ export const Navbar: React.FC = () => {
   return (
     <>
       <header
-        className={`sticky top-0 z-50 transition-all duration-300 ${
+        className={`sticky top-0 z-50 w-full transition-all duration-200 ${
           scrolled
-            ? 'bg-white/85 backdrop-blur-xl border-b border-slate-200/90 shadow-xs'
-            : 'bg-white/75 backdrop-blur-md border-b border-slate-200/60'
+            ? 'bg-white/95 backdrop-blur-xl border-b border-slate-200/90 shadow-xs'
+            : 'bg-white/85 backdrop-blur-md border-b border-slate-200/60'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -100,7 +101,7 @@ export const Navbar: React.FC = () => {
             {/* Logo / Monogram */}
             <NavLink
               to="/"
-              className="flex items-center gap-2.5 sm:gap-3 group focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-1"
+              className="flex items-center gap-2.5 sm:gap-3 group focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-1 min-w-0"
             >
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -109,14 +110,14 @@ export const Navbar: React.FC = () => {
               >
                 MS
               </motion.div>
-              <div className="flex flex-col">
+              <div className="flex flex-col min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-display font-black text-slate-950 text-sm sm:text-base tracking-tight uppercase leading-none group-hover:text-blue-600 transition-colors">
+                  <span className="font-display font-black text-slate-950 text-sm sm:text-base tracking-tight uppercase leading-none group-hover:text-blue-600 transition-colors truncate">
                     {PERSONAL_INFO.name}
                   </span>
-                  <span className="hidden sm:inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  <span className="hidden sm:inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
                 </div>
-                <span className="text-[11px] font-mono text-slate-500 mt-0.5 leading-none font-medium">
+                <span className="text-[10px] sm:text-[11px] font-mono text-slate-500 mt-0.5 leading-none font-medium truncate">
                   AI Systems Engineer
                 </span>
               </div>
@@ -178,19 +179,22 @@ export const Navbar: React.FC = () => {
               </motion.div>
             </div>
 
-            {/* Mobile Actions: Contact Chip + Enhanced Modern Hamburger Button */}
-            <div className="flex md:hidden items-center gap-2">
-              <NavLink
-                to="/contact"
-                className="inline-flex sm:hidden items-center gap-1 text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 px-2.5 py-1.5 rounded-lg border border-blue-200/80 transition-colors shadow-2xs"
+            {/* Mobile Actions: Resume Pill + Enhanced Hamburger Button */}
+            <div className="flex md:hidden items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={openResumeModal}
+                className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 px-2.5 py-1.5 rounded-xl border border-slate-200/90 transition-colors shadow-2xs cursor-pointer"
+                title="View Resume PDF"
               >
-                <span>Contact</span>
-              </NavLink>
+                <FileText className="w-3.5 h-3.5 text-blue-600" />
+                <span>Resume</span>
+              </button>
 
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 type="button"
-                className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all shadow-2xs active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500/30 ${
+                className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all shadow-2xs active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500/30 cursor-pointer ${
                   mobileMenuOpen
                     ? 'bg-blue-50 border-blue-300 text-blue-700 shadow-xs'
                     : 'bg-slate-50/90 hover:bg-slate-100 border-slate-200/90 text-slate-800'
@@ -236,7 +240,7 @@ export const Navbar: React.FC = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -16, scale: 0.98 }}
               transition={{ type: 'spring', damping: 28, stiffness: 340 }}
-              className="fixed top-16 left-0 right-0 max-h-[calc(100vh-4.5rem)] overflow-y-auto bg-white/95 backdrop-blur-2xl border-b border-slate-200/90 shadow-2xl z-50 md:hidden px-4 pt-3 pb-6 rounded-b-3xl space-y-4"
+              className="fixed top-16 sm:top-20 left-0 right-0 max-h-[calc(100dvh-4.5rem)] sm:max-h-[calc(100dvh-5.5rem)] overflow-y-auto bg-white/98 backdrop-blur-2xl border-b border-slate-200/90 shadow-2xl z-50 md:hidden px-4 pt-3 pb-8 rounded-b-3xl space-y-4"
             >
               {/* Quick Status Bar */}
               <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/70 text-xs font-mono">

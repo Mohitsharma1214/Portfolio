@@ -19,14 +19,19 @@
     background-color: #f8fafc;
     color: #0f172a;
     color-scheme: light;
+    overflow-x: clip;
+    max-width: 100%;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
     font-family: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background-color: #f8fafc;
     color: #0f172a;
-    overflow-x: hidden;
+    overflow-x: clip;
+    max-width: 100%;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    -webkit-tap-highlight-color: transparent;
   }
 
   h1, h2, h3, h4, h5, h6 {

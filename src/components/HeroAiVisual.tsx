@@ -148,10 +148,10 @@ export const HeroAiVisual: React.FC = () => {
       </div>
 
       {/* Main SVG Neural Network Interactive Canvas */}
-      <div className="relative z-10 w-full overflow-x-auto overflow-y-hidden py-1">
+      <div className="relative z-10 w-full overflow-hidden py-1">
         <svg
           viewBox="0 0 500 390"
-          className="w-full h-auto min-w-[340px] max-h-[380px]"
+          className="w-full h-auto max-h-[380px]"
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
