@@ -5,6 +5,11 @@ https://mohitsharma.is-a.dev/experience/
 https://mohitsharma.is-a.dev/skills/
 https://mohitsharma.is-a.dev/blogs/
 https://mohitsharma.is-a.dev/contact/
+https://mohitsharma.is-a.dev/blogs/testing-ai-agents-evaluation-harnesses-tool-mocks/
+https://mohitsharma.is-a.dev/blogs/reranking-hybrid-search-rag-pipelines/
+https://mohitsharma.is-a.dev/blogs/memory-efficient-deep-learning-mixed-precision-checkpointing/
+https://mohitsharma.is-a.dev/blogs/feature-stores-real-time-recommendation-systems/
+https://mohitsharma.is-a.dev/blogs/autoscaling-ml-inference-dynamic-batching/
 https://mohitsharma.is-a.dev/blogs/data-drift-model-monitoring-production-ml/
 https://mohitsharma.is-a.dev/blogs/scalable-recommendation-systems-embeddings-user-signals/
 https://mohitsharma.is-a.dev/blogs/optimizing-llm-inference-quantization-batching-kv-cache/

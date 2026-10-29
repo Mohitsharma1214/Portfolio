@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -36,6 +36,7 @@ import {
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import { BlogService } from '../services/blogService';
 import type { BlogFull, BlogMetadata } from '../services/blogService';
+import { CategoryService } from '../services/categoryService';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
 import { ProjectAdminManager } from '../components/admin/ProjectAdminManager';
 import { ProfileAdminManager } from '../components/admin/ProfileAdminManager';
@@ -112,6 +113,62 @@ const AdminPageInner: React.FC = () => {
   // Check brute force lock
   const isLocked = lockedUntil !== null && Date.now() < lockedUntil;
 
+  // Database Categories Management (Taken directly from DB)
+  const [dbCategories, setDbCategories] = useState<string[]>([]);
+  const [isAddingCategory, setIsAddingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [savingCategory, setSavingCategory] = useState(false);
+  const [categoryModalOpen, setCategoryModalOpen] = useState(false);
+
+  // Load categories directly from database
+  const loadDbCategories = useCallback(async () => {
+    try {
+      const cats = await CategoryService.getCategories();
+      setDbCategories(cats);
+    } catch (err) {
+      console.error('Failed to load categories from database:', err);
+    }
+  }, []);
+
+  const handleAddNewCategory = async () => {
+    const trimmed = newCategoryName.trim();
+    if (!trimmed) return;
+    setSavingCategory(true);
+    try {
+      const res = await CategoryService.addCategory(trimmed);
+      if (res.success) {
+        setDbCategories(res.categories);
+        setCategory(trimmed);
+        setNewCategoryName('');
+        setIsAddingCategory(false);
+      } else {
+        alert(res.error || 'Failed to add category to database');
+      }
+    } catch (err) {
+      console.error('Error adding category:', err);
+    } finally {
+      setSavingCategory(false);
+    }
+  };
+
+  const handleDeleteDbCategory = async (catName: string) => {
+    if (!window.confirm(`Delete category "${catName}" from database?`)) return;
+    try {
+      const res = await CategoryService.deleteCategory(catName);
+      setDbCategories(res.categories);
+      if (category === catName && res.categories.length > 0) {
+        setCategory(res.categories[0]);
+      }
+    } catch (err) {
+      console.error('Error deleting category:', err);
+    }
+  };
+
+  // Initial categories fetch on mount
+  useEffect(() => {
+    loadDbCategories();
+  }, [loadDbCategories]);
+
   // Enforce strict email whitelist on active session
   useEffect(() => {
     if (user && user.email) {
@@ -120,9 +177,10 @@ const AdminPageInner: React.FC = () => {
         setAuthError('Access Denied: Your account is not authorized to access this private admin portal.');
       } else {
         loadAdminArticles();
+        loadDbCategories();
       }
     }
-  }, [user]);
+  }, [user, loadDbCategories]);
 
   // Load articles when authorized
   const loadAdminArticles = async () => {
@@ -401,7 +459,8 @@ const AdminPageInner: React.FC = () => {
       }
 
       setSaveSuccess(true);
-      await loadAdminArticles();
+      CategoryService.addCategory(finalCategory).catch(() => {});
+      await Promise.all([loadAdminArticles(), loadDbCategories()]);
 
       // 🤖 Trigger Sitemap Robot for newly added or updated published blog
       if (published) {
@@ -493,28 +552,17 @@ const AdminPageInner: React.FC = () => {
     });
   }, [articles, selectedCategory, searchQuery]);
 
-  const existingCategories = useMemo(() => {
-    const set = new Set(articles.map((a) => a.category).filter(Boolean));
-    return Array.from(set);
-  }, [articles]);
-
-  const availableFormCategories = useMemo(() => {
-    const set = new Set<string>();
-    existingCategories.forEach((c) => set.add(c));
-    if (category && category !== '__custom__') set.add(category);
-    [
-      'Computer Vision & Edge AI',
-      'Generative AI & LLM Engineering',
-      'LLM Systems & Information Retrieval',
-      'Agentic AI & Test Automation',
-      'Machine Learning & Deep Learning',
-      'MLOps & High-Throughput Inference',
-      'MLOps & AI Deployment',
-      'Production Platforms & RecSys',
-      'ML Hardware & Optimization',
-    ].forEach((c) => set.add(c));
+  // Categories derived exclusively from database sources (NO hardcoded presets)
+  const allDbCategories = useMemo(() => {
+    const set = new Set<string>(dbCategories);
+    articles.forEach((a) => {
+      if (a.category?.trim()) set.add(a.category.trim());
+    });
+    if (category && category !== '__custom__' && category !== '__add_new__') {
+      set.add(category);
+    }
     return Array.from(set).sort((a, b) => a.localeCompare(b));
-  }, [existingCategories, category]);
+  }, [dbCategories, articles, category]);
 
   const isSlugExisting = useMemo(() => {
     if (!slug.trim()) return false;
@@ -828,9 +876,16 @@ const AdminPageInner: React.FC = () => {
                 {articles.filter((a) => (a as BlogMetadata & { published?: boolean }).published !== false).length}
               </div>
             </div>
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-              <div className="text-xs font-mono text-slate-500 uppercase">Categories</div>
-              <div className="text-2xl font-extrabold text-indigo-600 mt-1">{existingCategories.length}</div>
+            <div 
+              onClick={() => setCategoryModalOpen(true)}
+              className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs hover:border-indigo-300 hover:shadow-sm cursor-pointer transition-all group"
+              title="Click to manage database categories"
+            >
+              <div className="flex items-center justify-between">
+                <div className="text-xs font-mono text-slate-500 uppercase">Categories (DB)</div>
+                <span className="text-[10px] font-semibold text-indigo-600 uppercase group-hover:underline">Manage</span>
+              </div>
+              <div className="text-2xl font-extrabold text-indigo-600 mt-1">{allDbCategories.length}</div>
             </div>
             <div
               onClick={() => setSitemapRobotModalOpen(true)}
@@ -913,7 +968,7 @@ const AdminPageInner: React.FC = () => {
                 className="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 focus:outline-none"
               >
                 <option value="All">All Categories</option>
-                {existingCategories.map((c) => (
+                {allDbCategories.map((c) => (
                   <option key={c} value={c}>{c}</option>
                 ))}
               </select>
@@ -1201,33 +1256,53 @@ const AdminPageInner: React.FC = () => {
             {/* Category & Status */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-700">Category</label>
-                <select
-                  value={availableFormCategories.includes(category) ? category : '__custom__'}
-                  onChange={(e) => {
-                    if (e.target.value === '__custom__') {
-                      setCategory('__custom__');
-                      setCustomCategory('');
-                    } else {
-                      setCategory(e.target.value);
-                    }
-                  }}
-                  className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-800"
-                >
-                  {availableFormCategories.map((c) => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                  <option value="__custom__">+ Enter Custom Category...</option>
-                </select>
-                {category === '__custom__' && (
-                  <input
-                    type="text"
-                    required
-                    value={customCategory}
-                    onChange={(e) => setCustomCategory(e.target.value)}
-                    placeholder="Type custom category name..."
-                    className="w-full mt-2 px-3.5 py-1.5 text-xs bg-white border border-blue-300 rounded-lg text-slate-900"
-                  />
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-slate-700">Category (from DB)</label>
+                  <button
+                    type="button"
+                    onClick={() => setIsAddingCategory((prev) => !prev)}
+                    className="text-[11px] font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors"
+                  >
+                    <Plus className="w-3 h-3" />
+                    <span>{isAddingCategory ? 'Select Existing' : '+ Add to DB'}</span>
+                  </button>
+                </div>
+
+                {isAddingCategory ? (
+                  <div className="flex items-center gap-1.5">
+                    <input
+                      type="text"
+                      value={newCategoryName}
+                      onChange={(e) => setNewCategoryName(e.target.value)}
+                      placeholder="Type new category name..."
+                      className="flex-1 px-3 py-2 text-xs bg-white border border-blue-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-900"
+                    />
+                    <button
+                      type="button"
+                      disabled={savingCategory || !newCategoryName.trim()}
+                      onClick={handleAddNewCategory}
+                      className="px-3.5 py-2 text-xs font-semibold bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:opacity-50 transition-all shrink-0 flex items-center gap-1"
+                    >
+                      {savingCategory ? 'Saving...' : 'Save to DB'}
+                    </button>
+                  </div>
+                ) : (
+                  <select
+                    value={category}
+                    onChange={(e) => {
+                      if (e.target.value === '__add_new__') {
+                        setIsAddingCategory(true);
+                      } else {
+                        setCategory(e.target.value);
+                      }
+                    }}
+                    className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-800"
+                  >
+                    {allDbCategories.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                    <option value="__add_new__">+ Add New Category to DB...</option>
+                  </select>
                 )}
               </div>
 
@@ -1764,6 +1839,97 @@ const AdminPageInner: React.FC = () => {
                 type="button"
                 onClick={() => setSitemapRobotModalOpen(false)}
                 className="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs rounded-xl shadow-xs transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Category Manager Modal (Manage Database Categories) */}
+      {categoryModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600">
+                  <Layers className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-950">Database Categories</h3>
+                  <p className="text-xs text-slate-500">Live categories synced directly in Supabase</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setCategoryModalOpen(false)}
+                className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Add new category directly to DB */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-slate-700">Add New Category to Database</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={newCategoryName}
+                  onChange={(e) => setNewCategoryName(e.target.value)}
+                  placeholder="e.g. Autonomous Agents & Workflows"
+                  className="flex-1 px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-900"
+                />
+                <button
+                  type="button"
+                  disabled={savingCategory || !newCategoryName.trim()}
+                  onClick={handleAddNewCategory}
+                  className="px-4 py-2 text-xs font-semibold bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:opacity-50 transition-all flex items-center gap-1.5 shrink-0"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>{savingCategory ? 'Adding...' : 'Add to DB'}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* List of current DB categories */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-slate-700">
+                Current Categories in Database ({allDbCategories.length})
+              </label>
+              <div className="max-h-60 overflow-y-auto space-y-1.5 pr-1 border border-slate-100 rounded-2xl p-2 bg-slate-50/50">
+                {allDbCategories.map((catName) => {
+                  const articleCount = articles.filter((a) => a.category === catName).length;
+                  return (
+                    <div
+                      key={catName}
+                      className="flex items-center justify-between p-2.5 bg-white rounded-xl border border-slate-200/80 text-xs shadow-2xs"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-slate-900">{catName}</span>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">
+                          {articleCount} {articleCount === 1 ? 'article' : 'articles'}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteDbCategory(catName)}
+                        title="Remove category"
+                        className="text-slate-400 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-colors"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setCategoryModalOpen(false)}
+                className="px-4 py-2 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all"
               >
                 Close
               </button>

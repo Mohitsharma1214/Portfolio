@@ -1,5 +1,6 @@
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { TECHNICAL_ARTICLES } from '../data/portfolioData';
+import { CategoryService } from './categoryService';
 
 export interface BlogMetadata {
   id: string;
@@ -201,27 +202,11 @@ export const BlogService = {
   },
 
   /**
-   * Fetches unique categories available across blogs.
+   * Fetches unique categories available across blogs directly from the database.
    */
   async getCategories(): Promise<string[]> {
-    if (isSupabaseConfigured && supabase) {
-      try {
-        const { data, error } = await supabase
-          .from('blogs')
-          .select('category')
-          .eq('published', true);
-
-        if (!error && data && data.length > 0) {
-          const uniqueCats = Array.from(new Set(data.map((r) => r.category).filter(Boolean)));
-          return ['All', ...uniqueCats];
-        }
-      } catch (err) {
-        console.warn('Error fetching categories from Supabase:', err);
-      }
-    }
-
-    const uniqueCats = Array.from(new Set(TECHNICAL_ARTICLES.map((a) => a.category)));
-    return ['All', ...uniqueCats];
+    const cats = await CategoryService.getCategories();
+    return ['All', ...cats];
   },
 
   /**

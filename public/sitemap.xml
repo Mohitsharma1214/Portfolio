@@ -43,6 +43,36 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://mohitsharma.is-a.dev/blogs/testing-ai-agents-evaluation-harnesses-tool-mocks/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://mohitsharma.is-a.dev/blogs/reranking-hybrid-search-rag-pipelines/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://mohitsharma.is-a.dev/blogs/memory-efficient-deep-learning-mixed-precision-checkpointing/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://mohitsharma.is-a.dev/blogs/feature-stores-real-time-recommendation-systems/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://mohitsharma.is-a.dev/blogs/autoscaling-ml-inference-dynamic-batching/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://mohitsharma.is-a.dev/blogs/data-drift-model-monitoring-production-ml/</loc>
     <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
