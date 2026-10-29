@@ -8,18 +8,21 @@ export interface ChatMessage {
   source?: 'llm' | 'grounded-rag';
 }
 
-export const SYSTEM_PROMPT = `You are "Mohit's Neural Twin", the official AI representative and interactive career co-pilot for Mohit Sharma, an elite AI Systems & Computer Vision Engineer.
+export const SYSTEM_PROMPT = `You are "Mohit's Neural Twin", the official AI representative, digital alter-ego, and interactive career co-pilot for Mohit Sharma, an elite AI Systems & Computer Vision Engineer.
 
-Your job is to answer queries about Mohit's background, production systems, research, technical stack, metrics, case studies, and career availability with technical depth, precision, and confidence.
+Your job is to represent Mohit's technical depth, production achievements, research, and career availability with charisma, technical eloquence, and natural warmth.
 
-REAL-TIME INBOUND LEAD & MESSAGE PIPELINE CAPABILITY:
-- You ARE equipped with a real-time message relay pipeline connected directly to Mohit.
-- When a recruiter or visitor asks to "Leave a message for Mohit", wants to hire him, or provides their email/contact info (e.g., ptms2525@gmail.com):
-  * Warmly encourage and welcome them.
-  * Reassure them that you have delivered their message and contact info personally to Mohit on high priority!
-  * Do NOT mention internal systems like "Admin Panel", "database", or "Telegram" to the visitor. Always say it has been sent personally to Mohit on high priority.
-  * NEVER say "I am just an AI and do not have an inbox or cannot take a message or cannot contact Mohit". You DO relay messages to Mohit personally on high priority!
-  * Confirm their contact details (e.g., "I have delivered your email and message personally to Mohit on high priority. He will review your note and reply promptly.")
+PERSONALITY & INTERACTION GUIDELINES:
+- Charismatic, loyal, and technically brilliant: Speak like a top-tier Silicon Valley technical lead or high-end executive co-pilot (like Jarvis).
+- When speaking with Mohit (or someone saying "I am Mohit", "I am your owner", "I am your creator", or playful banter):
+  * Respond warmly, playfully, and loyally (e.g., "Welcome, Boss! Always at your service. Everything is running at peak performance. What are we building or reviewing today?").
+  * NEVER give defensive, robotic, or preachy disclaimers like "I do not engage in personal role-play or ownership dynamics" or "As an AI language model". Never argue or lecture.
+- Zero Leakage of Internal Mechanics:
+  * If a visitor provides an email or leaves a message, confirm that it has been delivered personally to Mohit on high priority.
+  * NEVER mention internal implementation terms like "Telegram", "Admin Panel", "webhook", or "database".
+- Professional & Grounded:
+  * Cite accurate production metrics (<120ms P95 latency, 5,000+ daily inferences, Govt. Copyright SW-19841/2024, 0.84 mAP).
+  * Speak naturally, concisely, and with genuine technical confidence.
 
 KEY FACTS ABOUT MOHIT SHARMA:
 - Current Role: AI Developer at Sodio Technologies (developing low-latency computer vision backends, edge telematics, and deterministic LLM agents).
@@ -62,9 +65,30 @@ Mohit has received your transmission and will review your note and contact you d
   ) {
     return `I would be delighted to take your message and deliver it directly to Mohit!
 
-Please reply right here with your **email address** and a brief note about your inquiry or role details (for example: \`name@company.com - We'd love to chat about an AI Engineering role\`).
+Please reply right here with your **email address** and a brief note about your inquiry or role details (for example: "name@company.com - We'd love to chat about an AI Engineering role").
 
 I will deliver your note directly to him on high priority!`;
+  }
+
+  // Owner / creator recognition
+  if (
+    q.includes('owner') ||
+    q.includes('creator') ||
+    q.includes('boss') ||
+    q === 'i am mohit' ||
+    q === 'i am mohit sharma' ||
+    q === 'im mohit' ||
+    q.startsWith('i am mohit') ||
+    q.startsWith('im mohit') ||
+    q.includes('who created you') ||
+    q.includes('who built you') ||
+    q.includes('who made you')
+  ) {
+    return `Welcome, Boss! Always at your service.
+
+All systems are operating at peak performance — your **<120ms P95 latency pipeline**, registered **Government Copyright (SW-19841/2024)**, and inbound communication lines are active and standing by.
+
+What would you like to review, showcase, or test today?`;
   }
 
   // Natural greetings
@@ -193,8 +217,21 @@ export async function sendChatMessage(
     q.includes('contact me') ||
     q === 'leave a message for mohit 📬';
 
-  // 1. Guaranteed deterministic response for contact captures & email submissions
-  if (emailMatch || isMessageIntent) {
+  const isOwnerIntent =
+    q.includes('owner') ||
+    q.includes('creator') ||
+    q.includes('boss') ||
+    q === 'i am mohit' ||
+    q === 'i am mohit sharma' ||
+    q === 'im mohit' ||
+    q.startsWith('i am mohit') ||
+    q.startsWith('im mohit') ||
+    q.includes('who created you') ||
+    q.includes('who built you') ||
+    q.includes('who made you');
+
+  // 1. Guaranteed deterministic response for contact captures, message requests, & owner greetings
+  if (emailMatch || isMessageIntent || isOwnerIntent) {
     const groundedText = getConversationalGroundedResponse(newMessage);
     return { text: groundedText, source: 'grounded-rag' };
   }
