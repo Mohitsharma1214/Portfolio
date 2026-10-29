@@ -64,49 +64,43 @@ export const ContactPage: React.FC = () => {
     setStatus('submitting');
     setErrorMessage('');
 
-    // Trigger instant Telegram notification to Mohit
-    notifyContactFormSubmission({
+    const submissionPayload = {
       name: name.trim(),
       email: email.trim(),
       topic: selectedTopic,
       message: message.trim(),
+    };
+
+    // 1. Primary High-Reliability Dispatch: Direct to Mohit's Telegram Bot
+    const telegramDelivered = await notifyContactFormSubmission(submissionPayload);
+
+    // 2. Secondary Email Backup Dispatch: Fire in background (absorbs third-party downtime)
+    fetch(`https://formsubmit.co/ajax/${PERSONAL_INFO.email}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        ...submissionPayload,
+        subject: `[Portfolio Inquiry] ${selectedTopic} — from ${name.trim()}`,
+        _captcha: 'false',
+        _template: 'table',
+      }),
+    }).catch(() => {
+      // Ignored if formsubmit.co is down
     });
 
-    try {
-      const response = await fetch(`https://formsubmit.co/ajax/${PERSONAL_INFO.email}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          name: name.trim(),
-          email: email.trim(),
-          subject: `[Portfolio Inquiry] ${selectedTopic} — from ${name.trim()}`,
-          topic: selectedTopic,
-          message: message.trim(),
-          _captcha: 'false',
-          _template: 'table',
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success === 'true' || data.success === true) {
-        setStatus('success');
-        setName('');
-        setEmail('');
-        setMessage('');
-      } else if (data.message && data.message.toLowerCase().includes('activation')) {
-        setStatus('activation_required');
-      } else {
-        setStatus('error');
-        setErrorMessage(data.message || 'Unable to send message right now. Please use the direct email link below.');
-      }
-    } catch {
-      setStatus('error');
-      setErrorMessage('Network error while sending transmission. Please use direct email instead.');
+    if (telegramDelivered) {
+      setStatus('success');
+      setName('');
+      setEmail('');
+      setMessage('');
+      return;
     }
+
+    setStatus('error');
+    setErrorMessage('Network error while sending transmission. Please reach out directly to mohitxsharma09@gmail.com.');
   };
 
   return (
