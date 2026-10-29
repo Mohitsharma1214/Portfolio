@@ -33,8 +33,8 @@ export const AiDevTelemetryHUD: React.FC = () => {
         />
       </div>
 
-      {/* Floating Modern AI Developer Status Pill (Bottom-Right) */}
-      <aside aria-label="Live Telemetry" className="fixed bottom-4 right-4 z-40 hidden sm:block">
+      {/* Floating Modern AI Developer Status Pill (Bottom-Left) */}
+      <aside aria-label="Live Telemetry" className="fixed bottom-5 left-5 z-40 hidden md:block">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

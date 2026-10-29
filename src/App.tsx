@@ -26,6 +26,7 @@ import { ResumeModal } from './components/ResumeModal';
 import { BrandFaviconLoader } from './components/BrandFaviconLoader';
 import { NeuralNetworkCanvas } from './components/NeuralNetworkCanvas';
 import { AiDevTelemetryHUD } from './components/AiDevTelemetryHUD';
+import { MohitNeuralTwinChatbot } from './components/MohitNeuralTwinChatbot';
 
 // Minimal non-intrusive loading fallback for asynchronously loaded routes
 function RouteLoadingFallback() {
@@ -108,6 +109,7 @@ function AppContent() {
       {!isAdminRoute && <BrandFaviconLoader />}
       {!isAdminRoute && <NeuralNetworkCanvas />}
       {!isAdminRoute && <AiDevTelemetryHUD />}
+      {!isAdminRoute && <MohitNeuralTwinChatbot />}
       {/* Subtle modern light-theme watercolor ambient glows */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div className="absolute top-[-10%] left-[15%] w-[600px] h-[450px] rounded-full bg-blue-400/[0.07] blur-[140px]" />

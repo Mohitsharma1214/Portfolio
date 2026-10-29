@@ -13,15 +13,15 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { BlogService } from '../services/blogService';
-import type { BlogFull, BlogMetadata } from '../services/blogService';
+import type { BlogFull } from '../services/blogService';
 import { PERSONAL_INFO } from '../data/portfolioData';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
+import { AiBlogRecommendations } from '../components/AiBlogRecommendations';
 
 export const BlogPostPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [blog, setBlog] = useState<BlogFull | null>(null);
   const [loading, setLoading] = useState(true);
-  const [nextBlog, setNextBlog] = useState<BlogMetadata | null>(null);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -33,14 +33,6 @@ export const BlogPostPage: React.FC = () => {
       setLoading(false);
       if (result) {
         document.title = `${result.title} | Mohit Sharma`;
-      }
-    });
-
-    // Fetch next article recommendation
-    BlogService.getPaginatedBlogs({ page: 1, pageSize: 6 }).then((res) => {
-      const remaining = res.blogs.filter((b) => b.id !== id);
-      if (remaining.length > 0) {
-        setNextBlog(remaining[0]);
       }
     });
   }, [id]);
@@ -206,30 +198,12 @@ export const BlogPostPage: React.FC = () => {
         </Link>
       </div>
 
-      {/* Next Article Recommendation */}
-      {nextBlog && (
-        <div className="border-t border-slate-200 pt-8 mt-12 space-y-4">
-          <div className="text-xs font-mono uppercase tracking-wider text-slate-500 font-semibold">
-            Next Architectural Breakdown
-          </div>
-          <Link
-            to={`/blogs/${nextBlog.id}`}
-            className="modern-card bg-white rounded-3xl border border-slate-200 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group hover:border-blue-300 transition-all shadow-xs block"
-          >
-            <div className="space-y-1">
-              <span className="text-[11px] font-mono text-blue-600 font-semibold">{nextBlog.category}</span>
-              <h3 className="text-base font-bold text-slate-950 group-hover:text-blue-600 transition-colors">
-                {nextBlog.title}
-              </h3>
-              <p className="text-xs text-slate-500 line-clamp-1">{nextBlog.subtitle}</p>
-            </div>
-            <div className="flex items-center gap-1.5 text-xs font-bold text-blue-600 group-hover:translate-x-1 transition-transform shrink-0">
-              <span>Read Next</span>
-              <ArrowRight className="w-4 h-4" />
-            </div>
-          </Link>
-        </div>
-      )}
+      {/* Dynamic AI Blog Recommendations (2-4 Personalized Articles) */}
+      <AiBlogRecommendations
+        currentBlogId={blog.id}
+        currentBlogTitle={blog.title}
+        currentBlogCategory={blog.category}
+      />
     </motion.article>
   );
 };
