@@ -32,13 +32,6 @@ const itemVariants: Variants = {
 };
 
 export const AboutPage: React.FC<AboutPageProps> = ({ onSelectProject }) => {
-  const quickFacts = [
-    { label: "Core Focus", value: "Real-Time Vision & Edge ML" },
-    { label: "Production SLA", value: "<120ms Latency @ 5k+ Imgs" },
-    { label: "Software IP", value: "Govt. Copyright SW-19841/2024" },
-    { label: "Academics", value: "B.Tech (AI & DS) & M.Tech (CS)" },
-  ];
-
   return (
     <motion.div
       variants={containerVariants}
@@ -47,24 +40,36 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onSelectProject }) => {
       exit={{ opacity: 0 }}
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-16"
     >
-      {/* Header */}
-      <motion.div variants={itemVariants} className="space-y-4">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-mono font-semibold text-blue-700">
-          <span>Background &bull; Credentials &bull; System Philosophy</span>
+      {/* Header with Bold Wide Display Typography */}
+      <motion.div variants={itemVariants} className="space-y-6">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-xs font-mono font-semibold text-blue-700 shadow-xs">
+          <span>THE MIND BEHIND THE ARCHITECTURE &amp; CODE</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-950 tracking-tight">
-          About Mohit Sharma
+        <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-slate-950 uppercase tracking-tight leading-[0.92]">
+          ABOUT<br className="hidden sm:inline" /> MOHIT SHARMA
         </h1>
         <p className="text-base sm:text-lg text-slate-600 max-w-3xl leading-relaxed">
-          AI Engineer specializing in the design, optimization, and real-world deployment of low-latency computer vision pipelines, edge ARM systems, and deterministic LLM architectures.
+          AI Systems Specialist &amp; Edge Hardware Architect. Based in India &mdash; designing low-latency computer vision backends, edge ARM pipelines on Raspberry Pi, and deterministic LLM architectures evaluated with strict SLAs.
         </p>
 
-        {/* Quick Facts Strip Covering Width */}
+        {/* High-Impact Stat Counter Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 pt-4 border-t border-slate-200">
-          {quickFacts.map((fact, idx) => (
-            <div key={idx} className="bg-white border border-slate-200 p-3 sm:p-4 rounded-xl shadow-xs">
-              <div className="text-[10px] sm:text-[11px] font-mono text-slate-500 uppercase tracking-wide truncate">{fact.label}</div>
-              <div className="text-xs sm:text-sm font-bold text-slate-900 mt-1 truncate">{fact.value}</div>
+          {[
+            { num: "<120ms", label: "P95 Inference SLA", sub: "Clinical dermatology" },
+            { num: "5,000+", label: "Daily Imgs Processed", sub: "Production pipeline" },
+            { num: "0.84", label: "Microscopic mAP", sub: "Instance segmentation" },
+            { num: "Govt. IP", label: "SW-19841/2024", sub: "Registered software" },
+          ].map((stat, idx) => (
+            <div key={idx} className="bg-white border border-slate-200 p-4 sm:p-5 rounded-2xl shadow-xs hover:border-blue-300 hover:shadow-sm transition-all group">
+              <div className="font-display text-2xl sm:text-3xl font-black text-slate-950 tracking-tight group-hover:text-blue-600 transition-colors">
+                {stat.num}
+              </div>
+              <div className="text-xs font-bold text-slate-800 mt-1 uppercase tracking-wide font-mono">
+                {stat.label}
+              </div>
+              <div className="text-[11px] text-slate-500 font-mono mt-0.5">
+                {stat.sub}
+              </div>
             </div>
           ))}
         </div>

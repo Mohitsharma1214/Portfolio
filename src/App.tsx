@@ -23,6 +23,7 @@ const CaseStudyModal = lazy(() => import('./components/CaseStudyModal').then((m)
 const ArticleModal = lazy(() => import('./components/ArticleModal').then((m) => ({ default: m.ArticleModal })));
 import { ResumeModalProvider, useResumeModal } from './context/ResumeModalContext';
 import { ResumeModal } from './components/ResumeModal';
+import { TheatricalCurtainReveal } from './components/TheatricalCurtainReveal';
 
 // Minimal non-intrusive loading fallback for asynchronously loaded routes
 function RouteLoadingFallback() {
@@ -102,6 +103,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f8fafc] text-slate-900 selection:bg-blue-100 selection:text-blue-900 font-sans relative overflow-x-hidden modern-grid">
+      {!isAdminRoute && <TheatricalCurtainReveal />}
       {/* Subtle modern light-theme watercolor ambient glows */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div className="absolute top-[-10%] left-[15%] w-[600px] h-[450px] rounded-full bg-blue-400/[0.07] blur-[140px]" />

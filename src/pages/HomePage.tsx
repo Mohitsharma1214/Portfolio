@@ -113,7 +113,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
 
               {/* Headline */}
               <div>
-                <h1 className="text-[1.85rem] leading-[1.18] sm:text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold text-slate-950 tracking-tight sm:leading-[1.12]">
+                <h1 className="font-display text-[1.9rem] leading-[1.14] sm:text-4xl md:text-5xl lg:text-[3.15rem] font-black text-slate-950 tracking-tight sm:leading-[1.08] uppercase">
                   Engineering real-time <span className="text-gradient-accent">computer vision</span> &amp; production AI systems.
                 </h1>
                 <p className="mt-5 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl">

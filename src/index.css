@@ -373,3 +373,60 @@
   background: #94a3b8;
 }
 
+/* ==============================================================================
+   BOLD WIDE DISPLAY TYPOGRAPHY & THEATRICAL CURTAIN STYLES
+   ============================================================================== */
+.font-display {
+  font-family: 'Syne', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: -0.025em;
+}
+
+/* Realistic Theatrical Velvet Curtain Pleats & Shading */
+.theatrical-curtain-fabric {
+  background: repeating-linear-gradient(
+    90deg,
+    #170629 0px,
+    #280845 12px,
+    #440f73 24px,
+    #641a9d 36px,
+    #8227c7 46px,
+    #9d40e0 54px,
+    #7b22be 62px,
+    #531385 72px,
+    #2d094d 84px,
+    #170629 96px
+  );
+  box-shadow: inset 0 0 70px rgba(0, 0, 0, 0.75), 0 25px 50px rgba(0, 0, 0, 0.6);
+}
+
+.theatrical-curtain-fabric-left {
+  border-right: 3px solid rgba(255, 255, 255, 0.15);
+}
+
+.theatrical-curtain-fabric-right {
+  border-left: 3px solid rgba(255, 255, 255, 0.15);
+}
+
+.curtain-rod-metallic {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #e2e8f0 18%,
+    #94a3b8 45%,
+    #475569 75%,
+    #0f172a 100%
+  );
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.curtain-rod-finial {
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, #cbd5e1 40%, #475569 85%, #0f172a 100%);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.curtain-ring {
+  background: radial-gradient(circle at 35% 35%, #ffffff 0%, #cbd5e1 45%, #475569 85%, #1e293b 100%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+

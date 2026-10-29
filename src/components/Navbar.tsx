@@ -111,7 +111,7 @@ export const Navbar: React.FC = () => {
               </motion.div>
               <div className="flex flex-col">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-bold text-slate-950 text-sm sm:text-base tracking-tight leading-none group-hover:text-blue-600 transition-colors">
+                  <span className="font-display font-black text-slate-950 text-sm sm:text-base tracking-tight uppercase leading-none group-hover:text-blue-600 transition-colors">
                     {PERSONAL_INFO.name}
                   </span>
                   <span className="hidden sm:inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
