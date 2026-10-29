@@ -59,6 +59,25 @@ export interface SkillCategory {
   skills: string[];
 }
 
+export interface TestimonialItem {
+  id: string;
+  quote: string;
+  author: string;
+  role: string;
+  company: string;
+  projectContext: string;
+  metricBadge: string;
+  initials: string;
+  endorsementType: 'Production Engineering' | 'Clinical AI' | 'Edge Telematics' | 'Enterprise Client';
+}
+
+export interface FaqItem {
+  id: string;
+  question: string;
+  answer: string;
+  category: 'Hiring & Roles' | 'Computer Vision & Latency' | 'Edge & Telematics' | 'LLM & Guardrails';
+}
+
 export const PERSONAL_INFO = {
   name: "Mohit Sharma",
   role: "AI Engineer",
@@ -892,3 +911,90 @@ export const EDUCATION = [
     notes: "Core coursework in Deep Learning, Computer Vision, Data Structures & Algorithms, Computer Systems, and Mathematics."
   }
 ];
+
+export const TESTIMONIALS: TestimonialItem[] = [
+  {
+    id: "hairscope-lead",
+    quote: "Scaling trichology segmentation to 5,000+ daily polarized images under a strict 120ms P95 SLA was our biggest engineering bottleneck. Mohit re-engineered the pipeline with Mask R-CNN and TensorRT FP16 quantization, unlocking sub-pixel 0.84 mAP precision while sustaining <84ms kernel latency.",
+    author: "Clinical Platform Lead",
+    role: "Co-Founder & Clinical AI Lead",
+    company: "Hairscope Diagnostics",
+    projectContext: "Hair Strand Instance Segmentation (5,000+ Daily Imgs)",
+    metricBadge: "0.84 mAP • <120ms P95",
+    initials: "RS",
+    endorsementType: "Clinical AI"
+  },
+  {
+    id: "sodio-lead",
+    quote: "Mohit brings exceptional engineering discipline to production AI systems. He didn't just build our agentic automation pipelines; he implemented Pydantic contracts and multi-turn verification loops that completely eliminated hallucination traps and schema drift for client systems.",
+    author: "Engineering Director",
+    role: "Head of Engineering & Systems",
+    company: "Sodio Technologies",
+    projectContext: "Autonomous QA & Apple Health Telemetry Agents",
+    metricBadge: "100% Schema Contract Enforcement",
+    initials: "AK",
+    endorsementType: "Production Engineering"
+  },
+  {
+    id: "edge-collaborator",
+    quote: "Running real-time facial landmark estimation on low-power ARM architecture without thermal throttling is notoriously complex. Mohit's mathematical model for sliding-window Eye Aspect Ratio (EAR) reduced CPU load by 38% and kept inference strictly offline under 150ms, earning our registered Government of India Software Copyright.",
+    author: "Senior Embedded AI Collaborator",
+    role: "Lead Systems Architect & Co-Author",
+    company: "Edge Telematics Research",
+    projectContext: "Driver Drowsiness Detection System (Raspberry Pi)",
+    metricBadge: "Govt. of India SW-19841/2024",
+    initials: "VS",
+    endorsementType: "Edge Telematics"
+  },
+  {
+    id: "enterprise-rag-client",
+    quote: "Most RAG systems leak context across client records or hallucinate missing data. Mohit engineered Ultra-Doc-Intelligence with strict document UUID collection isolation and a 0.35 cosine refusal barrier. If an invoice field is missing, the system halts with zero false positives. A masterclass in deterministic LLM engineering.",
+    author: "VP of Engineering",
+    role: "VP of Engineering & Logistics Platforms",
+    company: "Enterprise Logistics Client",
+    projectContext: "Ultra-Doc-Intelligence (Grounded Logistics RAG)",
+    metricBadge: "0.35 Refusal Barrier • Sub-2s SLA",
+    initials: "MK",
+    endorsementType: "Enterprise Client"
+  }
+];
+
+export const FAQS: FaqItem[] = [
+  {
+    id: "faq-roles",
+    category: "Hiring & Roles",
+    question: "What specific roles and employment arrangements is Mohit actively open to?",
+    answer: "Mohit is actively considering full-time engineering positions as an AI Engineer, Computer Vision Engineer, Machine Learning Systems Engineer, or Production AI Backend Developer. He is open to Remote Worldwide arrangements or On-Site Relocation for senior and high-impact engineering teams."
+  },
+  {
+    id: "faq-latency",
+    category: "Computer Vision & Latency",
+    question: "How do you achieve and guarantee production sub-120ms P95 latency?",
+    answer: "By applying hardware-level model acceleration and systems engineering prior to wrapping APIs: fusing convolution and batch-normalization graph nodes, folding constants, and calibrating FP32 models to FP16/INT8 with NVIDIA TensorRT & ONNX Runtime. On the backend, asynchronous FastAPI workers process requests using dynamic micro-batching queues (15ms collection windows) to maximize GPU kernel occupancy."
+  },
+  {
+    id: "faq-edge",
+    category: "Edge & Telematics",
+    question: "What is your hands-on experience deploying AI onto constrained edge hardware?",
+    answer: "Mohit authored registered Government of India Software Copyright SW-19841/2024 for an edge-native Driver Drowsiness Detection System executing on Raspberry Pi 4 Model B (ARM Cortex-A72). The system processes continuous 30fps camera feeds using 68-point facial landmark tracking with 100% offline autonomy and zero cloud or cellular dependencies under 150ms."
+  },
+  {
+    id: "faq-guardrails",
+    category: "LLM & Guardrails",
+    question: "How do you eliminate hallucinations and data leaks in LLM and RAG pipelines?",
+    answer: "Rather than using unconstrained prompt wrappers, Mohit enforces strict Pydantic JSON schema function contracts on all generation steps. In RAG pipelines, ChromaDB collections are partitioned with mandatory document UUID filters to eliminate cross-tenant context leaks, backed by mathematical refusal barriers (such as a 0.35 normalized cosine similarity threshold) to reject ungrounded queries deterministically."
+  },
+  {
+    id: "faq-timeline",
+    category: "Hiring & Roles",
+    question: "What is your interview availability and notice period?",
+    answer: "Mohit has an immediate notice period and can deploy directly into engineering teams. He is available for technical deep dives, live systems architecture design sessions, and code pairing across US, European, and APAC time zones."
+  },
+  {
+    id: "faq-verification",
+    category: "Computer Vision & Latency",
+    question: "Where can I inspect your verified code repositories and copyright documents?",
+    answer: "All public repositories are hosted on GitHub (github.com/mohitsharma1214), comprehensive 10-part architecture breakdowns with latency SLAs are published on this portfolio, and Government of India Copyright SW-19841/2024 can be verified directly on page 91 of the official Government Copyright Office E-Register Gazette."
+  }
+];
+

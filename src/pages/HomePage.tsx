@@ -26,6 +26,7 @@ import { ProjectCoverImage } from '../components/ProjectCoverImage';
 import { HeroAiVisual } from '../components/HeroAiVisual';
 import { AiPipelineVisual } from '../components/AiPipelineVisual';
 import { RecruiterSnapshotCard } from '../components/RecruiterSnapshotCard';
+import { TestimonialsSection } from '../components/TestimonialsSection';
 import { useResumeModal } from '../context/ResumeModalContext';
 
 interface HomePageProps {
@@ -647,6 +648,9 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
           </motion.div>
         </motion.section>
       )}
+
+      {/* Peer & Leadership Testimonials Section */}
+      <TestimonialsSection />
 
       {/* Bottom CTA to Contact */}
       <motion.section

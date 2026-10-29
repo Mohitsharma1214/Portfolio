@@ -21,6 +21,7 @@ import {
 import { LinkedinIcon, GithubIcon } from '../components/SocialIcons';
 import { PERSONAL_INFO } from '../data/portfolioData';
 import { useResumeModal } from '../context/ResumeModalContext';
+import { FaqSection } from '../components/FaqSection';
 
 export const ContactPage: React.FC = () => {
   const { openResumeModal, settings } = useResumeModal();
@@ -487,6 +488,9 @@ export const ContactPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Interactive FAQ Section */}
+      <FaqSection />
     </motion.div>
   );
 };
