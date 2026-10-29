@@ -199,8 +199,27 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
               </div>
             </div>
 
-            {/* Right Column: Interactive Explorer */}
-            <div className="lg:col-span-5">
+            {/* Right Column: Interactive Explorer with Computer Vision HUD Reticle */}
+            <div className="lg:col-span-5 relative group">
+              {/* Corner Cyber CV Reticles */}
+              <div className="absolute -top-2 -left-2 w-5 h-5 border-t-2 border-l-2 border-blue-500 rounded-tl pointer-events-none z-20" />
+              <div className="absolute -top-2 -right-2 w-5 h-5 border-t-2 border-r-2 border-blue-500 rounded-tr pointer-events-none z-20" />
+              <div className="absolute -bottom-2 -left-2 w-5 h-5 border-b-2 border-l-2 border-blue-500 rounded-bl pointer-events-none z-20" />
+              <div className="absolute -bottom-2 -right-2 w-5 h-5 border-b-2 border-r-2 border-blue-500 rounded-br pointer-events-none z-20" />
+
+              {/* Top CV Detector Badge */}
+              <div className="absolute -top-3.5 left-4 px-2.5 py-0.5 rounded-full bg-slate-950 border border-blue-500/50 text-[10px] font-mono text-cyan-300 shadow-md flex items-center gap-1.5 z-20">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping inline-block" />
+                <span className="tracking-wider">CV-NODE: ACTIVE &bull; 60 FPS</span>
+              </div>
+
+              {/* Scanning Laser Beam Effect */}
+              <motion.div
+                animate={{ top: ['2%', '96%', '2%'] }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+                className="absolute left-2 right-2 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_12px_#38bdf8] pointer-events-none z-20 opacity-75"
+              />
+
               <InteractivePipelineExplorer />
             </div>
           </div>
@@ -277,12 +296,22 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
       </section>
 
       {/* Engineering Methodology: How I Deliver Production AI */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-xs space-y-8">
+      <motion.section
+        initial={{ opacity: 0, y: 35 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+      >
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-xs space-y-8 relative overflow-hidden">
+          {/* Subtle Cyber Trace Lines */}
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500 via-indigo-500 to-emerald-500 opacity-80" />
+
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-100 pb-5">
             <div>
-              <div className="text-xs font-mono font-semibold uppercase tracking-wider text-blue-600">
-                End-to-End System Discipline
+              <div className="text-xs font-mono font-semibold uppercase tracking-wider text-blue-600 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping" />
+                <span>End-to-End System Discipline</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold text-slate-950 tracking-tight mt-1">
                 How I Architect Production AI Pipelines
@@ -293,15 +322,19 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
             <motion.div
-              whileHover={{ y: -3 }}
-              className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200 space-y-3"
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200 hover:border-blue-400 hover:bg-white hover:shadow-card transition-all space-y-3 relative group"
             >
-              <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm shadow-xs group-hover:scale-105 transition-transform">
                 01
               </div>
-              <h3 className="text-base font-bold text-slate-900">Profiling &amp; Model Optimization</h3>
+              <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Profiling &amp; Model Optimization</h3>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                 Before writing service wrappers, models undergo graph fusion, constant folding, and FP16/INT8 calibration via ONNX Runtime &amp; TensorRT to maximize GPU kernel efficiency.
               </p>
@@ -311,13 +344,17 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
             </motion.div>
 
             <motion.div
-              whileHover={{ y: -3 }}
-              className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200 space-y-3"
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200 hover:border-indigo-400 hover:bg-white hover:shadow-card transition-all space-y-3 relative group"
             >
-              <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm">
+              <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm shadow-xs group-hover:scale-105 transition-transform">
                 02
               </div>
-              <h3 className="text-base font-bold text-slate-900">Deterministic Guardrails &amp; SLAs</h3>
+              <h3 className="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">Deterministic Guardrails &amp; SLAs</h3>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                 LLMs and agentic pipelines are strictly bounded with Pydantic JSON schemas, sliding window thresholding, and cosine similarity refusal barriers to eliminate hallucinations.
               </p>
@@ -327,13 +364,17 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
             </motion.div>
 
             <motion.div
-              whileHover={{ y: -3 }}
-              className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200 space-y-3"
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className="p-5 rounded-2xl bg-slate-50/70 border border-slate-200 hover:border-emerald-400 hover:bg-white hover:shadow-card transition-all space-y-3 relative group"
             >
-              <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">
+              <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm shadow-xs group-hover:scale-105 transition-transform">
                 03
               </div>
-              <h3 className="text-base font-bold text-slate-900">Scalable Microservices &amp; Edge</h3>
+              <h3 className="text-base font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">Scalable Microservices &amp; Edge</h3>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                 Deploying asynchronous FastAPI workers with micro-batching queues on cloud infrastructure, alongside zero-cloud offline telematics optimized for constrained ARM edge hardware.
               </p>
@@ -343,16 +384,22 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
             </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Recruiter-Focused Interactive Engineering Journey Banner */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 text-white rounded-3xl p-6 sm:p-10 shadow-xl border border-blue-900/40 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+      <motion.section
+        initial={{ opacity: 0, y: 35, scale: 0.98 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+      >
+        <div className="bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 text-white rounded-3xl p-6 sm:p-10 shadow-xl border border-blue-900/40 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/15 rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="space-y-3 max-w-2xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-mono">
-                <Compass className="w-3.5 h-3.5 text-blue-400" />
+                <Compass className="w-3.5 h-3.5 text-blue-400 animate-spin [animation-duration:8s]" />
                 <span>Interactive Career Journey</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
@@ -372,7 +419,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
               <NavLink
                 to="/about#journey"
-                className="inline-flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-400 active:bg-blue-600 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl transition-all shadow-md shadow-blue-500/30"
+                className="inline-flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-400 active:bg-blue-600 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl transition-all shadow-md shadow-blue-500/30 hover:scale-105 active:scale-95"
               >
                 <Sparkles className="w-4 h-4" />
                 <span>Launch Interactive Journey</span>
@@ -381,14 +428,21 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Featured Projects Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <motion.section
+        initial={{ opacity: 0, y: 35 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.1 }}
+        transition={{ duration: 0.6 }}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8"
+      >
         <div className="flex items-center justify-between border-b border-slate-200 pb-4">
           <div>
-            <div className="text-xs font-mono font-semibold uppercase tracking-wider text-blue-600">
-              Flagship Work
+            <div className="text-xs font-mono font-semibold uppercase tracking-wider text-blue-600 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping" />
+              <span>Flagship Work</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-950 tracking-tight mt-1">
               Featured Case Studies
@@ -404,11 +458,15 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {featuredProjects.map((project) => (
+          {featuredProjects.map((project, idx) => (
             <motion.div
               key={project.id}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="modern-card rounded-2xl overflow-hidden flex flex-col justify-between bg-white border border-slate-200 shadow-xs hover:border-blue-300 hover:shadow-card transition-all"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{ duration: 0.5, delay: idx * 0.15 }}
+              whileHover={{ y: -6, transition: { duration: 0.2 } }}
+              className="modern-card rounded-2xl overflow-hidden flex flex-col justify-between bg-white border border-slate-200 shadow-xs hover:border-blue-400 hover:shadow-card transition-all"
             >
               <div className="p-4 sm:p-5 pb-0">
                 <ProjectCoverImage
@@ -491,14 +549,20 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
           </motion.div>
         ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* Latest Technical Blog Section */}
       {latestArticle && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.section
+          initial={{ opacity: 0, y: 35 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.6 }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        >
           <motion.div
-            whileHover={{ y: -2 }}
-            className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xs hover:border-slate-300 transition-all"
+            whileHover={{ y: -4 }}
+            className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xs hover:border-blue-400 hover:shadow-card transition-all relative overflow-hidden"
           >
             <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center flex-1">
               {latestArticle.coverImage && (
@@ -516,8 +580,9 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
               )}
               <div className="space-y-2 max-w-2xl">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-semibold uppercase tracking-wider text-blue-600">
-                    Featured Technical Blog
+                  <span className="text-xs font-mono font-semibold uppercase tracking-wider text-blue-600 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping" />
+                    <span>Featured Technical Blog</span>
                   </span>
                   <span className="text-slate-300">•</span>
                   <span className="text-xs font-mono text-slate-500">{latestArticle.readTime}</span>
@@ -554,14 +619,20 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
               </NavLink>
             </div>
           </motion.div>
-        </section>
+        </motion.section>
       )}
 
       {/* Bottom CTA to Contact */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section
+        initial={{ opacity: 0, y: 35, scale: 0.98 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.6 }}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+      >
         <motion.div
           whileHover={{ y: -2 }}
-          className="bg-gradient-to-br from-blue-50/80 via-indigo-50/50 to-slate-50 border border-blue-100 rounded-3xl p-8 sm:p-12 text-center space-y-4 shadow-xs"
+          className="bg-gradient-to-br from-blue-50/80 via-indigo-50/50 to-slate-50 border border-blue-100 rounded-3xl p-8 sm:p-12 text-center space-y-4 shadow-xs relative overflow-hidden"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100/70 border border-blue-200 text-xs font-mono font-medium text-blue-800">
             <Sparkles className="w-3.5 h-3.5 text-blue-600" />
@@ -589,7 +660,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
             </NavLink>
           </div>
         </motion.div>
-      </section>
+      </motion.section>
     </div>
   );
 };
