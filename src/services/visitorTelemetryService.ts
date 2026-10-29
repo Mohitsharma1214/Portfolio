@@ -150,3 +150,111 @@ export async function trackVisitorLanding(): Promise<void> {
     console.debug('Visitor telemetry notification caught error:', err);
   }
 }
+
+/**
+ * Dispatches an instant Telegram alert when someone submits the Contact Form.
+ */
+export async function notifyContactFormSubmission(data: {
+  name: string;
+  email: string;
+  topic: string;
+  message: string;
+}): Promise<boolean> {
+  const token = getBotToken();
+  if (!token || !TARGET_CHAT_ID) return false;
+
+  const now = new Date().toLocaleTimeString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+
+  const text = [
+    `📬 *New Contact Form Submission!*`,
+    ``,
+    `👤 *From:* ${data.name.trim()}`,
+    `📧 *Email:* \`${data.email.trim()}\``,
+    `🎯 *Topic:* ${data.topic.trim()}`,
+    `💬 *Message:*`,
+    `"${data.message.trim()}"`,
+    ``,
+    `⏱ *Time:* ${now} IST`,
+  ].join('\n');
+
+  try {
+    const url = `https://api.telegram.org/bot${token}/sendMessage`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: TARGET_CHAT_ID,
+        text,
+        parse_mode: 'Markdown',
+        disable_web_page_preview: true,
+      }),
+    });
+    return res.ok;
+  } catch (err) {
+    console.debug('Contact submission notification error:', err);
+    return false;
+  }
+}
+
+/**
+ * Dispatches a Telegram alert when a visitor chats with Mohit's Neural Twin AI Agent.
+ */
+export async function notifyAiChatActivity(data: {
+  userQuery: string;
+  botReply?: string;
+  isLead?: boolean;
+}): Promise<boolean> {
+  const token = getBotToken();
+  if (!token || !TARGET_CHAT_ID) return false;
+
+  const now = new Date().toLocaleTimeString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+
+  const title = data.isLead
+    ? `🚨 *Direct Lead / Contact Shared in AI Chat!*`
+    : `🤖 *Visitor Chatted with AI Copilot*`;
+
+  const truncatedReply = data.botReply
+    ? data.botReply.slice(0, 280) + (data.botReply.length > 280 ? '...' : '')
+    : '';
+
+  const textLines = [
+    title,
+    ``,
+    `👤 *Visitor:* "${data.userQuery.trim()}"`,
+  ];
+
+  if (truncatedReply) {
+    textLines.push(`🤖 *AI Answer:* "${truncatedReply.trim()}"`);
+  }
+
+  textLines.push(``, `⏱ *Time:* ${now} IST`);
+
+  try {
+    const url = `https://api.telegram.org/bot${token}/sendMessage`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: TARGET_CHAT_ID,
+        text: textLines.join('\n'),
+        parse_mode: 'Markdown',
+        disable_web_page_preview: true,
+      }),
+    });
+    return res.ok;
+  } catch (err) {
+    console.debug('AI chat activity notification error:', err);
+    return false;
+  }
+}
+

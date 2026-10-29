@@ -32,6 +32,13 @@ GUIDELINES:
 function getConversationalGroundedResponse(userQuery: string): string {
   const q = userQuery.toLowerCase().trim();
 
+  // Direct contact / message capture
+  if (/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(userQuery) || q.includes('leave a message') || q.includes('my email is')) {
+    return `Thank you! I have forwarded your note and contact details directly to **Mohit's personal Telegram**.
+
+Mohit has been notified and will review your inquiry promptly. You can also reach him directly at [${PERSONAL_INFO.email}](mailto:${PERSONAL_INFO.email}).`;
+  }
+
   // Natural greetings
   if (['hi', 'hello', 'hey', 'greetings', 'yo'].includes(q) || q.startsWith('hi ') || q.startsWith('hello ')) {
     return `Hello! I am **Mohit's Neural Twin**. 

@@ -22,6 +22,7 @@ import { LinkedinIcon, GithubIcon } from '../components/SocialIcons';
 import { PERSONAL_INFO } from '../data/portfolioData';
 import { useResumeModal } from '../context/ResumeModalContext';
 import { FaqSection } from '../components/FaqSection';
+import { notifyContactFormSubmission } from '../services/visitorTelemetryService';
 
 export const ContactPage: React.FC = () => {
   const { openResumeModal, settings } = useResumeModal();
@@ -62,6 +63,14 @@ export const ContactPage: React.FC = () => {
 
     setStatus('submitting');
     setErrorMessage('');
+
+    // Trigger instant Telegram notification to Mohit
+    notifyContactFormSubmission({
+      name: name.trim(),
+      email: email.trim(),
+      topic: selectedTopic,
+      message: message.trim(),
+    });
 
     try {
       const response = await fetch(`https://formsubmit.co/ajax/${PERSONAL_INFO.email}`, {

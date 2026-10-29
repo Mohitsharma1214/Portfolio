@@ -14,6 +14,7 @@ import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import type { ChatMessage } from '../services/aiChatService';
 import { sendChatMessage } from '../services/aiChatService';
+import { notifyAiChatActivity } from '../services/visitorTelemetryService';
 
 /**
  * High-performance, secure Markdown renderer for chat assistant bubbles.
@@ -106,6 +107,15 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
         source: response.source,
       };
       setMessages((prev) => [...prev, botMessage]);
+
+      // Instantly notify Mohit on Telegram regarding visitor query or contact lead
+      const hasEmail = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(text);
+      const isLead = hasEmail || /contact|hire|interview|reach out|email me|schedule|call|phone|leave a message/i.test(text);
+      notifyAiChatActivity({
+        userQuery: text.trim(),
+        botReply: response.text,
+        isLead,
+      });
     } catch (err) {
       console.error('Chat error:', err);
       const errorMessage: ChatMessage = {
@@ -147,6 +157,7 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
   };
 
   const promptSuggestions = [
+    'Leave a message for Mohit 📬',
     'Top Computer Vision Projects',
     'How does he achieve <120ms P95 latency?',
     'Govt. Copyright SW-19841/2024 Details',
