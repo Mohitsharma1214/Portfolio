@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Bot, 
@@ -10,8 +10,38 @@ import {
   Copy, 
   Check 
 } from 'lucide-react';
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 import type { ChatMessage } from '../services/aiChatService';
 import { sendChatMessage } from '../services/aiChatService';
+
+/**
+ * High-performance, secure Markdown renderer for chat assistant bubbles.
+ * Parses bold, italics, code blocks, lists, and links while sanitizing HTML.
+ */
+const ChatMarkdownMessage: React.FC<{ content: string }> = ({ content }) => {
+  const sanitizedHtml = useMemo(() => {
+    try {
+      const rawHtml = marked.parse(content, { 
+        gfm: true, 
+        breaks: true 
+      }) as string;
+
+      return DOMPurify.sanitize(rawHtml, {
+        ADD_ATTR: ['target', 'rel', 'class'],
+      });
+    } catch {
+      return content;
+    }
+  }, [content]);
+
+  return (
+    <div
+      className="chat-markdown text-slate-200 leading-relaxed text-xs"
+      dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+    />
+  );
+};
 
 export const MohitNeuralTwinChatbot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -241,7 +271,11 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
                         : 'bg-slate-900/90 border border-slate-800 text-slate-200 rounded-tl-xs shadow-lg leading-relaxed'
                     }`}
                   >
-                    <div className="whitespace-pre-wrap break-words">{msg.content}</div>
+                    {msg.role === 'user' ? (
+                      <div className="whitespace-pre-wrap break-words">{msg.content}</div>
+                    ) : (
+                      <ChatMarkdownMessage content={msg.content} />
+                    )}
 
                     {/* Copy Button for Assistant responses */}
                     {msg.role === 'assistant' && (
