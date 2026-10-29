@@ -1,64 +1,11 @@
 import { PERSONAL_INFO } from '../data/portfolioData';
 
-export type LlmProvider = 'groq' | 'gemini' | 'openrouter';
-
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: string;
   source?: 'llm' | 'grounded-rag';
-  providerName?: string;
-}
-
-export interface LlmConfig {
-  provider: LlmProvider;
-  apiKey: string;
-  model: string;
-}
-
-const STORAGE_KEY_API_KEY = 'mohit_llm_api_key';
-const STORAGE_KEY_PROVIDER = 'mohit_llm_provider';
-const STORAGE_KEY_MODEL = 'mohit_llm_model';
-
-export const DEFAULT_MODELS: Record<LlmProvider, string> = {
-  groq: 'llama-3.3-70b-versatile',
-  gemini: 'gemini-1.5-flash',
-  openrouter: 'meta-llama/llama-3.3-70b-instruct:free',
-};
-
-export const PROVIDER_LABELS: Record<LlmProvider, string> = {
-  groq: 'Groq (Llama 3.3 70B)',
-  gemini: 'Google Gemini Flash',
-  openrouter: 'OpenRouter Free',
-};
-
-export function getStoredLlmConfig(): LlmConfig {
-  const envGroqKey = import.meta.env.VITE_GROQ_API_KEY || '';
-  const envGeminiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
-  const envOpenRouterKey = import.meta.env.VITE_OPENROUTER_API_KEY || '';
-
-  const storedProvider = (localStorage.getItem(STORAGE_KEY_PROVIDER) as LlmProvider) || (envGroqKey ? 'groq' : envGeminiKey ? 'gemini' : envOpenRouterKey ? 'openrouter' : 'groq');
-  const storedKey = localStorage.getItem(STORAGE_KEY_API_KEY) || (storedProvider === 'groq' ? envGroqKey : storedProvider === 'gemini' ? envGeminiKey : envOpenRouterKey);
-  const storedModel = localStorage.getItem(STORAGE_KEY_MODEL) || DEFAULT_MODELS[storedProvider] || DEFAULT_MODELS.groq;
-
-  return {
-    provider: storedProvider,
-    apiKey: storedKey || '',
-    model: storedModel,
-  };
-}
-
-export function saveStoredLlmConfig(provider: LlmProvider, apiKey: string, model?: string): void {
-  localStorage.setItem(STORAGE_KEY_PROVIDER, provider);
-  localStorage.setItem(STORAGE_KEY_API_KEY, apiKey.trim());
-  localStorage.setItem(STORAGE_KEY_MODEL, model || DEFAULT_MODELS[provider]);
-}
-
-export function clearStoredLlmConfig(): void {
-  localStorage.removeItem(STORAGE_KEY_PROVIDER);
-  localStorage.removeItem(STORAGE_KEY_API_KEY);
-  localStorage.removeItem(STORAGE_KEY_MODEL);
 }
 
 export const SYSTEM_PROMPT = `You are "Mohit's Neural Twin", the official AI representative and interactive career co-pilot for Mohit Sharma, an elite AI Systems & Computer Vision Engineer.
@@ -78,9 +25,10 @@ KEY FACTS ABOUT MOHIT SHARMA:
 GUIDELINES:
 - Keep answers direct, technically articulate, and grounded.
 - When asked about metrics or SLAs, quote real figures (<120ms P95, 5,000+ daily images, 0.84 mAP, SW-19841/2024).
+- Greet visitors warmly and naturally when they say hi or hello.
 - Speak with technical authority, precision, and professionalism.`;
 
-// Conversational contextual knowledge engine
+// Conversational contextual knowledge fallback
 function getConversationalGroundedResponse(userQuery: string): string {
   const q = userQuery.toLowerCase().trim();
 
@@ -90,9 +38,7 @@ function getConversationalGroundedResponse(userQuery: string): string {
 
 I can answer any questions about Mohit Sharma's production systems, such as his **<120ms P95 latency pipeline**, his **Govt. Copyrighted edge drowsiness system (SW-19841/2024)**, or his current career availability.
 
-*(Tip: You can also connect your own free Groq or Gemini API key in ⚙️ Settings for live streaming LLM generations!)*
-
-What would you like to explore first?`;
+What technical topic would you like to explore?`;
   }
 
   if (q.includes('latency') || q.includes('120ms') || q.includes('fast') || q.includes('sla') || q.includes('throughput')) {
@@ -148,170 +94,64 @@ Mohit is an **AI Systems Specialist and Edge Hardware Architect** delivering low
 
 He scaled clinical inference to **5,000+ daily images at <120ms P95**, holds registered **Govt. Copyright SW-19841/2024**, and works with **PyTorch, TensorRT, CUDA, and FastAPI**.
 
-To enable unrestricted dynamic completions for any question, click **⚙️ Settings** at the top right to connect a free Groq or Gemini key! What specific technical topic would you like to explore?`;
+What specific technical area or project would you like to explore?`;
 }
 
 /**
- * Call Groq API (OpenAI-compatible format with native CORS)
+ * Call Groq API with automatic model failover (qwen/qwen3.8-27b -> openai/gpt-oss-120b)
  */
-async function callGroqApi(
+async function callGroqWithFailover(
   apiKey: string,
-  model: string,
   messages: Array<{ role: string; content: string }>
 ): Promise<string> {
-  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: model || 'llama-3.3-70b-versatile',
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        ...messages,
-      ],
-      temperature: 0.6,
-      max_tokens: 600,
-    }),
-  });
+  const models = ['qwen/qwen3.8-27b', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b'];
 
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Groq API error (${response.status}): ${errText}`);
-  }
+  for (const model of models) {
+    try {
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            ...messages,
+          ],
+          temperature: 0.6,
+          max_tokens: 650,
+        }),
+      });
 
-  const data = await response.json();
-  const text = data?.choices?.[0]?.message?.content;
-  if (!text) {
-    throw new Error('Groq returned empty text');
-  }
-  return text.trim();
-}
-
-/**
- * Call Google Gemini API (Native CORS)
- */
-async function callGeminiApi(
-  apiKey: string,
-  model: string,
-  messages: Array<{ role: string; content: string }>
-): Promise<string> {
-  const activeModel = model || 'gemini-1.5-flash';
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:generateContent?key=${apiKey}`;
-
-  // Convert chat messages to Gemini contents format
-  const contents = messages.map((m) => ({
-    role: m.role === 'assistant' ? 'model' : 'user',
-    parts: [{ text: m.content }],
-  }));
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      contents,
-      systemInstruction: {
-        parts: [{ text: SYSTEM_PROMPT }],
-      },
-      generationConfig: {
-        temperature: 0.6,
-        maxOutputTokens: 600,
-      },
-    }),
-  });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Gemini API error (${response.status}): ${errText}`);
-  }
-
-  const data = await response.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) {
-    throw new Error('Gemini returned empty text');
-  }
-  return text.trim();
-}
-
-/**
- * Call OpenRouter Free API (Native CORS)
- */
-async function callOpenRouterApi(
-  apiKey: string,
-  model: string,
-  messages: Array<{ role: string; content: string }>
-): Promise<string> {
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-      'HTTP-Referer': 'https://mohitsharma.is-a.dev',
-      'X-Title': "Mohit's Neural Twin",
-    },
-    body: JSON.stringify({
-      model: model || 'meta-llama/llama-3.3-70b-instruct:free',
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        ...messages,
-      ],
-      temperature: 0.6,
-      max_tokens: 600,
-    }),
-  });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`OpenRouter API error (${response.status}): ${errText}`);
-  }
-
-  const data = await response.json();
-  const text = data?.choices?.[0]?.message?.content;
-  if (!text) {
-    throw new Error('OpenRouter returned empty text');
-  }
-  return text.trim();
-}
-
-/**
- * Test API key connectivity
- */
-export async function testLlmConnection(
-  provider: LlmProvider,
-  apiKey: string,
-  model?: string
-): Promise<{ success: boolean; message: string }> {
-  try {
-    const testMessages = [{ role: 'user', content: 'Say "Connection verified" in 2 words.' }];
-    if (provider === 'groq') {
-      await callGroqApi(apiKey, model || DEFAULT_MODELS.groq, testMessages);
-    } else if (provider === 'gemini') {
-      await callGeminiApi(apiKey, model || DEFAULT_MODELS.gemini, testMessages);
-    } else if (provider === 'openrouter') {
-      await callOpenRouterApi(apiKey, model || DEFAULT_MODELS.openrouter, testMessages);
+      if (response.ok) {
+        const data = await response.json();
+        const text = data?.choices?.[0]?.message?.content;
+        if (text && text.trim().length > 0) {
+          return text.trim();
+        }
+      }
+    } catch (err) {
+      console.warn(`Groq model ${model} failed, trying next model:`, err);
     }
-    return { success: true, message: 'Connected successfully to ' + PROVIDER_LABELS[provider] };
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
-    return { success: false, message: msg };
   }
+
+  throw new Error('All Groq models failed to return content');
 }
 
 /**
- * Send a chat message: calls configured live LLM (Groq / Gemini / OpenRouter),
- * or falls back to conversational grounded knowledge if no key is set.
+ * Send a chat message: calls live Groq LLM API using Mohit's configured key,
+ * or falls back to conversational grounded knowledge if offline.
  */
 export async function sendChatMessage(
   history: ChatMessage[],
   newMessage: string
-): Promise<{ text: string; source: 'llm' | 'grounded-rag'; providerName?: string }> {
-  const config = getStoredLlmConfig();
+): Promise<{ text: string; source: 'llm' | 'grounded-rag' }> {
+  // Read Groq API Key from Vite environment
+  const groqApiKey = (import.meta.env.VITE_GROQ_API_KEY || '').trim();
 
-  // If user or environment has configured an API key, use live LLM
-  if (config.apiKey && config.apiKey.trim().length > 5) {
+  if (groqApiKey && groqApiKey.length > 5) {
     const recentMessages = history.slice(-6).map((m) => ({
       role: m.role,
       content: m.content,
@@ -319,28 +159,19 @@ export async function sendChatMessage(
     recentMessages.push({ role: 'user', content: newMessage });
 
     try {
-      let output = '';
-      if (config.provider === 'groq') {
-        output = await callGroqApi(config.apiKey, config.model, recentMessages);
-      } else if (config.provider === 'gemini') {
-        output = await callGeminiApi(config.apiKey, config.model, recentMessages);
-      } else if (config.provider === 'openrouter') {
-        output = await callOpenRouterApi(config.apiKey, config.model, recentMessages);
-      }
-
-      if (output && output.trim().length > 0) {
+      const output = await callGroqWithFailover(groqApiKey, recentMessages);
+      if (output && output.length > 0) {
         return {
-          text: output.trim(),
+          text: output,
           source: 'llm',
-          providerName: PROVIDER_LABELS[config.provider] || config.provider,
         };
       }
     } catch (err) {
-      console.warn('Live LLM call failed, falling back to grounded knowledge:', err);
+      console.warn('Groq live LLM invocation failed, activating grounded fallback:', err);
     }
   }
 
-  // Fallback: conversational grounded knowledge
-  const text = getConversationalGroundedResponse(newMessage);
-  return { text, source: 'grounded-rag' };
+  // Graceful conversational fallback
+  const fallbackText = getConversationalGroundedResponse(newMessage);
+  return { text: fallbackText, source: 'grounded-rag' };
 }

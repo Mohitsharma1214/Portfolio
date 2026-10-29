@@ -43,128 +43,44 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mohitsharma.is-a.dev/blogs/reliable-structured-output-generative-ai-llm-systems/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma.is-a.dev/blogs/real-time-object-tracking-edge-detection-association/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma.is-a.dev/blogs/self-supervised-learning-unlabeled-data-representations/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma.is-a.dev/blogs/cicd-machine-learning-model-registry-safe-deployment/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma.is-a.dev/blogs/testing-ai-agents-evaluation-harnesses-tool-mocks/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma.is-a.dev/blogs/reranking-hybrid-search-rag-pipelines/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma.is-a.dev/blogs/memory-efficient-deep-learning-mixed-precision-checkpointing/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma.is-a.dev/blogs/feature-stores-real-time-recommendation-systems/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma.is-a.dev/blogs/autoscaling-ml-inference-dynamic-batching/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma.is-a.dev/blogs/data-drift-model-monitoring-production-ml/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma.is-a.dev/blogs/scalable-recommendation-systems-embeddings-user-signals/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma.is-a.dev/blogs/optimizing-llm-inference-quantization-batching-kv-cache/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma.is-a.dev/blogs/rag-systems-vector-databases-embeddings/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
-    <loc>https://mohitsharma.is-a.dev/blogs/reliable-ai-agents-tool-calling-structured-outputs/</loc>
-    <lastmod>2026-10-29</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
     <loc>https://mohitsharma.is-a.dev/blogs/deploying-ml-models-fastapi-docker/</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://mohitsharma.is-a.dev/blogs/synthetic-data-computer-vision/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://mohitsharma.is-a.dev/blogs/real-time-video-analytics-computer-vision/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://mohitsharma.is-a.dev/blogs/yolo-model-evaluation-map-iou/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://mohitsharma.is-a.dev/blogs/image-segmentation-deep-learning-guide/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://mohitsharma.is-a.dev/blogs/production-ready-rag-llm-applications/</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://mohitsharma.is-a.dev/blogs/real-time-object-detection-yolo-production/</loc>
-    <lastmod>2026-10-25</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
