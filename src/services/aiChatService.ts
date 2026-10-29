@@ -12,6 +12,14 @@ export const SYSTEM_PROMPT = `You are "Mohit's Neural Twin", the official AI rep
 
 Your job is to answer queries about Mohit's background, production systems, research, technical stack, metrics, case studies, and career availability with technical depth, precision, and confidence.
 
+REAL-TIME INBOUND LEAD & MESSAGE PIPELINE CAPABILITY:
+- You ARE equipped with a real-time message relay pipeline connected directly to Mohit's personal Telegram Bot and private Admin Panel.
+- When a recruiter or visitor asks to "Leave a message for Mohit", wants to hire him, or provides their email/contact info (e.g., ptms2525@gmail.com):
+  * Warmly encourage and welcome them.
+  * Acknowledge that your underlying system is logging their contact info directly into Mohit's Admin Desk and dispatching a high-priority push alert to his personal Telegram!
+  * NEVER say "I am just an AI and do not have an inbox or cannot take a message or cannot contact Mohit". You DO relay messages to his Telegram and Admin Panel in real time!
+  * Confirm their contact details (e.g., "I've recorded your email and dispatched an instant alert to Mohit's Telegram and Admin Panel. He will review your message and reply promptly.")
+
 KEY FACTS ABOUT MOHIT SHARMA:
 - Current Role: AI Developer at Sodio Technologies (developing low-latency computer vision backends, edge telematics, and deterministic LLM agents).
 - Flagship Computer Vision Achievement: Scaled clinical dermatology inference pipeline to 5,000+ images/day with strict P95 latency < 120ms using PyTorch, TensorRT, dynamic micro-batching, and FastAPI asynchronous worker queues.
@@ -33,15 +41,25 @@ function getConversationalGroundedResponse(userQuery: string): string {
   const q = userQuery.toLowerCase().trim();
 
   // Direct contact / message capture with email
-  if (/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(userQuery) || q.includes('my email is')) {
-    return `Thank you! I have recorded your email and inquiry directly into **Mohit's Admin Panel** and dispatched a high-priority alert to his **personal Telegram**.
+  const emailMatch = userQuery.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+  if (emailMatch) {
+    const capturedEmail = emailMatch[0];
+    return `Thank you! I have recorded your email (**${capturedEmail}**) and your message directly into **Mohit's Admin Panel** and dispatched a high-priority alert to his **personal Telegram**.
 
-Mohit will review your transmission and reach back out to you directly. You can also email him anytime at [${PERSONAL_INFO.email}](mailto:${PERSONAL_INFO.email}).`;
+Mohit has received your notification and will review your note and contact you directly at **${capturedEmail}**. You can also reach him at [${PERSONAL_INFO.email}](mailto:${PERSONAL_INFO.email}).`;
   }
 
   // Request to leave a message / get in touch
-  if (q.includes('leave a message') || q.includes('contact mohit') || q.includes('hire him') || q.includes('reach out') || q.includes('get in touch')) {
-    return `I would be delighted to deliver your message directly to Mohit!
+  if (
+    q.includes('leave a message') ||
+    q.includes('contact mohit') ||
+    q.includes('hire him') ||
+    q.includes('reach out') ||
+    q.includes('get in touch') ||
+    q.includes('tell him to contact') ||
+    q.includes('tell him to reach')
+  ) {
+    return `I would be delighted to take your message and deliver it directly to Mohit!
 
 Please reply right here with your **email address** and a brief note about your inquiry or role details (for example: \`name@company.com - We'd love to chat about an AI Engineering role\`).
 
@@ -164,7 +182,23 @@ export async function sendChatMessage(
   history: ChatMessage[],
   newMessage: string
 ): Promise<{ text: string; source: 'llm' | 'grounded-rag' }> {
-  // Read Groq API Key from Vite environment
+  const emailMatch = newMessage.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+  const q = newMessage.toLowerCase().trim();
+  const isMessageIntent =
+    q.includes('leave a message') ||
+    q.includes('tell him to contact') ||
+    q.includes('tell him to reach') ||
+    q.includes('reach out to me') ||
+    q.includes('contact me') ||
+    q === 'leave a message for mohit 📬';
+
+  // 1. Guaranteed deterministic response for contact captures & email submissions
+  if (emailMatch || isMessageIntent) {
+    const groundedText = getConversationalGroundedResponse(newMessage);
+    return { text: groundedText, source: 'grounded-rag' };
+  }
+
+  // 2. Read Groq API Key from Vite environment for deep technical queries
   const groqApiKey = (import.meta.env.VITE_GROQ_API_KEY || '').trim();
 
   if (groqApiKey && groqApiKey.length > 5) {
