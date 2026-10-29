@@ -32,11 +32,20 @@ GUIDELINES:
 function getConversationalGroundedResponse(userQuery: string): string {
   const q = userQuery.toLowerCase().trim();
 
-  // Direct contact / message capture
-  if (/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(userQuery) || q.includes('leave a message') || q.includes('my email is')) {
-    return `Thank you! I have forwarded your note and contact details directly to **Mohit's personal Telegram**.
+  // Direct contact / message capture with email
+  if (/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(userQuery) || q.includes('my email is')) {
+    return `Thank you! I have recorded your email and inquiry directly into **Mohit's Admin Panel** and dispatched a high-priority alert to his **personal Telegram**.
 
-Mohit has been notified and will review your inquiry promptly. You can also reach him directly at [${PERSONAL_INFO.email}](mailto:${PERSONAL_INFO.email}).`;
+Mohit will review your transmission and reach back out to you directly. You can also email him anytime at [${PERSONAL_INFO.email}](mailto:${PERSONAL_INFO.email}).`;
+  }
+
+  // Request to leave a message / get in touch
+  if (q.includes('leave a message') || q.includes('contact mohit') || q.includes('hire him') || q.includes('reach out') || q.includes('get in touch')) {
+    return `I would be delighted to deliver your message directly to Mohit!
+
+Please reply right here with your **email address** and a brief note about your inquiry or role details (for example: \`name@company.com - We'd love to chat about an AI Engineering role\`).
+
+My Neural Twin will instantly forward your note to **Mohit's Admin Desk** and alert him on Telegram!`;
   }
 
   // Natural greetings

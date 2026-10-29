@@ -40,6 +40,8 @@ import { CategoryService } from '../services/categoryService';
 import { MarkdownRenderer } from '../components/MarkdownRenderer';
 import { ProjectAdminManager } from '../components/admin/ProjectAdminManager';
 import { ProfileAdminManager } from '../components/admin/ProfileAdminManager';
+import { InquiriesAdminManager } from '../components/admin/InquiriesAdminManager';
+import { InquiryService } from '../services/inquiryService';
 
 // STRICT SECURITY PROTOCOLS
 const AUTHORIZED_ADMIN_EMAIL = 'mohitxsharma09@gmail.com';
@@ -48,8 +50,22 @@ const MASTER_PIN = import.meta.env.VITE_ADMIN_MASTER_PIN || '984124';
 const AdminPageInner: React.FC = () => {
   const { user, loading: authLoading, signIn, signOut } = useAuth();
 
-  // Studio Section: 'blogs', 'projects', or 'profile'
-  const [studioSection, setStudioSection] = useState<'blogs' | 'projects' | 'profile'>('blogs');
+  // Studio Section: 'blogs', 'projects', 'profile', or 'inquiries'
+  const [studioSection, setStudioSection] = useState<'blogs' | 'projects' | 'profile' | 'inquiries'>('blogs');
+  const [unreadInquiriesCount, setUnreadInquiriesCount] = useState(0);
+
+  const loadUnreadCount = useCallback(async () => {
+    try {
+      const count = await InquiryService.getUnreadCount();
+      setUnreadInquiriesCount(count);
+    } catch (e) {
+      console.warn('Failed to load unread inquiries count:', e);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadUnreadCount();
+  }, [loadUnreadCount, studioSection]);
 
   // Auth Form State (Sign-In Only - Public Registration Disabled)
   const [email, setEmail] = useState('');
@@ -815,8 +831,8 @@ const AdminPageInner: React.FC = () => {
         </div>
       </header>
 
-      {/* Primary Section Switcher: Technical Blogs vs Projects & Case Studies */}
-      <div className="flex items-center gap-1.5 p-1.5 bg-white rounded-2xl border border-slate-200 shadow-xs w-fit">
+      {/* Primary Section Switcher: Technical Blogs vs Projects vs Profile vs Inquiries */}
+      <div className="flex items-center gap-1.5 p-1.5 bg-white rounded-2xl border border-slate-200 shadow-xs w-fit flex-wrap">
         <button
           type="button"
           onClick={() => setStudioSection('blogs')}
@@ -855,10 +871,30 @@ const AdminPageInner: React.FC = () => {
           <UserIcon className="w-4 h-4" />
           <span>Resume &amp; Hiring Profile</span>
         </button>
+
+        <button
+          type="button"
+          onClick={() => setStudioSection('inquiries')}
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer relative ${
+            studioSection === 'inquiries'
+              ? 'bg-blue-600 text-white shadow-xs'
+              : 'text-slate-600 hover:text-slate-950 hover:bg-slate-50'
+          }`}
+        >
+          <Mail className="w-4 h-4" />
+          <span>Inquiries &amp; Leads</span>
+          {unreadInquiriesCount > 0 && (
+            <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-rose-500 text-white animate-pulse">
+              {unreadInquiriesCount}
+            </span>
+          )}
+        </button>
       </div>
 
-      {/* Section Content: Profile Manager OR Projects Manager OR Blogs Manager */}
-      {studioSection === 'profile' ? (
+      {/* Section Content: Inquiries OR Profile Manager OR Projects Manager OR Blogs Manager */}
+      {studioSection === 'inquiries' ? (
+        <InquiriesAdminManager />
+      ) : studioSection === 'profile' ? (
         <ProfileAdminManager />
       ) : studioSection === 'projects' ? (
         <ProjectAdminManager />

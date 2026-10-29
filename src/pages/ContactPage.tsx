@@ -23,6 +23,7 @@ import { PERSONAL_INFO } from '../data/portfolioData';
 import { useResumeModal } from '../context/ResumeModalContext';
 import { FaqSection } from '../components/FaqSection';
 import { notifyContactFormSubmission } from '../services/visitorTelemetryService';
+import { InquiryService } from '../services/inquiryService';
 
 export const ContactPage: React.FC = () => {
   const { openResumeModal, settings } = useResumeModal();
@@ -74,7 +75,16 @@ export const ContactPage: React.FC = () => {
     // 1. Primary High-Reliability Dispatch: Direct to Mohit's Telegram Bot
     const telegramDelivered = await notifyContactFormSubmission(submissionPayload);
 
-    // 2. Secondary Email Backup Dispatch: Fire in background (absorbs third-party downtime)
+    // 2. Aggregate into Admin Panel Inquiries Table (Local + Supabase)
+    InquiryService.submitInquiry({
+      name: submissionPayload.name,
+      email: submissionPayload.email,
+      topic: submissionPayload.topic,
+      message: submissionPayload.message,
+      source: 'contact_form',
+    }).catch((e) => console.warn('Notice saving contact form inquiry to admin:', e));
+
+    // 3. Secondary Email Backup Dispatch: Fire in background (absorbs third-party downtime)
     fetch(`https://formsubmit.co/ajax/${PERSONAL_INFO.email}`, {
       method: 'POST',
       headers: {

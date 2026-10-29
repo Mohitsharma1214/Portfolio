@@ -15,6 +15,7 @@ import DOMPurify from 'dompurify';
 import type { ChatMessage } from '../services/aiChatService';
 import { sendChatMessage } from '../services/aiChatService';
 import { notifyAiChatActivity } from '../services/visitorTelemetryService';
+import { InquiryService } from '../services/inquiryService';
 
 /**
  * High-performance, secure Markdown renderer for chat assistant bubbles.
@@ -109,13 +110,30 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
       setMessages((prev) => [...prev, botMessage]);
 
       // Instantly notify Mohit on Telegram regarding visitor query or contact lead
-      const hasEmail = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(text);
+      const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+      const hasEmail = Boolean(emailMatch);
       const isLead = hasEmail || /contact|hire|interview|reach out|email me|schedule|call|phone|leave a message/i.test(text);
+
       notifyAiChatActivity({
         userQuery: text.trim(),
         botReply: response.text,
         isLead,
       });
+
+      // If visitor provided an email address, automatically route to the Admin Panel Table
+      if (hasEmail && emailMatch) {
+        InquiryService.submitInquiry({
+          name: 'AI Copilot Visitor',
+          email: emailMatch[0],
+          topic: 'AI Agent Inbound Lead',
+          message: text.trim(),
+          source: 'ai_agent',
+          metadata: {
+            botReply: response.text,
+            capturedAt: new Date().toISOString(),
+          },
+        }).catch((e) => console.warn('Notice saving AI lead to admin inquiries:', e));
+      }
     } catch (err) {
       console.error('Chat error:', err);
       const errorMessage: ChatMessage = {
