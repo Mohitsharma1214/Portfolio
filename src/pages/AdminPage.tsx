@@ -832,11 +832,11 @@ const AdminPageInner: React.FC = () => {
       </header>
 
       {/* Primary Section Switcher: Technical Blogs vs Projects vs Profile vs Inquiries */}
-      <div className="flex items-center gap-1.5 p-1.5 bg-white rounded-2xl border border-slate-200 shadow-xs w-fit flex-wrap">
+      <div className="flex items-center gap-1.5 p-1.5 bg-white rounded-2xl border border-slate-200 shadow-xs w-full sm:w-fit overflow-x-auto no-scrollbar">
         <button
           type="button"
           onClick={() => setStudioSection('blogs')}
-          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
             studioSection === 'blogs'
               ? 'bg-blue-600 text-white shadow-xs'
               : 'text-slate-600 hover:text-slate-950 hover:bg-slate-50'
@@ -849,7 +849,7 @@ const AdminPageInner: React.FC = () => {
         <button
           type="button"
           onClick={() => setStudioSection('projects')}
-          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
             studioSection === 'projects'
               ? 'bg-blue-600 text-white shadow-xs'
               : 'text-slate-600 hover:text-slate-950 hover:bg-slate-50'
@@ -862,7 +862,7 @@ const AdminPageInner: React.FC = () => {
         <button
           type="button"
           onClick={() => setStudioSection('profile')}
-          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
             studioSection === 'profile'
               ? 'bg-blue-600 text-white shadow-xs'
               : 'text-slate-600 hover:text-slate-950 hover:bg-slate-50'
@@ -875,7 +875,7 @@ const AdminPageInner: React.FC = () => {
         <button
           type="button"
           onClick={() => setStudioSection('inquiries')}
-          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer relative ${
+          className={`inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer relative whitespace-nowrap shrink-0 ${
             studioSection === 'inquiries'
               ? 'bg-blue-600 text-white shadow-xs'
               : 'text-slate-600 hover:text-slate-950 hover:bg-slate-50'

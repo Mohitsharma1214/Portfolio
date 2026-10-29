@@ -6,7 +6,6 @@ import {
   Send, 
   Sparkles, 
   Trash2, 
-  Minus, 
   Copy, 
   Check,
   ChevronLeft,
@@ -215,7 +214,7 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
   return (
     <aside aria-label="AI Chat Assistant">
       {/* Floating Launcher Button */}
-      <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2">
+      <div className={`fixed bottom-4 sm:bottom-5 right-4 sm:right-5 z-50 items-center gap-2 ${isOpen ? 'hidden sm:flex' : 'flex'}`}>
         {/* Animated hint callout */}
         <AnimatePresence>
           {showPromptHint && !isOpen && (
@@ -237,7 +236,9 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(!isOpen)}
           className="relative group p-3 sm:px-4 sm:py-3 rounded-full bg-slate-950 text-white border border-blue-500/50 shadow-[0_0_25px_rgba(37,99,235,0.45)] hover:shadow-[0_0_35px_rgba(37,99,235,0.7)] hover:border-cyan-400 transition-all flex items-center gap-2.5 cursor-pointer ring-1 ring-white/20"
-          title="Open Mohit's Neural Twin AI Chatbot"
+          title={isOpen ? "Close Mohit's Neural Twin" : "Open Mohit's Neural Twin AI Chatbot"}
+          aria-expanded={isOpen}
+          aria-label="Toggle AI Chat Assistant"
         >
           {/* Glowing pulse rings */}
           <span className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 blur-sm opacity-40 group-hover:opacity-80 transition-opacity -z-10" />
@@ -263,32 +264,32 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            initial={{ opacity: 0, y: 24, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed bottom-20 left-3 right-3 sm:left-auto sm:right-6 z-50 w-auto sm:w-[420px] h-[580px] max-h-[82dvh] rounded-3xl bg-[#030712]/95 backdrop-blur-2xl border border-blue-500/30 shadow-[0_20px_60px_rgba(0,0,0,0.8)] ring-1 ring-white/10 flex flex-col overflow-hidden text-white"
+            transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-x-2.5 bottom-2 sm:inset-x-auto sm:bottom-20 sm:right-6 z-50 w-auto sm:w-[420px] max-w-[calc(100vw-20px)] sm:max-w-none h-[calc(100dvh-16px)] sm:h-[580px] max-h-[92dvh] sm:max-h-[84dvh] rounded-2xl sm:rounded-3xl bg-[#030712]/95 backdrop-blur-2xl border border-blue-500/30 shadow-[0_20px_60px_rgba(0,0,0,0.8)] ring-1 ring-white/10 flex flex-col overflow-hidden text-white"
           >
             {/* Header */}
-            <div className="p-4 sm:p-5 border-b border-slate-800/80 bg-slate-900/60 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-500 flex items-center justify-center text-white font-bold text-xs shadow-md shrink-0 ring-1 ring-white/20">
+            <div className="p-3.5 sm:p-5 border-b border-slate-800/80 bg-slate-900/60 flex items-center justify-between gap-2 shrink-0">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-500 flex items-center justify-center text-white font-bold text-xs shadow-md shrink-0 ring-1 ring-white/20">
                   MS
                 </div>
-                <div>
-                  <h3 className="font-display font-black text-sm uppercase tracking-wide text-white flex items-center gap-1.5 leading-tight">
-                    <span>Mohit's Neural Twin</span>
-                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                <div className="min-w-0">
+                  <h3 className="font-display font-black text-xs sm:text-sm uppercase tracking-wide text-white flex items-center gap-1.5 leading-tight truncate">
+                    <span className="truncate">Mohit's Neural Twin</span>
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
                   </h3>
-                  <div className="text-[10px] font-mono text-slate-400 flex items-center gap-1.5 mt-0.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    <span>AI Copilot &bull; Production Knowledge</span>
+                  <div className="text-[9px] sm:text-[10px] font-mono text-slate-400 flex items-center gap-1.5 mt-0.5 truncate">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                    <span className="truncate">AI Copilot &bull; Production Knowledge</span>
                   </div>
                 </div>
               </div>
 
               {/* Header Action Buttons */}
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 shrink-0">
                 <button
                   type="button"
                   onClick={clearChat}
@@ -303,13 +304,13 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
                   title="Close chat"
                   className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
                 >
-                  <Minus className="w-4 h-4" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
             {/* Messages Scroll Area */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 text-xs font-sans">
+            <div className="flex-1 overflow-y-auto p-3.5 sm:p-5 space-y-3.5 sm:space-y-4 text-xs font-sans">
               {messages.map((msg) => (
                 <div
                   key={msg.id}
@@ -324,7 +325,7 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
 
                   {/* Message Bubble */}
                   <div
-                    className={`max-w-[88%] p-3.5 rounded-2xl relative group ${
+                    className={`max-w-[92%] sm:max-w-[85%] p-3 sm:p-3.5 rounded-2xl relative group ${
                       msg.role === 'user'
                         ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-tr-xs shadow-md'
                         : 'bg-slate-900/90 border border-slate-800 text-slate-200 rounded-tl-xs shadow-lg leading-relaxed'
@@ -373,7 +374,7 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
             </div>
 
             {/* Fast Suggested Queries Strip with Horizontal Scroll & Quick Navigation */}
-            <div className="relative border-t border-slate-800/80 bg-slate-950/90 px-1 py-2 group">
+            <div className="relative border-t border-slate-800/80 bg-slate-950/90 px-1 py-1.5 group shrink-0">
               {/* Left Scroll Button */}
               {canScrollLeft && (
                 <button
@@ -392,7 +393,15 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
                 ref={suggestionsRef}
                 onWheel={handleSuggestionsWheel}
                 onScroll={checkScrollability}
-                className="overflow-x-auto scroll-smooth flex items-center gap-1.5 px-3 py-1 touch-pan-x chat-suggestions-container no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar]:w-0 [&::-webkit-scrollbar]:h-0"
+                className={`overflow-x-auto scroll-smooth flex items-center gap-1.5 py-1 touch-pan-x chat-suggestions-container no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar]:w-0 [&::-webkit-scrollbar]:h-0 transition-all ${
+                  canScrollLeft && canScrollRight
+                    ? 'px-7 sm:px-8'
+                    : canScrollLeft
+                    ? 'pl-7 pr-3 sm:pl-8 sm:pr-4'
+                    : canScrollRight
+                    ? 'pl-3 pr-7 sm:pl-4 sm:pr-8'
+                    : 'px-3 sm:px-4'
+                }`}
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
                 {promptSuggestions.map((prompt, idx) => (
@@ -422,7 +431,7 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
             </div>
 
             {/* Input Bar */}
-            <div className="p-3.5 border-t border-slate-800/90 bg-slate-900/90 flex items-center gap-2">
+            <div className="p-2.5 sm:p-3.5 pb-[calc(0.625rem+env(safe-area-inset-bottom,0px))] sm:pb-3.5 border-t border-slate-800/90 bg-slate-900/90 flex items-center gap-2 shrink-0">
               <input
                 ref={inputRef}
                 type="text"
@@ -431,13 +440,13 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
                 onKeyDown={handleKeyDown}
                 placeholder="Ask about Mohit's systems, code, or metrics..."
                 disabled={isTyping}
-                className="flex-1 bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none transition-colors"
+                className="flex-1 bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-xl px-3 py-2 sm:px-3.5 sm:py-2.5 text-base sm:text-xs text-white placeholder-slate-500 focus:outline-none transition-colors min-w-0"
               />
               <button
                 type="button"
                 onClick={() => handleSend()}
                 disabled={!inputValue.trim() || isTyping}
-                className="p-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white disabled:opacity-40 hover:from-blue-500 hover:to-indigo-500 active:scale-95 transition-all shadow-md shrink-0 cursor-pointer"
+                className="p-2.5 sm:p-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white disabled:opacity-40 hover:from-blue-500 hover:to-indigo-500 active:scale-95 transition-all shadow-md shrink-0 cursor-pointer"
                 title="Send message"
               >
                 <Send className="w-4 h-4" />

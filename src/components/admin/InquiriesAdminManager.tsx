@@ -385,24 +385,115 @@ ON public.inquiries FOR SELECT TO anon USING (true);`;
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="bg-slate-50/80 border-b border-slate-200 font-mono text-[11px] text-slate-500 uppercase">
-                  <th className="py-3.5 px-4 font-semibold">Status</th>
-                  <th className="py-3.5 px-4 font-semibold">Sender / Contact</th>
-                  <th className="py-3.5 px-4 font-semibold">Source</th>
-                  <th className="py-3.5 px-4 font-semibold">Topic &amp; Message Preview</th>
-                  <th className="py-3.5 px-4 font-semibold">Time</th>
-                  <th className="py-3.5 px-4 font-semibold text-right">Direct Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filteredInquiries.map((item) => {
-                  const isUnread = item.status === 'unread';
-                  const isReplied = item.status === 'replied';
+          <div>
+            {/* Mobile Cards List (< md screens) */}
+            <div className="md:hidden divide-y divide-slate-100">
+              {filteredInquiries.map((item) => {
+                const isUnread = item.status === 'unread';
+                const isReplied = item.status === 'replied';
 
-                  return (
+                return (
+                  <div
+                    key={item.id}
+                    onClick={() => setActiveInquiry(item)}
+                    className={`p-4 space-y-3 cursor-pointer transition-colors active:bg-slate-50 ${
+                      isUnread ? 'bg-blue-50/25' : ''
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                            isUnread
+                              ? 'bg-rose-100 text-rose-700 border border-rose-200'
+                              : isReplied
+                              ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+                              : 'bg-slate-100 text-slate-600 border border-slate-200'
+                          }`}
+                        >
+                          {item.status}
+                        </span>
+                        {item.source === 'ai_agent' ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-semibold">
+                            <Bot className="w-3 h-3 text-purple-600" />
+                            AI Copilot
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-semibold">
+                            <Send className="w-3 h-3 text-blue-600" />
+                            Form
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-1 text-slate-400 font-mono text-[11px]">
+                        <Clock className="w-3 h-3" />
+                        <span>{formatDate(item.created_at)}</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <div className="font-bold text-slate-900 text-sm flex items-center justify-between">
+                        <span>{item.name || 'Anonymous Visitor'}</span>
+                        <a
+                          href={`mailto:${item.email}?subject=Re: ${encodeURIComponent(
+                            item.topic || 'Your inquiry on Mohit Sharma Portfolio'
+                          )}&body=Hi ${encodeURIComponent(
+                            item.name || 'there'
+                          )},\n\nThank you for reaching out via my portfolio.\n\nBest regards,\nMohit Sharma\nAI Systems & Computer Vision Engineer`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleStatusChange(item.id, 'replied');
+                          }}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-600 text-white font-semibold text-xs shadow-2xs"
+                        >
+                          <Mail className="w-3 h-3" />
+                          <span>Reply</span>
+                        </a>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-blue-600 font-mono text-xs">
+                        <span>{item.email}</span>
+                        <button
+                          type="button"
+                          onClick={(e) => handleCopyEmail(item.email, item.id, e)}
+                          className="p-1 rounded text-slate-400 hover:text-slate-700"
+                        >
+                          {copiedEmailId === item.id ? (
+                            <Check className="w-3 h-3 text-emerald-600" />
+                          ) : (
+                            <Copy className="w-3 h-3" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+
+                    <p className="text-slate-600 text-xs line-clamp-2 leading-relaxed bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                      {item.message}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop Table View (>= md screens) */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="bg-slate-50/80 border-b border-slate-200 font-mono text-[11px] text-slate-500 uppercase">
+                    <th className="py-3.5 px-4 font-semibold">Status</th>
+                    <th className="py-3.5 px-4 font-semibold">Sender / Contact</th>
+                    <th className="py-3.5 px-4 font-semibold">Source</th>
+                    <th className="py-3.5 px-4 font-semibold">Topic &amp; Message Preview</th>
+                    <th className="py-3.5 px-4 font-semibold">Time</th>
+                    <th className="py-3.5 px-4 font-semibold text-right">Direct Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredInquiries.map((item) => {
+                    const isUnread = item.status === 'unread';
+                    const isReplied = item.status === 'replied';
+
+                    return (
                     <tr
                       key={item.id}
                       onClick={() => setActiveInquiry(item)}
@@ -543,18 +634,19 @@ ON public.inquiries FOR SELECT TO anon USING (true);`;
               </tbody>
             </table>
           </div>
-        )}
-      </div>
+        </div>
+      )}
+    </div>
 
       {/* Detail Modal */}
       <AnimatePresence>
         {activeInquiry && (
-          <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="bg-white border border-slate-200 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 space-y-6"
+              className="bg-white border border-slate-200 rounded-2xl sm:rounded-3xl w-full max-w-2xl max-h-[92vh] overflow-y-auto shadow-2xl p-4 sm:p-7 md:p-8 space-y-5 sm:space-y-6"
             >
               {/* Modal Header */}
               <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-4">
@@ -677,21 +769,21 @@ ON public.inquiries FOR SELECT TO anon USING (true);`;
               )}
 
               {/* Modal Actions */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-100">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => handleDelete(activeInquiry.id)}
-                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors"
+                  className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors order-2 sm:order-1"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   <span>Delete Inquiry</span>
                 </button>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-full sm:w-auto order-1 sm:order-2">
                   <button
                     type="button"
                     onClick={() => setActiveInquiry(null)}
-                    className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+                    className="px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors flex-1 sm:flex-initial"
                   >
                     Close
                   </button>
@@ -703,11 +795,11 @@ ON public.inquiries FOR SELECT TO anon USING (true);`;
                       activeInquiry.name || 'there'
                     )},\n\nThank you for reaching out via my portfolio.\n\nBest regards,\nMohit Sharma\nAI Systems & Computer Vision Engineer`}
                     onClick={() => handleStatusChange(activeInquiry.id, 'replied')}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-colors"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-colors flex-1 sm:flex-initial"
                   >
                     <Mail className="w-4 h-4" />
-                    <span>Send Email Reply</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Send Reply</span>
+                    <ExternalLink className="w-3 h-3 opacity-80" />
                   </a>
                 </div>
               </div>
