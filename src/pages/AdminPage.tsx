@@ -498,6 +498,24 @@ const AdminPageInner: React.FC = () => {
     return Array.from(set);
   }, [articles]);
 
+  const availableFormCategories = useMemo(() => {
+    const set = new Set<string>();
+    existingCategories.forEach((c) => set.add(c));
+    if (category && category !== '__custom__') set.add(category);
+    [
+      'Computer Vision & Edge AI',
+      'Generative AI & LLM Engineering',
+      'LLM Systems & Information Retrieval',
+      'Agentic AI & Test Automation',
+      'Machine Learning & Deep Learning',
+      'MLOps & High-Throughput Inference',
+      'MLOps & AI Deployment',
+      'Production Platforms & RecSys',
+      'ML Hardware & Optimization',
+    ].forEach((c) => set.add(c));
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [existingCategories, category]);
+
   const isSlugExisting = useMemo(() => {
     if (!slug.trim()) return false;
     return articles.some((a) => a.id.toLowerCase() === slug.trim().toLowerCase());
@@ -1185,18 +1203,20 @@ const AdminPageInner: React.FC = () => {
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-slate-700">Category</label>
                 <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
+                  value={availableFormCategories.includes(category) ? category : '__custom__'}
+                  onChange={(e) => {
+                    if (e.target.value === '__custom__') {
+                      setCategory('__custom__');
+                      setCustomCategory('');
+                    } else {
+                      setCategory(e.target.value);
+                    }
+                  }}
                   className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-800"
                 >
-                  <option value="Computer Vision & Edge AI">Computer Vision & Edge AI</option>
-                  <option value="MLOps & High-Throughput Inference">MLOps & High-Throughput Inference</option>
-                  <option value="LLM Systems & Information Retrieval">LLM Systems & Information Retrieval</option>
-                  <option value="Deep Learning & Instance Segmentation">Deep Learning & Instance Segmentation</option>
-                  <option value="Agentic AI & Test Automation">Agentic AI & Test Automation</option>
-                  <option value="Production Platforms & RecSys">Production Platforms & RecSys</option>
-                  <option value="ML Hardware & Optimization">ML Hardware & Optimization</option>
-                  <option value="Data Engineering & Clinical AI">Data Engineering & Clinical AI</option>
+                  {availableFormCategories.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
                   <option value="__custom__">+ Enter Custom Category...</option>
                 </select>
                 {category === '__custom__' && (
