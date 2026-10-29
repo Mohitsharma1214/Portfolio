@@ -23,6 +23,8 @@ import { ProjectService, sortProjectsByRank } from '../services/projectService';
 import { BlogService } from '../services/blogService';
 import type { BlogMetadata } from '../services/blogService';
 import { ProjectCoverImage } from '../components/ProjectCoverImage';
+import { HeroAiVisual } from '../components/HeroAiVisual';
+import { AiPipelineVisual } from '../components/AiPipelineVisual';
 import { RecruiterSnapshotCard } from '../components/RecruiterSnapshotCard';
 import { useResumeModal } from '../context/ResumeModalContext';
 
@@ -55,6 +57,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
   const [allProjects, setAllProjects] = useState<ProjectCaseStudy[]>(() => sortProjectsByRank(PROJECTS));
   const [latestArticle, setLatestArticle] = useState<BlogMetadata | null>(() => (TECHNICAL_ARTICLES[0] as unknown as BlogMetadata) || null);
   const [blogCount, setBlogCount] = useState<number>(8);
+  const [heroTab, setHeroTab] = useState<'neural' | 'explorer'>('neural');
 
   useEffect(() => {
     ProjectService.getAllProjects().then((res) => {
@@ -199,28 +202,47 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
               </div>
             </div>
 
-            {/* Right Column: Interactive Explorer with Computer Vision HUD Reticle */}
-            <div className="lg:col-span-5 relative group">
+            {/* Right Column: Hero Animated AI Visual & Interactive Testbed */}
+            <div className="lg:col-span-5 relative group space-y-2">
               {/* Corner Cyber CV Reticles */}
               <div className="absolute -top-2 -left-2 w-5 h-5 border-t-2 border-l-2 border-blue-500 rounded-tl pointer-events-none z-20" />
               <div className="absolute -top-2 -right-2 w-5 h-5 border-t-2 border-r-2 border-blue-500 rounded-tr pointer-events-none z-20" />
               <div className="absolute -bottom-2 -left-2 w-5 h-5 border-b-2 border-l-2 border-blue-500 rounded-bl pointer-events-none z-20" />
               <div className="absolute -bottom-2 -right-2 w-5 h-5 border-b-2 border-r-2 border-blue-500 rounded-br pointer-events-none z-20" />
 
-              {/* Top CV Detector Badge */}
-              <div className="absolute -top-3.5 left-4 px-2.5 py-0.5 rounded-full bg-slate-950 border border-blue-500/50 text-[10px] font-mono text-cyan-300 shadow-md flex items-center gap-1.5 z-20">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping inline-block" />
-                <span className="tracking-wider">CV-NODE: ACTIVE &bull; 60 FPS</span>
+              {/* View Switcher Pill Bar */}
+              <div className="flex items-center justify-between bg-slate-900/90 text-white px-3 py-1.5 rounded-xl border border-slate-800 shadow-xs text-xs font-mono relative z-20">
+                <span className="text-[10px] text-cyan-300 font-bold tracking-wider flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+                  <span>AI ARCHITECTURE VIEW</span>
+                </span>
+                <div className="flex items-center gap-1 bg-black/40 p-0.5 rounded-lg border border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => setHeroTab('neural')}
+                    className={`px-2.5 py-1 rounded-md text-[10px] font-semibold transition-all ${
+                      heroTab === 'neural'
+                        ? 'bg-blue-600 text-white shadow-xs'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    🧠 Neural Graph
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setHeroTab('explorer')}
+                    className={`px-2.5 py-1 rounded-md text-[10px] font-semibold transition-all ${
+                      heroTab === 'explorer'
+                        ? 'bg-blue-600 text-white shadow-xs'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    ⚙️ Live Testbed
+                  </button>
+                </div>
               </div>
 
-              {/* Scanning Laser Beam Effect */}
-              <motion.div
-                animate={{ top: ['2%', '96%', '2%'] }}
-                transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute left-2 right-2 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_12px_#38bdf8] pointer-events-none z-20 opacity-75"
-              />
-
-              <InteractivePipelineExplorer />
+              {heroTab === 'neural' ? <HeroAiVisual /> : <InteractivePipelineExplorer />}
             </div>
           </div>
         </div>
@@ -338,6 +360,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                 Before writing service wrappers, models undergo graph fusion, constant folding, and FP16/INT8 calibration via ONNX Runtime &amp; TensorRT to maximize GPU kernel efficiency.
               </p>
+              <AiPipelineVisual type="optimization" className="mt-2" />
               <div className="text-[11px] font-mono text-blue-700 font-medium pt-1">
                 Outcome: ~20% GPU training boost &bull; 84ms inference
               </div>
@@ -358,6 +381,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                 LLMs and agentic pipelines are strictly bounded with Pydantic JSON schemas, sliding window thresholding, and cosine similarity refusal barriers to eliminate hallucinations.
               </p>
+              <AiPipelineVisual type="guardrails" className="mt-2" />
               <div className="text-[11px] font-mono text-indigo-700 font-medium pt-1">
                 Outcome: 100% schema enforcement &bull; Zero prompt leak
               </div>
@@ -378,6 +402,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                 Deploying asynchronous FastAPI workers with micro-batching queues on cloud infrastructure, alongside zero-cloud offline telematics optimized for constrained ARM edge hardware.
               </p>
+              <AiPipelineVisual type="microservices" className="mt-2" />
               <div className="text-[11px] font-mono text-emerald-700 font-medium pt-1">
                 Outcome: 5,000+ images/day &bull; Govt Copyright SW-19841/2024
               </div>
@@ -470,6 +495,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
             >
               <div className="p-4 sm:p-5 pb-0">
                 <ProjectCoverImage
+                  projectId={project.id}
                   coverImage={project.coverImage}
                   title={project.title}
                   category={project.category}

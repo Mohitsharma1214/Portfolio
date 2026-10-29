@@ -143,6 +143,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) =
               {/* Project Screenshot or High-Tech Placeholder */}
               <div className="p-4 sm:p-5 pb-0">
                 <ProjectCoverImage
+                  projectId={project.id}
                   coverImage={project.coverImage}
                   title={project.title}
                   category={project.category}

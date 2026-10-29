@@ -25,7 +25,6 @@ import { ResumeModalProvider, useResumeModal } from './context/ResumeModalContex
 import { ResumeModal } from './components/ResumeModal';
 import { BrandFaviconLoader } from './components/BrandFaviconLoader';
 import { NeuralNetworkCanvas } from './components/NeuralNetworkCanvas';
-import { AiDevTelemetryHUD } from './components/AiDevTelemetryHUD';
 import { MohitNeuralTwinChatbot } from './components/MohitNeuralTwinChatbot';
 
 // Minimal non-intrusive loading fallback for asynchronously loaded routes
@@ -108,7 +107,6 @@ function AppContent() {
     <div className="min-h-screen flex flex-col bg-[#f8fafc] text-slate-900 selection:bg-blue-100 selection:text-blue-900 font-sans relative overflow-x-hidden modern-grid">
       {!isAdminRoute && <BrandFaviconLoader />}
       {!isAdminRoute && <NeuralNetworkCanvas />}
-      {!isAdminRoute && <AiDevTelemetryHUD />}
       {!isAdminRoute && <MohitNeuralTwinChatbot />}
       {/* Subtle modern light-theme watercolor ambient glows */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">

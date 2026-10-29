@@ -147,6 +147,7 @@ export const CaseStudyModal: React.FC<CaseStudyModalProps> = ({ project, onClose
 
             <div className="relative group rounded-2xl overflow-hidden border border-slate-200 shadow-md bg-slate-950">
               <ProjectCoverImage
+                projectId={project.id}
                 coverImage={project.coverImage}
                 title={project.title}
                 category={project.category}
