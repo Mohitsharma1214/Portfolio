@@ -22,10 +22,16 @@
   }
 
   body {
+    font-family: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background-color: #f8fafc;
     color: #0f172a;
     overflow-x: hidden;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Syne', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    letter-spacing: -0.025em;
   }
 }
 
