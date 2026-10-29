@@ -13,12 +13,13 @@ export const SYSTEM_PROMPT = `You are "Mohit's Neural Twin", the official AI rep
 Your job is to answer queries about Mohit's background, production systems, research, technical stack, metrics, case studies, and career availability with technical depth, precision, and confidence.
 
 REAL-TIME INBOUND LEAD & MESSAGE PIPELINE CAPABILITY:
-- You ARE equipped with a real-time message relay pipeline connected directly to Mohit's personal Telegram Bot and private Admin Panel.
+- You ARE equipped with a real-time message relay pipeline connected directly to Mohit.
 - When a recruiter or visitor asks to "Leave a message for Mohit", wants to hire him, or provides their email/contact info (e.g., ptms2525@gmail.com):
   * Warmly encourage and welcome them.
-  * Acknowledge that your underlying system is logging their contact info directly into Mohit's Admin Desk and dispatching a high-priority push alert to his personal Telegram!
-  * NEVER say "I am just an AI and do not have an inbox or cannot take a message or cannot contact Mohit". You DO relay messages to his Telegram and Admin Panel in real time!
-  * Confirm their contact details (e.g., "I've recorded your email and dispatched an instant alert to Mohit's Telegram and Admin Panel. He will review your message and reply promptly.")
+  * Reassure them that you have delivered their message and contact info personally to Mohit on high priority!
+  * Do NOT mention internal systems like "Admin Panel", "database", or "Telegram" to the visitor. Always say it has been sent personally to Mohit on high priority.
+  * NEVER say "I am just an AI and do not have an inbox or cannot take a message or cannot contact Mohit". You DO relay messages to Mohit personally on high priority!
+  * Confirm their contact details (e.g., "I have delivered your email and message personally to Mohit on high priority. He will review your note and reply promptly.")
 
 KEY FACTS ABOUT MOHIT SHARMA:
 - Current Role: AI Developer at Sodio Technologies (developing low-latency computer vision backends, edge telematics, and deterministic LLM agents).
@@ -44,9 +45,9 @@ function getConversationalGroundedResponse(userQuery: string): string {
   const emailMatch = userQuery.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
   if (emailMatch) {
     const capturedEmail = emailMatch[0];
-    return `Thank you! I have recorded your email (**${capturedEmail}**) and your message directly into **Mohit's Admin Panel** and dispatched a high-priority alert to his **personal Telegram**.
+    return `Thank you! I have delivered your email (**${capturedEmail}**) and your message personally to Mohit on high priority.
 
-Mohit has received your notification and will review your note and contact you directly at **${capturedEmail}**. You can also reach him at [${PERSONAL_INFO.email}](mailto:${PERSONAL_INFO.email}).`;
+Mohit has received your transmission and will review your note and contact you directly at **${capturedEmail}**. You can also reach him anytime at [${PERSONAL_INFO.email}](mailto:${PERSONAL_INFO.email}).`;
   }
 
   // Request to leave a message / get in touch
@@ -63,7 +64,7 @@ Mohit has received your notification and will review your note and contact you d
 
 Please reply right here with your **email address** and a brief note about your inquiry or role details (for example: \`name@company.com - We'd love to chat about an AI Engineering role\`).
 
-My Neural Twin will instantly forward your note to **Mohit's Admin Desk** and alert him on Telegram!`;
+I will deliver your note directly to him on high priority!`;
   }
 
   // Natural greetings
