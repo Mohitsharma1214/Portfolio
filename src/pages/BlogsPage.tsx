@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { BlogService } from '../services/blogService';
 import type { BlogMetadata } from '../services/blogService';
+import { HorizontalScrollContainer } from '../components/HorizontalScrollContainer';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -138,29 +139,38 @@ export const BlogsPage: React.FC = () => {
         </div>
 
         {/* Filter & Search Bar */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center pt-2 border-t border-slate-200">
-          {/* Category Pills */}
-          <div className="w-full sm:w-auto overflow-x-auto no-scrollbar pb-1 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
-            <div className="flex items-center gap-1.5 w-max">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => handleCategoryChange(cat)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all ${
-                    selectedCategory === cat
-                      ? 'bg-blue-600 text-white font-semibold shadow-xs'
-                      : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
+        <div className="flex flex-col lg:flex-row gap-4 justify-between items-stretch lg:items-center pt-3 border-t border-slate-200">
+          {/* Category Pills with Desktop Wheel, Chevrons & Drag */}
+          <div className="flex-1 min-w-0">
+            <HorizontalScrollContainer>
+              <div className="flex items-center gap-1.5 w-max py-0.5 px-0.5">
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={(e) => {
+                      handleCategoryChange(cat);
+                      e.currentTarget.scrollIntoView({
+                        behavior: 'smooth',
+                        inline: 'center',
+                        block: 'nearest',
+                      });
+                    }}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all shrink-0 ${
+                      selectedCategory === cat
+                        ? 'bg-blue-600 text-white font-semibold shadow-xs ring-2 ring-blue-600/20'
+                        : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-950 border border-slate-200'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </HorizontalScrollContainer>
           </div>
 
           {/* Search Box */}
-          <div className="relative min-w-[240px] sm:w-72">
+          <div className="relative w-full sm:w-72 shrink-0">
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"

@@ -230,7 +230,7 @@ export const InteractiveJourneyRoadmap: React.FC<InteractiveJourneyRoadmapProps>
 
         {/* Filter Pills (Roadmap Mode Only) */}
         {!is60sMode && (
-          <div className="mt-5 pt-4 border-t border-slate-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+          <div className="mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center gap-1.5">
             {[
               { id: 'all', label: 'All Milestones' },
               { id: 'vision-edge', label: 'Computer Vision & Edge' },
@@ -345,8 +345,19 @@ export const InteractiveJourneyRoadmap: React.FC<InteractiveJourneyRoadmapProps>
       ) : (
         /* Roadmap Mode: Stepper + Details inside single container */
         <div>
-          {/* Milestone Stepper Track (No Ellipsis, Clean Spacing) */}
-          <div className="px-6 py-6 sm:px-8 sm:py-8 border-b border-slate-100 bg-slate-50/40 overflow-x-auto no-scrollbar">
+          {/* Milestone Stepper Track (No Ellipsis, Clean Spacing, Desktop Wheel Scroll) */}
+          <div 
+            onWheel={(e) => {
+              if (e.deltaY !== 0 && !e.shiftKey) {
+                const el = e.currentTarget;
+                const maxScroll = el.scrollWidth - el.clientWidth;
+                if (maxScroll > 2) {
+                  el.scrollLeft += e.deltaY;
+                }
+              }
+            }}
+            className="px-6 py-6 sm:px-8 sm:py-8 border-b border-slate-100 bg-slate-50/40 overflow-x-auto no-scrollbar scroll-smooth"
+          >
             <div className="min-w-[680px] sm:min-w-0">
               <div className="relative flex items-start justify-between">
                 {/* Connecting Line Track */}

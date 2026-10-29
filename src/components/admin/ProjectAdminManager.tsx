@@ -671,7 +671,7 @@ export const ProjectAdminManager: React.FC = () => {
 
             <div className="flex flex-wrap items-center justify-between sm:justify-end gap-3">
               {/* Category Pills */}
-              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 sm:pb-0">
+              <div className="flex flex-wrap items-center gap-1.5">
                 {categories.map((cat) => (
                   <button
                     key={cat}

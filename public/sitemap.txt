@@ -5,6 +5,11 @@ https://mohitsharma.is-a.dev/experience/
 https://mohitsharma.is-a.dev/skills/
 https://mohitsharma.is-a.dev/blogs/
 https://mohitsharma.is-a.dev/contact/
+https://mohitsharma.is-a.dev/blogs/data-drift-model-monitoring-production-ml/
+https://mohitsharma.is-a.dev/blogs/scalable-recommendation-systems-embeddings-user-signals/
+https://mohitsharma.is-a.dev/blogs/optimizing-llm-inference-quantization-batching-kv-cache/
+https://mohitsharma.is-a.dev/blogs/rag-systems-vector-databases-embeddings/
+https://mohitsharma.is-a.dev/blogs/reliable-ai-agents-tool-calling-structured-outputs/
 https://mohitsharma.is-a.dev/blogs/deploying-ml-models-fastapi-docker/
 https://mohitsharma.is-a.dev/blogs/synthetic-data-computer-vision/
 https://mohitsharma.is-a.dev/blogs/real-time-video-analytics-computer-vision/

@@ -6,6 +6,7 @@ import { PROJECTS } from '../data/portfolioData';
 import type { ProjectCaseStudy } from '../data/portfolioData';
 import { ProjectService, sortProjectsByRank } from '../services/projectService';
 import { ProjectCoverImage } from '../components/ProjectCoverImage';
+import { HorizontalScrollContainer } from '../components/HorizontalScrollContainer';
 
 interface ProjectsPageProps {
   onSelectProject: (project: ProjectCaseStudy) => void;
@@ -52,37 +53,46 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onSelectProject }) =
             </p>
           </div>
 
-          {/* Filter Tabs with animated sliding pill */}
-          <div className="w-full md:w-auto overflow-x-auto no-scrollbar pb-1 -mx-4 px-4 sm:mx-0 sm:px-0">
-            <div className="flex items-center gap-1 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 w-max md:w-auto shadow-xs">
-              {categories.map((cat) => {
-                const isActive = activeCategory === cat;
-                return (
-                  <button
-                    key={cat}
-                    onClick={() => setActiveCategory(cat)}
-                    className="relative px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-colors z-10"
-                  >
-                    {isActive && (
-                      <motion.div
-                        layoutId="projectFilterPill"
-                        className="absolute inset-0 bg-white rounded-xl shadow-xs border border-slate-200 -z-10"
-                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                      />
-                    )}
-                    <span
-                      className={
-                        isActive
-                          ? 'text-blue-600 font-bold'
-                          : 'text-slate-600 hover:text-slate-950'
-                      }
+          {/* Filter Tabs with animated sliding pill & desktop wheel scrolling */}
+          <div className="w-full md:w-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+            <HorizontalScrollContainer>
+              <div className="flex items-center gap-1 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 w-max md:w-auto shadow-xs">
+                {categories.map((cat) => {
+                  const isActive = activeCategory === cat;
+                  return (
+                    <button
+                      key={cat}
+                      onClick={(e) => {
+                        setActiveCategory(cat);
+                        e.currentTarget.scrollIntoView({
+                          behavior: 'smooth',
+                          inline: 'center',
+                          block: 'nearest',
+                        });
+                      }}
+                      className="relative px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-colors z-10"
                     >
-                      {cat}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+                      {isActive && (
+                        <motion.div
+                          layoutId="projectFilterPill"
+                          className="absolute inset-0 bg-white rounded-xl shadow-xs border border-slate-200 -z-10"
+                          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                        />
+                      )}
+                      <span
+                        className={
+                          isActive
+                            ? 'text-blue-600 font-bold'
+                            : 'text-slate-600 hover:text-slate-950'
+                        }
+                      >
+                        {cat}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </HorizontalScrollContainer>
           </div>
         </div>
 

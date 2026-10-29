@@ -43,6 +43,36 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://mohitsharma.is-a.dev/blogs/data-drift-model-monitoring-production-ml/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://mohitsharma.is-a.dev/blogs/scalable-recommendation-systems-embeddings-user-signals/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://mohitsharma.is-a.dev/blogs/optimizing-llm-inference-quantization-batching-kv-cache/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://mohitsharma.is-a.dev/blogs/rag-systems-vector-databases-embeddings/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://mohitsharma.is-a.dev/blogs/reliable-ai-agents-tool-calling-structured-outputs/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://mohitsharma.is-a.dev/blogs/deploying-ml-models-fastapi-docker/</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
