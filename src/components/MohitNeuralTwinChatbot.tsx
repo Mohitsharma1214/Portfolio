@@ -387,12 +387,13 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
                 </button>
               )}
 
-              {/* Scrollable Chips Container with Mousewheel & Touch Pan */}
+              {/* Scrollable Chips Container with Mousewheel & Touch Pan (Zero visible scrollbar) */}
               <div
                 ref={suggestionsRef}
                 onWheel={handleSuggestionsWheel}
                 onScroll={checkScrollability}
-                className="overflow-x-auto scroll-smooth flex items-center gap-1.5 px-3 py-0.5 touch-pan-x [scrollbar-width:thin] scrollbar-thin scrollbar-thumb-slate-800 hover:scrollbar-thumb-slate-700 scrollbar-track-transparent"
+                className="overflow-x-auto scroll-smooth flex items-center gap-1.5 px-3 py-1 touch-pan-x chat-suggestions-container no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar]:w-0 [&::-webkit-scrollbar]:h-0"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
                 {promptSuggestions.map((prompt, idx) => (
                   <button
