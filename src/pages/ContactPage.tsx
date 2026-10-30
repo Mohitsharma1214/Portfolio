@@ -84,24 +84,39 @@ export const ContactPage: React.FC = () => {
       source: 'contact_form',
     }).catch((e) => console.warn('Notice saving contact form inquiry to admin:', e));
 
-    // 3. Secondary Email Backup Dispatch: Fire in background (absorbs third-party downtime)
-    fetch(`https://formsubmit.co/ajax/${PERSONAL_INFO.email}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({
-        ...submissionPayload,
-        subject: `[Portfolio Inquiry] ${selectedTopic} — from ${name.trim()}`,
-        _captcha: 'false',
-        _template: 'table',
-      }),
-    }).catch(() => {
-      // Ignored if formsubmit.co is down
-    });
+    // 3. Email Dispatch via Web3Forms (Cloudflare Edge 99.99% Uptime)
+    const web3formsAccessKey =
+      import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || 'f3866959-f408-42fa-9896-4a28c392bfcd';
 
-    if (telegramDelivered) {
+    let emailDelivered = false;
+    try {
+      const emailRes = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: web3formsAccessKey,
+          name: submissionPayload.name,
+          email: submissionPayload.email,
+          subject: `[Portfolio Inquiry] ${selectedTopic} — from ${name.trim()}`,
+          topic: submissionPayload.topic,
+          message: submissionPayload.message,
+          from_name: `${name.trim()} (Portfolio)`,
+        }),
+      });
+
+      const emailData = await emailRes.json().catch(() => null);
+      if (emailRes.ok && emailData?.success) {
+        emailDelivered = true;
+      }
+    } catch (e) {
+      console.warn('Web3Forms dispatch notice (handled gracefully):', e);
+    }
+
+    // Success if either Telegram or Web3Forms succeeded
+    if (telegramDelivered || emailDelivered) {
       setStatus('success');
       setName('');
       setEmail('');
