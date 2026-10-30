@@ -49,7 +49,7 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({ onSelectProject 
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-mono font-semibold text-blue-700">
               <span>Career Trajectory &bull; Production Impact &bull; Verified Tenures</span>
             </div>
-            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-black text-slate-950 uppercase tracking-tight">
+            <h1 className="font-display text-2xl xs:text-3xl sm:text-5xl md:text-6xl font-black text-slate-950 uppercase tracking-tight break-words">
               Work Experience
             </h1>
             <p className="text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed">

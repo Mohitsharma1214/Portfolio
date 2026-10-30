@@ -115,7 +115,7 @@ export const BlogsPage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2">
           <div className="space-y-3">
-            <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black text-slate-950 uppercase tracking-tight">
+            <h1 className="font-display text-2xl xs:text-3xl sm:text-5xl md:text-6xl font-black text-slate-950 uppercase tracking-tight break-words">
               Technical Blogs &amp; Systems Notes
             </h1>
             <p className="text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed">

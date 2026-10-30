@@ -153,7 +153,7 @@ export const BlogPostPage: React.FC = () => {
           )}
         </div>
 
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-950 tracking-tight leading-tight">
+        <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-950 tracking-tight leading-tight break-words">
           {blog.title}
         </h1>
 

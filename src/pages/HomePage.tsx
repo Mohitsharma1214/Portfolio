@@ -109,7 +109,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
                 <span className="text-xs font-mono font-medium text-slate-800">
                   AI Developer @ Sodio Technologies
                 </span>
-                <span className="text-slate-300">|</span>
+                <span className="text-slate-300 hidden sm:inline">|</span>
                 <span className="text-xs text-slate-500 font-mono hidden sm:inline">
                   Open to AI Roles
                 </span>
@@ -117,10 +117,10 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
 
               {/* Headline */}
               <div>
-                <h1 className="font-display text-[1.9rem] leading-[1.14] sm:text-4xl md:text-5xl lg:text-[3.15rem] font-black text-slate-950 tracking-tight sm:leading-[1.08] uppercase">
+                <h1 className="font-display text-[1.35rem] min-[360px]:text-[1.55rem] min-[400px]:text-[1.75rem] sm:text-4xl md:text-5xl lg:text-[3.15rem] leading-[1.14] sm:leading-[1.08] font-black text-slate-950 tracking-tight uppercase break-words">
                   Engineering real-time <span className="text-gradient-accent">computer vision</span> &amp; production AI systems.
                 </h1>
-                <p className="mt-5 text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl">
+                <p className="mt-4 sm:mt-5 text-sm sm:text-lg text-slate-600 leading-relaxed max-w-2xl">
                   Hi, I'm <strong className="text-slate-950 font-semibold">{PERSONAL_INFO.name}</strong>. I design low-latency computer vision backends and deterministic LLM pipelines. Scaled clinical dermatology inference to <strong className="text-slate-950 font-semibold">5,000+ images/day (&lt;120ms)</strong> and authored Government of India Copyright <strong className="font-mono text-slate-900 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">{PERSONAL_INFO.copyrightId}</strong> for edge driver monitoring on Raspberry Pi.
                 </p>
               </div>

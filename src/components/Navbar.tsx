@@ -112,12 +112,12 @@ export const Navbar: React.FC = () => {
               </motion.div>
               <div className="flex flex-col min-w-0">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-display font-black text-slate-950 text-sm sm:text-base tracking-tight uppercase leading-none group-hover:text-blue-600 transition-colors truncate">
+                  <span className="font-display font-black text-slate-950 text-xs xs:text-sm sm:text-base tracking-tight uppercase leading-none group-hover:text-blue-600 transition-colors whitespace-nowrap">
                     {PERSONAL_INFO.name}
                   </span>
                   <span className="hidden sm:inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
                 </div>
-                <span className="text-[10px] sm:text-[11px] font-mono text-slate-500 mt-0.5 leading-none font-medium truncate">
+                <span className="text-[10px] sm:text-[11px] font-mono text-slate-500 mt-0.5 leading-none font-medium whitespace-nowrap">
                   AI Systems Engineer
                 </span>
               </div>
@@ -184,7 +184,7 @@ export const Navbar: React.FC = () => {
               <button
                 type="button"
                 onClick={openResumeModal}
-                className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 px-2.5 py-1.5 rounded-xl border border-slate-200/90 transition-colors shadow-2xs cursor-pointer"
+                className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 px-2.5 py-1.5 rounded-xl border border-slate-200/90 transition-colors shadow-2xs cursor-pointer"
                 title="View Resume PDF"
               >
                 <FileText className="w-3.5 h-3.5 text-blue-600" />

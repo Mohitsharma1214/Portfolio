@@ -127,7 +127,7 @@ export const ContactPage: React.FC = () => {
           <Sparkles className="w-3.5 h-3.5 text-blue-600" />
           <span>Immediate Candidate &bull; Engineering Discussions</span>
         </div>
-        <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-black text-slate-950 uppercase tracking-tight">
+        <h1 className="font-display text-2xl xs:text-3xl sm:text-5xl md:text-6xl font-black text-slate-950 uppercase tracking-tight break-words">
           Let's Discuss AI Engineering
         </h1>
         <p className="text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed">
