@@ -40,16 +40,25 @@ export const Navbar: React.FC = () => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
-  // Lock background scroll when mobile menu is open
+  // Lock background scroll when mobile menu is open (cross-browser iOS & Android scroll lock)
   useEffect(() => {
     if (mobileMenuOpen) {
+      const scrollY = window.scrollY;
+      document.documentElement.style.overflow = 'hidden';
       document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+
+      return () => {
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        window.scrollTo(0, scrollY);
+      };
     }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
   }, [mobileMenuOpen]);
 
   // Close on Escape key
@@ -223,14 +232,15 @@ export const Navbar: React.FC = () => {
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
-            {/* Backdrop Blur Overlay */}
+            {/* Backdrop Blur Overlay with touch lock */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
               onClick={() => setMobileMenuOpen(false)}
-              className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs z-40 md:hidden"
+              onTouchMove={(e) => e.preventDefault()}
+              className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs z-40 md:hidden touch-none"
               aria-hidden="true"
             />
 
@@ -240,7 +250,7 @@ export const Navbar: React.FC = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -16, scale: 0.98 }}
               transition={{ type: 'spring', damping: 28, stiffness: 340 }}
-              className="fixed top-16 sm:top-20 left-0 right-0 max-h-[calc(100dvh-4.5rem)] sm:max-h-[calc(100dvh-5.5rem)] overflow-y-auto bg-white/98 backdrop-blur-2xl border-b border-slate-200/90 shadow-2xl z-50 md:hidden px-4 pt-3 pb-8 rounded-b-3xl space-y-4"
+              className="fixed top-16 sm:top-20 left-0 right-0 max-h-[calc(100dvh-4.5rem)] sm:max-h-[calc(100dvh-5.5rem)] overflow-y-auto overscroll-contain bg-white/98 backdrop-blur-2xl border-b border-slate-200/90 shadow-2xl z-50 md:hidden px-4 pt-3 pb-8 rounded-b-3xl space-y-4"
             >
               {/* Quick Status Bar */}
               <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/70 text-xs font-mono">
