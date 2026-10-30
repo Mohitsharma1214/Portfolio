@@ -126,7 +126,7 @@ export const Navbar: React.FC = () => {
                   </span>
                   <span className="hidden sm:inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
                 </div>
-                <span className="text-[10px] sm:text-[11px] font-mono text-slate-500 mt-0.5 leading-none font-medium whitespace-nowrap">
+                <span className="text-[11px] sm:text-xs font-mono text-slate-600 mt-0.5 leading-none font-semibold whitespace-nowrap">
                   AI Systems Engineer
                 </span>
               </div>
@@ -253,21 +253,21 @@ export const Navbar: React.FC = () => {
               className="fixed top-16 sm:top-20 left-0 right-0 max-h-[calc(100dvh-4.5rem)] sm:max-h-[calc(100dvh-5.5rem)] overflow-y-auto overscroll-contain bg-white/98 backdrop-blur-2xl border-b border-slate-200/90 shadow-2xl z-50 md:hidden px-4 pt-3 pb-8 rounded-b-3xl space-y-4"
             >
               {/* Quick Status Bar */}
-              <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/70 text-xs font-mono">
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/90 text-xs font-mono">
                 <div className="flex items-center gap-2">
-                  <span className="relative flex h-2 w-2">
+                  <span className="relative flex h-2.5 w-2.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                   </span>
-                  <span className="text-slate-800 font-semibold">Active AI Candidate</span>
+                  <span className="text-slate-900 font-bold">Active AI Candidate</span>
                 </div>
-                <span className="text-[10px] text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200/60 font-semibold">
+                <span className="text-xs text-blue-800 bg-blue-100/80 px-2.5 py-1 rounded-lg border border-blue-200 font-bold">
                   Open to Roles
                 </span>
               </div>
 
-              {/* Navigation Items with Icons & Subtitles */}
-              <nav className="space-y-1">
+              {/* Navigation Items with High-Contrast Typography & Clear Surfaces */}
+              <nav className="space-y-1.5">
                 {navLinks.map((link) => {
                   const isActive = isRouteActive(link.path);
                   const Icon = link.icon;
@@ -276,36 +276,36 @@ export const Navbar: React.FC = () => {
                       key={link.path}
                       to={link.path}
                       onClick={() => setMobileMenuOpen(false)}
-                      className={`group flex items-center justify-between px-3 py-2.5 rounded-xl transition-all ${
+                      className={`group flex items-center justify-between px-3.5 py-2.5 rounded-2xl transition-all ${
                         isActive
-                          ? 'bg-blue-50/90 text-blue-900 border border-blue-200/80 font-bold shadow-2xs'
-                          : 'text-slate-700 hover:text-slate-950 hover:bg-slate-50 active:bg-slate-100 border border-transparent'
+                          ? 'bg-blue-50 text-blue-950 border border-blue-300 font-bold shadow-2xs'
+                          : 'bg-slate-50/90 hover:bg-slate-100 text-slate-800 border border-slate-200/80 active:bg-slate-200/70'
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <div
-                          className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
+                          className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors shrink-0 ${
                             isActive
                               ? 'bg-blue-600 text-white shadow-xs'
-                              : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200 group-hover:text-slate-700'
+                              : 'bg-white text-slate-700 border border-slate-200 group-hover:bg-slate-50 group-hover:text-slate-950'
                           }`}
                         >
                           <Icon className="w-4 h-4" />
                         </div>
                         <div className="text-left">
-                          <div className={`text-sm leading-tight ${isActive ? 'font-bold text-blue-900' : 'font-semibold text-slate-800'}`}>
+                          <div className={`text-sm leading-tight ${isActive ? 'font-bold text-blue-950' : 'font-bold text-slate-900'}`}>
                             {link.name}
                           </div>
-                          <div className="text-[11px] text-slate-400 font-normal leading-tight mt-0.5">
+                          <div className={`text-xs font-medium leading-snug mt-0.5 ${isActive ? 'text-blue-700' : 'text-slate-600'}`}>
                             {link.desc}
                           </div>
                         </div>
                       </div>
                       <ChevronRight
-                        className={`w-4 h-4 transition-transform ${
+                        className={`w-4 h-4 transition-transform shrink-0 ${
                           isActive
                             ? 'text-blue-600 translate-x-0.5'
-                            : 'text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5'
+                            : 'text-slate-400 group-hover:text-slate-600 group-hover:translate-x-0.5'
                         }`}
                       />
                     </NavLink>
@@ -320,7 +320,7 @@ export const Navbar: React.FC = () => {
                   setMobileMenuOpen(false);
                   openResumeModal();
                 }}
-                className="flex items-center justify-center gap-2 w-full text-center text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-xl py-2.5 border border-blue-200 transition-colors cursor-pointer"
+                className="flex items-center justify-center gap-2 w-full text-center text-xs font-bold text-blue-800 bg-blue-50/90 hover:bg-blue-100 rounded-xl py-2.5 border border-blue-200 transition-colors shadow-2xs cursor-pointer"
               >
                 <FileText className="w-4 h-4 text-blue-600" />
                 <span>View &amp; Download Resume (PDF)</span>
@@ -332,9 +332,9 @@ export const Navbar: React.FC = () => {
                   href={PERSONAL_INFO.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 transition-colors"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 shadow-2xs transition-colors"
                 >
-                  <GithubIcon className="w-3.5 h-3.5 text-slate-700" />
+                  <GithubIcon className="w-3.5 h-3.5 text-slate-800" />
                   <span>GitHub</span>
                 </a>
 
@@ -342,15 +342,15 @@ export const Navbar: React.FC = () => {
                   href={PERSONAL_INFO.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 transition-colors"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 shadow-2xs transition-colors"
                 >
-                  <LinkedinIcon className="w-3.5 h-3.5 text-[#0ea5e9]" />
+                  <LinkedinIcon className="w-3.5 h-3.5 text-[#0284c7]" />
                   <span>LinkedIn</span>
                 </a>
 
                 <a
                   href={`mailto:${PERSONAL_INFO.email}`}
-                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 transition-colors"
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 shadow-2xs transition-colors"
                 >
                   <Mail className="w-3.5 h-3.5 text-blue-600" />
                   <span>Email</span>
