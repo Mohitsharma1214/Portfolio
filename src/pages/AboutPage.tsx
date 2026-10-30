@@ -6,6 +6,7 @@ import { NavLink } from 'react-router-dom';
 import { PERSONAL_INFO, EDUCATION } from '../data/portfolioData';
 import type { ProjectCaseStudy } from '../data/portfolioData';
 import { InteractiveJourneyRoadmap } from '../components/InteractiveJourneyRoadmap';
+import { GitHubActivityCard } from '../components/GitHubActivityCard';
 
 interface AboutPageProps {
   onSelectProject?: (project: ProjectCaseStudy) => void;
@@ -236,10 +237,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onSelectProject }) => {
               Current Status
             </div>
             <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-              </span>
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
               <span>Available for Full-Time Roles &bull; Immediate</span>
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
@@ -248,6 +246,9 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onSelectProject }) => {
           </div>
         </div>
       </div>
+
+      {/* Verified Open Source & Public GitHub Repositories */}
+      <GitHubActivityCard />
 
       {/* Navigation CTA */}
       <div className="pt-8 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">

@@ -416,36 +416,34 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
       >
-        <div className="bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 text-white rounded-3xl p-6 sm:p-10 shadow-xl border border-blue-900/40 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/15 rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
+        <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xs border border-slate-200/90 relative overflow-hidden">
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="space-y-3 max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-mono">
-                <Compass className="w-3.5 h-3.5 text-blue-400 animate-spin [animation-duration:8s]" />
-                <span>Interactive Career Journey</span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/80 text-xs font-mono font-semibold">
+                <Compass className="w-3.5 h-3.5 text-blue-600" />
+                <span>Career Milestones &amp; Architecture Roadmap</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-950 tracking-tight leading-tight">
                 From First Principles to 5,000+ Daily Clinical Inferences &amp; Registered Edge IP
               </h2>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Explore an interactive milestone roadmap engineered for recruiters and engineering leaders: drill into zero-cloud edge optimization breakthroughs, clinical micro-batching architectures, and verified production outcomes.
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                Explore an interactive roadmap engineered for hiring managers: drill into zero-cloud edge optimization breakthroughs, clinical micro-batching architectures, and verified production outcomes.
               </p>
-              <div className="flex flex-wrap gap-2 pt-1 text-xs font-mono text-blue-200">
-                <span className="bg-white/10 px-2.5 py-0.5 rounded border border-white/10">2021: B.Tech (AI &amp; DS)</span>
-                <span className="bg-white/10 px-2.5 py-0.5 rounded border border-white/10">2024: Govt. Copyright SW-19841/2024</span>
-                <span className="bg-white/10 px-2.5 py-0.5 rounded border border-white/10">2025: 5k+ Imgs/Day (&lt;120ms SLA)</span>
-                <span className="bg-white/10 px-2.5 py-0.5 rounded border border-white/10">2026: Autonomous Agents</span>
+              <div className="flex flex-wrap gap-2 pt-1 text-xs font-mono text-slate-700">
+                <span className="bg-slate-100 px-2.5 py-0.5 rounded border border-slate-200 font-medium">2021: B.Tech (AI &amp; DS)</span>
+                <span className="bg-slate-100 px-2.5 py-0.5 rounded border border-slate-200 font-medium">2024: Govt. Copyright SW-19841/2024</span>
+                <span className="bg-slate-100 px-2.5 py-0.5 rounded border border-slate-200 font-medium">2025: 5k+ Imgs/Day (&lt;120ms SLA)</span>
+                <span className="bg-slate-100 px-2.5 py-0.5 rounded border border-slate-200 font-medium">2026: Deterministic Agent Systems</span>
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
               <NavLink
                 to="/about#journey"
-                className="inline-flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-400 active:bg-blue-600 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl transition-all shadow-md shadow-blue-500/30 hover:scale-105 active:scale-95"
+                className="inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-950 active:bg-black text-white font-semibold text-xs sm:text-sm px-6 py-3 rounded-xl transition-all shadow-xs"
               >
-                <Sparkles className="w-4 h-4" />
-                <span>Launch Interactive Journey</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>View Career Journey</span>
+                <ArrowRight className="w-4 h-4 text-slate-400" />
               </NavLink>
             </div>
           </div>
@@ -462,8 +460,8 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
       >
         <div className="flex items-center justify-between border-b border-slate-200 pb-4">
           <div>
-            <div className="text-xs font-mono font-semibold uppercase tracking-wider text-blue-600 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping" />
+            <div className="text-xs font-mono font-semibold uppercase tracking-wider text-blue-700 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-blue-600 inline-block" />
               <span>Flagship Work</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-950 tracking-tight mt-1">
@@ -603,8 +601,8 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
               )}
               <div className="space-y-2 max-w-2xl">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-semibold uppercase tracking-wider text-blue-600 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping" />
+                  <span className="text-xs font-mono font-semibold uppercase tracking-wider text-blue-700 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-blue-600 inline-block" />
                     <span>Featured Technical Blog</span>
                   </span>
                   <span className="text-slate-300">•</span>
