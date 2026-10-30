@@ -69,7 +69,7 @@ export const AiBlogRecommendations: React.FC<AiBlogRecommendationsProps> = ({
             Recommended Next Reads For You
           </h2>
           <p className="text-xs sm:text-sm text-slate-600">
-            Dynamically synthesized based on technical topic affinity, semantic relevance, and your reading journey.
+            Recommended based on technical topic affinity, semantic relevance, and your reading journey.
           </p>
         </div>
 

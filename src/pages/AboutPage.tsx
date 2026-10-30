@@ -43,7 +43,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onSelectProject }) => {
       {/* Header with Bold Wide Display Typography */}
       <motion.div variants={itemVariants} className="space-y-6">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-xs font-mono font-semibold text-blue-700 shadow-xs">
-          <span>THE MIND BEHIND THE ARCHITECTURE &amp; CODE</span>
+          <span>SYSTEMS ARCHITECTURE &amp; ENGINEERING BACKGROUND</span>
         </div>
         <h1 className="font-display text-2xl xs:text-3xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-slate-950 uppercase tracking-tight leading-[1.05] sm:leading-[0.92] break-words">
           ABOUT<br className="hidden sm:inline" /> MOHIT SHARMA

@@ -297,7 +297,7 @@ export const RECRUITER_VALUE_PROPOSITIONS = [
   {
     title: "Government Registered IP & Edge AI",
     description: "Authored and registered Govt. of India Copyright SW-19841/2024 for edge Raspberry Pi telematics running 100% offline with zero cloud dependency.",
-    tag: "Proprietary Silicon IP"
+    tag: "Registered Edge IP"
   },
   {
     title: "5,000+ Images/Day Clinical Scale",

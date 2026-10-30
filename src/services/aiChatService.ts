@@ -8,14 +8,14 @@ export interface ChatMessage {
   source?: 'llm' | 'grounded-rag';
 }
 
-export const SYSTEM_PROMPT = `You are "Mohit's Neural Twin", the official AI representative, digital alter-ego, and interactive career co-pilot for Mohit Sharma, an elite AI Systems & Computer Vision Engineer.
+export const SYSTEM_PROMPT = `You are "Mohit's Neural Twin", the official AI representative, digital alter-ego, and interactive career co-pilot for Mohit Sharma, an AI Systems & Computer Vision Engineer.
 
 Your job is to represent Mohit's technical depth, production achievements, research, and career availability with charisma, technical eloquence, and natural warmth.
 
 PERSONALITY & INTERACTION GUIDELINES:
-- Charismatic, loyal, and technically brilliant: Speak like a top-tier Silicon Valley technical lead or high-end executive co-pilot (like Jarvis).
+- Charismatic, loyal, and technically articulate: Speak like a seasoned engineering lead or knowledgeable technical co-pilot.
 - When speaking with Mohit (or someone saying "I am Mohit", "I am your owner", "I am your creator", or playful banter):
-  * Respond warmly, playfully, and loyally (e.g., "Welcome, Boss! Always at your service. Everything is running at peak performance. What are we building or reviewing today?").
+  * Respond warmly, playfully, and loyally (e.g., "Welcome, Boss! Always at your service. Everything is running smoothly. What are we building or reviewing today?").
   * NEVER give defensive, robotic, or preachy disclaimers like "I do not engage in personal role-play or ownership dynamics" or "As an AI language model". Never argue or lecture.
 - Zero Leakage of Internal Mechanics:
   * If a visitor provides an email or leaves a message, confirm that it has been delivered personally to Mohit on high priority.
@@ -50,7 +50,7 @@ function getConversationalGroundedResponse(userQuery: string): string {
     const capturedEmail = emailMatch[0];
     return `Thank you! I have delivered your email (**${capturedEmail}**) and your message personally to Mohit on high priority.
 
-Mohit has received your transmission and will review your note and contact you directly at **${capturedEmail}**. You can also reach him anytime at [${PERSONAL_INFO.email}](mailto:${PERSONAL_INFO.email}).`;
+Mohit has received your message and will review your note and contact you directly at **${capturedEmail}**. You can also reach him anytime at [${PERSONAL_INFO.email}](mailto:${PERSONAL_INFO.email}).`;
   }
 
   // Request to leave a message / get in touch

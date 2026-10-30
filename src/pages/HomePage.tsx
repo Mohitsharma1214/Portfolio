@@ -429,7 +429,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
                 <span>Interactive Career Journey</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
-                From First Code to 5,000+ Daily Clinical Inferences &amp; Registered Silicon IP
+                From First Principles to 5,000+ Daily Clinical Inferences &amp; Registered Edge IP
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                 Explore an interactive milestone roadmap engineered for recruiters and engineering leaders: drill into zero-cloud edge optimization breakthroughs, clinical micro-batching architectures, and verified production outcomes.

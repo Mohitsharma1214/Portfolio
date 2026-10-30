@@ -410,7 +410,7 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
                     <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-bounce [animation-delay:300ms]" />
                   </div>
                   <span className="text-[11px] font-mono text-slate-400">
-                    Synthesizing response...
+                    Preparing response...
                   </span>
                 </div>
               )}

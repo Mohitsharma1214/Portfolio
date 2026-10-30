@@ -370,7 +370,7 @@ ON public.inquiries FOR SELECT TO anon USING (true);`;
         {loading ? (
           <div className="p-16 text-center">
             <RefreshCw className="w-8 h-8 text-blue-600 animate-spin mx-auto mb-3" />
-            <p className="text-xs font-mono text-slate-500">Loading incoming transmissions...</p>
+            <p className="text-xs font-mono text-slate-500">Loading incoming inquiries...</p>
           </div>
         ) : filteredInquiries.length === 0 ? (
           <div className="p-16 text-center space-y-3">
@@ -706,7 +706,7 @@ ON public.inquiries FOR SELECT TO anon USING (true);`;
                   </div>
                 </div>
                 <div>
-                  <div className="text-[10px] font-mono text-slate-500 uppercase">Transmission Source</div>
+                  <div className="text-[10px] font-mono text-slate-500 uppercase">Inquiry Source</div>
                   <div className="font-medium text-slate-700 mt-0.5 flex items-center gap-1.5">
                     {activeInquiry.source === 'ai_agent' ? (
                       <>

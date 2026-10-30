@@ -110,7 +110,7 @@ export const ContactPage: React.FC = () => {
     }
 
     setStatus('error');
-    setErrorMessage('Network error while sending transmission. Please reach out directly to mohitxsharma09@gmail.com.');
+    setErrorMessage('Network error while sending message. Please reach out directly to mohitxsharma09@gmail.com.');
   };
 
   return (
@@ -246,7 +246,7 @@ export const ContactPage: React.FC = () => {
                   >
                     <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                     <div className="space-y-1">
-                      <strong className="font-semibold block">Message Transmitted Successfully!</strong>
+                      <strong className="font-semibold block">Message Sent Successfully!</strong>
                       <p className="text-emerald-700 leading-relaxed">
                         Thank you for reaching out. Your message has been routed to my primary inbox and I typically respond within 24 hours.
                       </p>
@@ -265,7 +265,7 @@ export const ContactPage: React.FC = () => {
                     <div className="space-y-1">
                       <strong className="font-semibold block">One-Time Activation Email Sent</strong>
                       <p className="text-amber-800 leading-relaxed">
-                        An activation link has been sent to Mohit's email address by FormSubmit. Once confirmed, all future transmissions arrive instantaneously. In the meantime, you can also send directly via email below.
+                        An activation link has been sent to Mohit's email address by FormSubmit. Once confirmed, all future messages arrive instantaneously. In the meantime, you can also send directly via email below.
                       </p>
                     </div>
                   </motion.div>
@@ -280,7 +280,7 @@ export const ContactPage: React.FC = () => {
                   >
                     <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
                     <div className="space-y-1">
-                      <strong className="font-semibold block">Transmission Notice</strong>
+                      <strong className="font-semibold block">Status Notice</strong>
                       <p className="text-rose-700">{errorMessage}</p>
                     </div>
                   </motion.div>
@@ -297,7 +297,7 @@ export const ContactPage: React.FC = () => {
                   {status === 'submitting' ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Transmitting Message...</span>
+                      <span>Sending Message...</span>
                     </>
                   ) : (
                     <>
