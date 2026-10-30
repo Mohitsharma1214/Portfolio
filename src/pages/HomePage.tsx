@@ -10,7 +10,6 @@ import {
   BookOpen, 
   Mail, 
   CheckCircle2, 
-  Activity,
   Sparkles,
   Compass,
   FileText
@@ -118,7 +117,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
               {/* Headline */}
               <div>
                 <h1 className="font-display text-[1.35rem] min-[360px]:text-[1.55rem] min-[400px]:text-[1.75rem] sm:text-4xl md:text-5xl lg:text-[3.15rem] leading-[1.14] sm:leading-[1.08] font-black text-slate-950 tracking-tight uppercase break-words">
-                  Engineering real-time <span className="text-gradient-accent">computer vision</span> &amp; production AI systems.
+                  Engineering real-time <span className="text-blue-700">computer vision</span> &amp; production AI systems.
                 </h1>
                 <p className="mt-4 sm:mt-5 text-sm sm:text-lg text-slate-600 leading-relaxed max-w-2xl">
                   Hi, I'm <strong className="text-slate-950 font-semibold">{PERSONAL_INFO.name}</strong>. I design low-latency computer vision backends and deterministic LLM pipelines. Scaled clinical dermatology inference to <strong className="text-slate-950 font-semibold">5,000+ images/day (&lt;120ms)</strong> and authored Government of India Copyright <strong className="font-mono text-slate-900 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">{PERSONAL_INFO.copyrightId}</strong> for edge driver monitoring on Raspberry Pi.
@@ -203,21 +202,21 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
               </div>
             </div>
 
-            {/* Right Column: Hero Animated AI Visual & Interactive Testbed */}
-            <div className="lg:col-span-5 relative group space-y-2">
-              {/* Corner Cyber CV Reticles */}
-              <div className="absolute -top-2 -left-2 w-5 h-5 border-t-2 border-l-2 border-blue-500 rounded-tl pointer-events-none z-20" />
-              <div className="absolute -top-2 -right-2 w-5 h-5 border-t-2 border-r-2 border-blue-500 rounded-tr pointer-events-none z-20" />
-              <div className="absolute -bottom-2 -left-2 w-5 h-5 border-b-2 border-l-2 border-blue-500 rounded-bl pointer-events-none z-20" />
-              <div className="absolute -bottom-2 -right-2 w-5 h-5 border-b-2 border-r-2 border-blue-500 rounded-br pointer-events-none z-20" />
-
-              {/* View Switcher Pill Bar */}
-              <div className="flex items-center justify-between bg-slate-900/90 text-white px-3 py-1.5 rounded-xl border border-slate-800 shadow-xs text-xs font-mono relative z-20">
-                <span className="text-[10px] text-cyan-300 font-bold tracking-wider flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
-                  <span>AI ARCHITECTURE VIEW</span>
-                </span>
-                <div className="flex items-center gap-1 bg-black/40 p-0.5 rounded-lg border border-white/10">
+            {/* Right Column: Hero Architecture & Pipeline Testbed */}
+            <div className="lg:col-span-5 relative space-y-2">
+              {/* Studio Window Title Bar */}
+              <div className="flex items-center justify-between bg-slate-900 text-white px-3.5 py-2 rounded-xl border border-slate-800 shadow-xs text-xs font-mono relative z-20">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 opacity-70">
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 inline-block" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block" />
+                  </div>
+                  <span className="text-[11px] text-slate-300 font-semibold tracking-wide ml-1.5 hidden sm:inline">
+                    system_architecture.onnx
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 bg-slate-950 p-0.5 rounded-lg border border-slate-800">
                   <button
                     type="button"
                     onClick={() => setHeroTab('neural')}
@@ -227,7 +226,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
                         : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    🧠 Neural Graph
+                    Neural Flow
                   </button>
                   <button
                     type="button"
@@ -238,7 +237,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
                         : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    ⚙️ Live Testbed
+                    Live Pipeline
                   </button>
                 </div>
               </div>
@@ -249,23 +248,23 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
         </div>
       </section>
 
-      {/* Full-Width Telemetry & SLA Auto-Moving Infinite Ticker Strip */}
-      <section className="border-y border-slate-200 bg-white/85 backdrop-blur-md py-3.5 overflow-hidden shadow-xs relative">
+      {/* Full-Width Engineering Telemetry & Production Benchmarks Bar */}
+      <section className="border-y border-slate-200/80 bg-slate-50/80 py-3 overflow-hidden relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-4 sm:gap-6">
           {/* Pinned Stationary Label */}
-          <div className="flex items-center gap-1.5 sm:gap-2 text-xs font-mono font-bold uppercase tracking-wider text-blue-700 shrink-0 pr-3 sm:pr-6 border-r border-slate-200 z-10 bg-white/95">
-            <Activity className="w-4 h-4 text-blue-600 animate-pulse" />
-            <span className="hidden sm:inline">Verified Telemetry:</span>
-            <span className="sm:hidden text-[11px]">Telemetry:</span>
+          <div className="flex items-center gap-2 text-xs font-mono font-semibold uppercase tracking-wider text-slate-700 shrink-0 pr-3 sm:pr-6 border-r border-slate-300 z-10 bg-slate-50">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
+            <span className="hidden sm:inline">Production Telemetry</span>
+            <span className="sm:hidden text-[11px]">SLA Benchmarks</span>
           </div>
 
-          {/* Continuous Auto-Scrolling Track (No scrollbar, smooth 60fps infinite loop, pauses on hover) */}
-          <div className="flex-1 overflow-hidden relative [mask-image:linear-gradient(to_right,transparent,black_3%,black_97%,transparent)]">
+          {/* Continuous Auto-Scrolling Track */}
+          <div className="flex-1 overflow-hidden relative [mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)]">
             <div className="animate-marquee gap-8 whitespace-nowrap">
               {duplicatedItems.map((item, idx) => (
                 <div key={idx} className="flex items-center gap-2 text-xs font-mono shrink-0">
-                  <span className="text-slate-400 font-medium uppercase text-[10px]">{item.label}:</span>
-                  <span className="text-slate-900 font-bold bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200 shadow-xs">
+                  <span className="text-slate-500 font-medium uppercase text-[10px]">{item.label}:</span>
+                  <span className="text-slate-900 font-bold bg-white px-2 py-0.5 rounded border border-slate-200 shadow-2xs">
                     {item.val}
                   </span>
                   <span className="text-slate-300 pl-4">•</span>
@@ -327,14 +326,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
       >
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-xs space-y-8 relative overflow-hidden">
-          {/* Subtle Cyber Trace Lines */}
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500 via-indigo-500 to-emerald-500 opacity-80" />
-
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-100 pb-5">
             <div>
-              <div className="text-xs font-mono font-semibold uppercase tracking-wider text-blue-600 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping" />
-                <span>End-to-End System Discipline</span>
+              <div className="text-xs font-mono font-semibold uppercase tracking-wider text-blue-700 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 inline-block" />
+                <span>Engineering Methodology</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold text-slate-950 tracking-tight mt-1">
                 How I Architect Production AI Pipelines

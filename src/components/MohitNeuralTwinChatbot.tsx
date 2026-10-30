@@ -247,7 +247,7 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
     <aside aria-label="AI Chat Assistant">
       {/* Floating Launcher Button */}
       <div className={`fixed bottom-4 sm:bottom-5 right-4 sm:right-5 z-[80] items-center gap-2 ${isOpen ? 'hidden sm:flex' : 'flex'}`}>
-        {/* Animated hint callout */}
+        {/* Subtle hint callout */}
         <AnimatePresence>
           {showPromptHint && !isOpen && (
             <motion.div
@@ -255,38 +255,35 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 10, scale: 0.9 }}
               onClick={() => setIsOpen(true)}
-              className="hidden sm:flex items-center gap-2 bg-slate-900/95 text-white backdrop-blur-md px-3.5 py-2 rounded-2xl border border-blue-500/40 shadow-xl cursor-pointer text-xs font-mono"
+              className="hidden sm:flex items-center gap-2 bg-white/95 text-slate-800 backdrop-blur-md px-3.5 py-2 rounded-xl border border-slate-200 shadow-md cursor-pointer text-xs font-mono hover:border-slate-300 transition-colors"
             >
-              <Sparkles className="w-3.5 h-3.5 text-cyan-300 animate-pulse" />
-              <span>Ask Mohit's Neural Twin</span>
+              <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+              <span>Ask AI Co-Pilot</span>
             </motion.div>
           )}
         </AnimatePresence>
 
         <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={() => setIsOpen(!isOpen)}
-          className="relative group p-3 sm:px-4 sm:py-3 rounded-full bg-slate-950 text-white border border-blue-500/50 shadow-[0_0_25px_rgba(37,99,235,0.45)] hover:shadow-[0_0_35px_rgba(37,99,235,0.7)] hover:border-cyan-400 transition-all flex items-center gap-2.5 cursor-pointer ring-1 ring-white/20"
-          title={isOpen ? "Close Mohit's Neural Twin" : "Open Mohit's Neural Twin AI Chatbot"}
+          className="relative group p-2.5 sm:px-3.5 sm:py-2 rounded-xl bg-slate-900 hover:bg-slate-950 text-white border border-slate-700/80 shadow-md hover:shadow-lg transition-all flex items-center gap-2.5 cursor-pointer"
+          title={isOpen ? "Close AI Co-Pilot" : "Open AI Co-Pilot"}
           aria-expanded={isOpen}
-          aria-label="Toggle AI Chat Assistant"
+          aria-label="Toggle AI Co-Pilot"
         >
-          {/* Glowing pulse rings */}
-          <span className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 blur-sm opacity-40 group-hover:opacity-80 transition-opacity -z-10" />
-
           {/* Bot Avatar Icon */}
-          <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-xs shrink-0">
-            {isOpen ? <X className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+          <div className="w-6 h-6 rounded-lg bg-blue-600 flex items-center justify-center text-white shrink-0">
+            {isOpen ? <X className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5" />}
           </div>
 
           <div className="hidden sm:flex flex-col text-left">
-            <span className="font-display font-black text-xs uppercase tracking-wider text-white leading-tight">
-              Mohit's Neural Twin
+            <span className="font-semibold text-xs tracking-tight text-white leading-tight">
+              AI Co-Pilot
             </span>
-            <span className="text-[10px] font-mono text-cyan-300 leading-none flex items-center gap-1 mt-0.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />
-              AI Copilot Online
+            <span className="text-[10px] font-mono text-slate-400 leading-none flex items-center gap-1 mt-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
+              Online
             </span>
           </div>
         </motion.button>
