@@ -112,6 +112,38 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Lock background scrolling across all devices (iOS Safari, Android Chrome, Desktop) when Mohit's Twin is open
+  useEffect(() => {
+    if (isOpen) {
+      const scrollY = window.scrollY;
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+
+      return () => {
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOpen]);
+
+  // Close chat on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+
   const handleSend = async (textToSend?: string) => {
     const text = textToSend || inputValue;
     if (!text.trim() || isTyping) return;
@@ -214,7 +246,7 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
   return (
     <aside aria-label="AI Chat Assistant">
       {/* Floating Launcher Button */}
-      <div className={`fixed bottom-4 sm:bottom-5 right-4 sm:right-5 z-50 items-center gap-2 ${isOpen ? 'hidden sm:flex' : 'flex'}`}>
+      <div className={`fixed bottom-4 sm:bottom-5 right-4 sm:right-5 z-[80] items-center gap-2 ${isOpen ? 'hidden sm:flex' : 'flex'}`}>
         {/* Animated hint callout */}
         <AnimatePresence>
           {showPromptHint && !isOpen && (
@@ -260,57 +292,70 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
         </motion.button>
       </div>
 
-      {/* Floating Chat Modal Window */}
+      {/* Floating Chat Modal Window & Isolated Backdrop */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 24, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-x-2.5 bottom-2 sm:inset-x-auto sm:bottom-20 sm:right-6 z-50 w-auto sm:w-[420px] max-w-[calc(100vw-20px)] sm:max-w-none h-[calc(100dvh-16px)] sm:h-[580px] max-h-[92dvh] sm:max-h-[84dvh] rounded-2xl sm:rounded-3xl bg-[#030712]/95 backdrop-blur-2xl border border-blue-500/30 shadow-[0_20px_60px_rgba(0,0,0,0.8)] ring-1 ring-white/10 flex flex-col overflow-hidden text-white"
-          >
-            {/* Header */}
-            <div className="p-3.5 sm:p-5 border-b border-slate-800/80 bg-slate-900/60 flex items-center justify-between gap-2 shrink-0">
-              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-500 flex items-center justify-center text-white font-bold text-xs shadow-md shrink-0 ring-1 ring-white/20">
-                  MS
-                </div>
-                <div className="min-w-0">
-                  <h3 className="font-display font-black text-xs sm:text-sm uppercase tracking-wide text-white flex items-center gap-1.5 leading-tight truncate">
-                    <span className="truncate">Mohit's Neural Twin</span>
-                    <Sparkles className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  </h3>
-                  <div className="text-[9px] sm:text-[10px] font-mono text-slate-400 flex items-center gap-1.5 mt-0.5 truncate">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-                    <span className="truncate">AI Copilot &bull; Production Knowledge</span>
+          <>
+            {/* Backdrop Blur Overlay: Dims background, blocks pass-through clicks, and dismisses on outside touch */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setIsOpen(false)}
+              onTouchMove={(e) => e.preventDefault()}
+              className="fixed inset-0 z-[85] bg-slate-950/50 backdrop-blur-xs touch-none"
+              aria-hidden="true"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, y: 24, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.95 }}
+              transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed inset-x-2.5 bottom-2 sm:inset-x-auto sm:bottom-20 sm:right-6 z-[90] w-auto sm:w-[420px] max-w-[calc(100vw-20px)] sm:max-w-none h-[calc(100dvh-16px)] sm:h-[580px] max-h-[92dvh] sm:max-h-[84dvh] rounded-2xl sm:rounded-3xl bg-[#030712]/95 backdrop-blur-2xl border border-blue-500/30 shadow-[0_20px_60px_rgba(0,0,0,0.8)] ring-1 ring-white/10 flex flex-col overflow-hidden text-white"
+            >
+              {/* Header */}
+              <div className="p-3.5 sm:p-5 border-b border-slate-800/80 bg-slate-900/60 flex items-center justify-between gap-2 shrink-0">
+                <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-cyan-500 flex items-center justify-center text-white font-bold text-xs shadow-md shrink-0 ring-1 ring-white/20">
+                    MS
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-display font-black text-xs sm:text-sm uppercase tracking-wide text-white flex items-center gap-1.5 leading-tight truncate">
+                      <span className="truncate">Mohit's Neural Twin</span>
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                    </h3>
+                    <div className="text-[9px] sm:text-[10px] font-mono text-slate-400 flex items-center gap-1.5 mt-0.5 truncate">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                      <span className="truncate">AI Copilot &bull; Production Knowledge</span>
+                    </div>
                   </div>
                 </div>
+
+                {/* Header Action Buttons */}
+                <div className="flex items-center gap-1 shrink-0">
+                  <button
+                    type="button"
+                    onClick={clearChat}
+                    title="Clear conversation"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsOpen(false)}
+                    title="Close chat"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
 
-              {/* Header Action Buttons */}
-              <div className="flex items-center gap-1 shrink-0">
-                <button
-                  type="button"
-                  onClick={clearChat}
-                  title="Clear conversation"
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  title="Close chat"
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            {/* Messages Scroll Area */}
-            <div className="flex-1 overflow-y-auto p-3.5 sm:p-5 space-y-3.5 sm:space-y-4 text-xs font-sans">
+              {/* Messages Scroll Area */}
+              <div className="flex-1 overflow-y-auto overscroll-contain p-3.5 sm:p-5 space-y-3.5 sm:space-y-4 text-xs font-sans">
               {messages.map((msg) => (
                 <div
                   key={msg.id}
@@ -453,8 +498,9 @@ export const MohitNeuralTwinChatbot: React.FC = () => {
               </button>
             </div>
           </motion.div>
-        )}
-      </AnimatePresence>
+        </>
+      )}
+    </AnimatePresence>
     </aside>
   );
 };
