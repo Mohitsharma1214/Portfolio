@@ -55,8 +55,10 @@ const itemVariants: Variants = {
 export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
   const { openResumeModal } = useResumeModal();
   const [allProjects, setAllProjects] = useState<ProjectCaseStudy[]>(() => sortProjectsByRank(PROJECTS));
-  const [latestArticle, setLatestArticle] = useState<BlogMetadata | null>(() => (TECHNICAL_ARTICLES[0] as unknown as BlogMetadata) || null);
-  const [blogCount, setBlogCount] = useState<number>(8);
+  const [featuredArticles, setFeaturedArticles] = useState<BlogMetadata[]>(() =>
+    (TECHNICAL_ARTICLES.slice(0, 3) as unknown as BlogMetadata[]) || []
+  );
+  const [blogCount, setBlogCount] = useState<number>(22);
   const [heroTab, setHeroTab] = useState<'neural' | 'explorer'>('neural');
 
   useEffect(() => {
@@ -66,9 +68,9 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
       }
     });
 
-    BlogService.getPaginatedBlogs({ page: 1, pageSize: 1 }).then((res) => {
+    BlogService.getPaginatedBlogs({ page: 1, pageSize: 3 }).then((res) => {
       if (res.blogs && res.blogs.length > 0) {
-        setLatestArticle(res.blogs[0]);
+        setFeaturedArticles(res.blogs);
         setBlogCount(res.totalCount);
       }
     });
@@ -572,74 +574,95 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectProject }) => {
         </div>
       </motion.section>
 
-      {/* Latest Technical Blog Section */}
-      {latestArticle && (
+      {/* Featured Engineering Writing & Technical Research */}
+      {featuredArticles && featuredArticles.length > 0 && (
         <motion.section
           initial={{ opacity: 0, y: 35 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.15 }}
           transition={{ duration: 0.6 }}
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6"
         >
-          <motion.div
-            whileHover={{ y: -4 }}
-            className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xs hover:border-blue-400 hover:shadow-card transition-all relative overflow-hidden"
-          >
-            <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center flex-1">
-              {latestArticle.coverImage && (
-                <NavLink
-                  to={`/blogs/${latestArticle.id}`}
-                  className="w-full sm:w-44 aspect-video rounded-xl overflow-hidden shrink-0 border border-slate-200 block group"
-                >
-                  <img
-                    src={latestArticle.coverImage}
-                    alt={latestArticle.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                </NavLink>
-              )}
-              <div className="space-y-2 max-w-2xl">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-semibold uppercase tracking-wider text-blue-700 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-blue-600 inline-block" />
-                    <span>Featured Technical Blog</span>
-                  </span>
-                  <span className="text-slate-300">•</span>
-                  <span className="text-xs font-mono text-slate-500">{latestArticle.readTime}</span>
-                  <span className="text-slate-300">•</span>
-                  <span className="text-xs font-mono text-slate-500">{latestArticle.publishDate}</span>
-                </div>
-                <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug">
-                  <NavLink
-                    to={`/blogs/${latestArticle.id}`}
-                    className="hover:text-blue-600 transition-colors"
-                  >
-                    {latestArticle.title}
-                  </NavLink>
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-2">
-                  {latestArticle.summary}
-                </p>
+          {/* Section Header */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200 pb-4">
+            <div>
+              <div className="text-xs font-mono font-semibold uppercase tracking-wider text-blue-700 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-blue-600 inline-block" />
+                <span>Deep Learning &amp; Systems Architecture</span>
               </div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-950 tracking-tight mt-1">
+                Featured Engineering Writing
+              </h2>
             </div>
-            <div className="flex items-center gap-3 self-start md:self-auto shrink-0">
-              <NavLink
-                to={`/blogs/${latestArticle.id}`}
-                className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl transition-all shadow-xs"
+
+            <NavLink
+              to="/blogs"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 px-4 py-2 rounded-xl border border-slate-200 transition-all shadow-xs shrink-0 self-start sm:self-auto"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-slate-600" />
+              <span>Browse All {blogCount} Articles</span>
+              <ArrowRight className="w-3.5 h-3.5 text-slate-500" />
+            </NavLink>
+          </div>
+
+          {/* 3-Card Technical Articles Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {featuredArticles.map((article) => (
+              <motion.article
+                key={article.id}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                className="bg-white border border-slate-200/90 rounded-3xl p-5 flex flex-col justify-between shadow-xs hover:border-blue-300 hover:shadow-card transition-all group"
               >
-                <span>Read Blog</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </NavLink>
-              <NavLink
-                to="/blogs"
-                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 px-3.5 py-2.5 rounded-xl border border-slate-200 transition-all shadow-xs"
-              >
-                <BookOpen className="w-4 h-4 text-slate-600" />
-                <span>All Blogs ({blogCount || 8})</span>
-              </NavLink>
-            </div>
-          </motion.div>
+                <div className="space-y-4">
+                  {article.coverImage && (
+                    <NavLink
+                      to={`/blogs/${article.id}`}
+                      className="aspect-video w-full rounded-2xl overflow-hidden border border-slate-100 block relative"
+                    >
+                      <img
+                        src={article.coverImage}
+                        alt={article.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                    </NavLink>
+                  )}
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-slate-500">
+                      <span className="text-blue-700 font-semibold bg-blue-50 px-2 py-0.5 rounded border border-blue-200/60 truncate max-w-[150px]">
+                        {article.category || 'AI Systems'}
+                      </span>
+                      <span>{article.readTime}</span>
+                    </div>
+
+                    <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors tracking-tight leading-snug line-clamp-2">
+                      <NavLink to={`/blogs/${article.id}`}>
+                        {article.title}
+                      </NavLink>
+                    </h3>
+
+                    <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+                      {article.summary}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-slate-100 mt-4 flex items-center justify-between">
+                  <span className="text-[11px] font-mono text-slate-400">
+                    {article.publishDate}
+                  </span>
+                  <NavLink
+                    to={`/blogs/${article.id}`}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 group-hover:text-blue-700 transition-colors"
+                  >
+                    <span>Read Article</span>
+                    <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                  </NavLink>
+                </div>
+              </motion.article>
+            ))}
+          </div>
         </motion.section>
       )}
 
